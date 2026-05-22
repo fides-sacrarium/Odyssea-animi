@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Sign In — Fides Sacrarium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --bg:#0C0906; --surface:#171208; --surface2:#1E1810; --surface3:#252018;
+            --text:#F0E8D4; --text2:#9A8A74; --text3:#524438;
+            --cyan:#5BA8C0; --cyan2:#7AD4E4; --cyan-dim:rgba(91,168,192,0.1); --cyan-glow:rgba(91,168,192,0.25);
+            --purple:#A07AB8; --purple-dim:rgba(160,122,184,0.12);
+            --red:#C06060; --green:#72A87A;
+            --border:rgba(91,168,192,0.1); --radius:16px; --radius-sm:10px;
+            --expo:cubic-bezier(0.16,1,0.3,1);
+        }
+        [data-theme="light"] {
+            --bg:#F5F0E8; --surface:#FFFFFF; --surface2:#F8F4EE; --surface3:#EDE7DB;
+            --text:#1A1410; --text2:#6B6058; --text3:#A89E94;
+            --cyan:#3a7888; --cyan2:#5a9fae; --cyan-dim:rgba(58,120,136,0.08); --cyan-glow:rgba(58,120,136,0.2);
+            --border:rgba(58,120,136,0.15);
+        }
+        *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+        html, body { height:100%; font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+
+        /* noise overlay */
+        body::after { content:''; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:0.035;
+            background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+        /* ambient */
+        .ambient { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+        .amb { position:absolute; border-radius:50%; filter:blur(120px); }
+        .amb-1 { width:600px; height:600px; top:-200px; left:-150px; background:radial-gradient(circle,rgba(160,100,30,0.2) 0%,transparent 70%); animation:af1 22s ease-in-out infinite alternate; }
+        .amb-2 { width:400px; height:400px; bottom:-150px; right:-100px; background:radial-gradient(circle,rgba(160,122,184,0.15) 0%,transparent 70%); animation:af2 28s ease-in-out infinite alternate; }
+        @keyframes af1 { 0%{transform:translate(0,0)} 100%{transform:translate(40px,-30px)} }
+        @keyframes af2 { 0%{transform:translate(0,0)} 100%{transform:translate(-30px,40px)} }
+
+        .page-wrap { position:relative; z-index:1; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+
+        /* card */
+        .auth-card {
+            width:100%; max-width:460px; background:var(--surface);
+            border:1px solid var(--border); border-radius:24px;
+            padding:48px 40px; position:relative; overflow:hidden;
+            box-shadow:0 40px 100px rgba(0,0,0,0.6);
+            animation:cardUp 0.9s var(--expo) forwards;
+        }
+        @keyframes cardUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
+        .auth-card::before { content:''; position:absolute; top:0; left:40px; right:40px; height:1px;
+            background:linear-gradient(to right,transparent,var(--cyan2),transparent); opacity:0.4; }
+
+        .brand { text-align:center; margin-bottom:36px; }
+        .brand-cross { width:40px; height:56px; margin:0 auto 16px; animation:spinY 14s linear infinite; }
+        @keyframes spinY { from{transform:rotateY(0)} to{transform:rotateY(360deg)} }
+        .brand-name { font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:300; color:var(--text); }
+        .brand-sub { font-size:10px; letter-spacing:0.38em; text-transform:uppercase; color:var(--cyan2); margin-top:6px; font-weight:500; }
+
+        /* TABS */
+        .tabs { display:flex; background:var(--surface2); border-radius:var(--radius-sm); padding:4px; margin-bottom:32px; gap:4px; }
+        .tab { flex:1; padding:10px; border:none; background:none; color:var(--text2); font-family:'DM Sans',sans-serif;
+            font-size:13px; font-weight:500; letter-spacing:0.05em; text-transform:uppercase;
+            border-radius:8px; cursor:pointer; transition:all 0.3s; }
+        .tab.active { background:var(--surface); color:var(--cyan2); box-shadow:0 2px 8px rgba(0,0,0,0.3); }
+
+        /* PANELS */
+        .panel { display:none; animation:fadeIn 0.4s ease; }
+        .panel.active { display:block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+        /* FORM FIELDS */
+        .field { margin-bottom:16px; }
+        .field label { display:block; font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+            color:var(--text2); margin-bottom:8px; font-weight:500; }
+        .field input, .field select {
+            width:100%; padding:13px 16px; background:var(--surface2); border:1px solid var(--border);
+            border-radius:var(--radius-sm); color:var(--text); font-family:'DM Sans',sans-serif;
+            font-size:14px; outline:none; transition:all 0.3s; appearance:none;
+        }
+        .field input:focus, .field select:focus { border-color:var(--cyan2); background:var(--surface3); box-shadow:0 0 0 3px var(--cyan-dim); }
+        .field input::placeholder { color:var(--text3); }
+        .field select option { background:var(--surface2); }
+
+        /* AVATAR PICKER */
+        .avatar-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:8px; }
+        .av-opt { position:relative; cursor:pointer; }
+        .av-opt input { position:absolute; opacity:0; width:0; height:0; }
+        .av-img { width:100%; aspect-ratio:1; border-radius:50%; background:var(--surface2);
+            border:2px solid var(--border); transition:all 0.3s; overflow:hidden;
+            display:flex; align-items:center; justify-content:center; font-size:22px; }
+        .av-opt input:checked ~ .av-img { border-color:var(--cyan2); box-shadow:0 0 0 3px var(--cyan-dim),0 0 12px var(--cyan-glow); }
+        .av-img:hover { border-color:rgba(91,168,192,0.5); }
+
+        /* GOOGLE BTN */
+        .google-btn {
+            width:100%; padding:13px 20px; border-radius:var(--radius-sm);
+            border:1px solid var(--border); background:var(--surface2);
+            color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500;
+            cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
+            transition:all 0.3s; margin-bottom:20px;
+        }
+        .google-btn:hover { border-color:rgba(91,168,192,0.4); background:var(--surface3); transform:translateY(-1px); }
+        .google-btn svg { width:18px; height:18px; flex-shrink:0; }
+
+        .divider { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+        .divider-line { flex:1; height:1px; background:var(--border); }
+        .divider-text { font-size:11px; color:var(--text3); letter-spacing:0.1em; text-transform:uppercase; }
+
+        /* SUBMIT */
+        .submit-btn {
+            width:100%; padding:14px; border-radius:var(--radius-sm); border:none;
+            background:linear-gradient(135deg,var(--cyan2),var(--cyan)); color:var(--bg);
+            font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600;
+            letter-spacing:0.08em; text-transform:uppercase; cursor:pointer;
+            transition:all 0.3s; margin-top:8px; position:relative; overflow:hidden;
+        }
+        .submit-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px var(--cyan-glow); }
+        .submit-btn:active { transform:translateY(0); }
+        .submit-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+
+        /* SPINNER */
+        .spinner { width:18px; height:18px; border:2px solid rgba(12,9,6,0.3); border-top-color:var(--bg);
+            border-radius:50%; animation:spin 0.7s linear infinite; display:inline-block; }
+        @keyframes spin { to{transform:rotate(360deg)} }
+
+        .error-msg { background:rgba(192,96,96,0.12); border:1px solid rgba(192,96,96,0.25);
+            color:#E08080; padding:12px 16px; border-radius:var(--radius-sm); font-size:13px;
+            margin-bottom:16px; display:none; }
+        .error-msg.show { display:block; animation:fadeIn 0.3s ease; }
+        .success-msg { background:rgba(114,168,122,0.12); border:1px solid rgba(114,168,122,0.25);
+            color:#90C49A; padding:12px 16px; border-radius:var(--radius-sm); font-size:13px;
+            margin-bottom:16px; display:none; }
+        .success-msg.show { display:block; }
+
+        .field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+        /* theme toggle */
+        .theme-toggle { position:fixed; top:20px; right:20px; z-index:10; width:36px; height:36px;
+            border-radius:50%; border:1px solid var(--border); background:var(--surface);
+            color:var(--text2); cursor:pointer; display:flex; align-items:center; justify-content:center;
+            transition:all 0.3s; }
+        .theme-toggle:hover { border-color:var(--cyan2); color:var(--cyan2); }
+
+        @media (max-width:480px) {
+            .auth-card { padding:36px 24px; }
+            .field-row { grid-template-columns:1fr; }
+            .avatar-grid { grid-template-columns:repeat(6,1fr); gap:6px; }
+        }
+
+        /* Loading overlay */
+        #loading-overlay { position:fixed; inset:0; z-index:1000; background:var(--bg);
+            display:flex; align-items:center; justify-content:center; }
+        #loading-overlay.hidden { display:none; }
+        .loading-cross { width:50px; height:70px; animation:spinY 10s linear infinite; }
+    </style>
+</head>
+<body>
+<div class="ambient"><div class="amb amb-1"></div><div class="amb amb-2"></div></div>
+
+<div id="loading-overlay">
+    <svg class="loading-cross" viewBox="0 0 100 140">
+        <defs>
+            <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#E6C98A"/>
+                <stop offset="50%" stop-color="#C4A060"/>
+                <stop offset="100%" stop-color="#8A5E1A"/>
+            </linearGradient>
+        </defs>
+        <path d="M 50 5 L 65 20 Q 55 30 55 45 Q 70 45 80 35 L 95 50 L 80 65 Q 70 55 55 55 Q 55 80 65 120 L 50 135 L 35 120 Q 45 80 45 55 Q 30 55 20 65 L 5 50 L 20 35 Q 30 45 45 45 Q 45 30 35 20 Z" fill="url(#cg)"/>
+    </svg>
+</div>
+
+<button class="theme-toggle" onclick="toggleGlobalTheme()" title="Toggle theme">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+
+<div class="page-wrap">
+    <div class="auth-card">
+
+        <!-- Brand -->
+        <div class="brand">
+            <svg class="brand-cross" viewBox="0 0 100 140">
+                <defs><linearGradient id="cg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E6C98A"/><stop offset="50%" stop-color="#C4A060"/><stop offset="100%" stop-color="#8A5E1A"/></linearGradient></defs>
+                <path d="M 50 5 L 65 20 Q 55 30 55 45 Q 70 45 80 35 L 95 50 L 80 65 Q 70 55 55 55 Q 55 80 65 120 L 50 135 L 35 120 Q 45 80 45 55 Q 30 55 20 65 L 5 50 L 20 35 Q 30 45 45 45 Q 45 30 35 20 Z" fill="url(#cg2)"/>
+            </svg>
+            <div class="brand-name">Fides Sacrarium</div>
+            <div class="brand-sub">Digital Companion</div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('login')">Sign In</button>
+            <button class="tab" onclick="switchTab('register')">Register</button>
+        </div>
+
+        <!-- ── LOGIN ── -->
+        <div class="panel active" id="panel-login">
+            <div class="error-msg" id="login-error"></div>
+
+            <button class="google-btn" onclick="signInGoogle()">
+                <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Continue with Google
+            </button>
+
+            <div class="divider"><div class="divider-line"></div><div class="divider-text">or</div><div class="divider-line"></div></div>
+
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="login-email" placeholder="your@email.com">
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+            </div>
+
+            <button class="submit-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+        </div>
+
+        <!-- ── REGISTER ── -->
+        <div class="panel" id="panel-register">
+            <div class="error-msg" id="reg-error"></div>
+            <div class="success-msg" id="reg-success">Account created! Setting up your profile…</div>
+
+            <button class="google-btn" onclick="signInGoogle()">
+                <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Register with Google
+            </button>
+
+            <div class="divider"><div class="divider-line"></div><div class="divider-text">or use email</div><div class="divider-line"></div></div>
+
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="reg-email" placeholder="your@email.com">
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" id="reg-pass" placeholder="min 6 characters">
+            </div>
+            <div class="field">
+                <label>Confirm Password</label>
+                <input type="password" id="reg-pass2" placeholder="re-enter password" onkeydown="if(event.key==='Enter')doRegister()">
+            </div>
+
+            <p style="font-size:11.5px;color:var(--text2);line-height:1.6;margin-bottom:4px;">
+                You'll set up your name, ministry and avatar right after — on your profile page.
+            </p>
+
+            <button class="submit-btn" id="reg-btn" onclick="doRegister()">Create Account</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script>
+    const AVATARS = { avatar1:'🕊️', avatar2:'⚔️', avatar3:'🌿', avatar4:'🕯️', avatar5:'🌹', avatar6:'✝️' };
+
+    // Build marker — if you DON'T see this in the browser console, you are
+    // running an old cached copy of this file. Hard-refresh or redeploy.
+    console.log('%c✓ Fides auth.html — PROFILE-SAVE FIX build','color:#6db8cc;font-weight:bold;font-size:13px');
+
+    // While a sign-up (or a brand-new Google user) is being processed we must
+    // NOT let the auth-state listener redirect early — that race would carry
+    // the user to index.html before their profile is written to the database.
+    let authBusy = false;
+    let redirected = false;
+    function goToApp() {
+        if (redirected) return;
+        redirected = true;
+        window.location.href = getRedirect();
+    }
+
+    function getRedirect() {
+        return new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+    }
+
+    // Already logged in? Send returning users straight to the app.
+    auth.onAuthStateChanged(user => {
+        document.getElementById('loading-overlay').classList.add('hidden');
+        if (user && !authBusy) goToApp();
+    });
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0 && tab==='login')||(i===1 && tab==='register')));
+        document.getElementById('panel-login').classList.toggle('active', tab==='login');
+        document.getElementById('panel-register').classList.toggle('active', tab==='register');
+    }
+
+    function showError(id, msg) {
+        const el = document.getElementById(id);
+        el.textContent = msg; el.classList.add('show');
+    }
+    function hideError(id) { document.getElementById(id).classList.remove('show'); }
+
+    function setLoading(btnId, loading) {
+        const btn = document.getElementById(btnId);
+        btn.disabled = loading;
+        btn.innerHTML = loading ? '<span class="spinner"></span>' : (btnId === 'login-btn' ? 'Sign In' : 'Create Account');
+    }
+
+    async function doLogin() {
+        hideError('login-error');
+        const email = document.getElementById('login-email').value.trim();
+        const pass = document.getElementById('login-pass').value;
+        if (!email || !pass) { showError('login-error','Please fill in all fields.'); return; }
+        setLoading('login-btn', true);
+        try {
+            await auth.signInWithEmailAndPassword(email, pass);
+            goToApp();
+        } catch(e) {
+            setLoading('login-btn', false);
+            showError('login-error', e.code === 'auth/wrong-password' ? 'Incorrect password.' : e.code === 'auth/user-not-found' ? 'No account found with that email.' : e.message);
+        }
+    }
+
+    async function doRegister() {
+        hideError('reg-error');
+        const email = document.getElementById('reg-email').value.trim();
+        const pass  = document.getElementById('reg-pass').value;
+        const pass2 = document.getElementById('reg-pass2').value;
+
+        if (!email || !pass || !pass2) { showError('reg-error','Please fill in all fields.'); return; }
+        if (pass.length < 6) { showError('reg-error','Password must be at least 6 characters.'); return; }
+        if (pass !== pass2) { showError('reg-error','Passwords do not match.'); return; }
+
+        setLoading('reg-btn', true);
+        authBusy = true; // hold off the auth-state redirect until the account exists
+        try {
+            await auth.createUserWithEmailAndPassword(email, pass);
+            // No profile is written here. The pilgrim fills in their name,
+            // ministry, parish and avatar on index.html — the Edit Profile
+            // dialog opens there automatically for brand-new accounts.
+            document.getElementById('reg-success').classList.add('show');
+            setTimeout(goToApp, 700);
+        } catch(e) {
+            authBusy = false;
+            setLoading('reg-btn', false);
+            showError('reg-error', e.code === 'auth/email-already-in-use' ? 'Email already registered.' : e.message);
+        }
+    }
+
+    async function signInGoogle() {
+        authBusy = true; // hold off the auth-state redirect until the account exists
+        const provider = new firebase.auth.GoogleAuthProvider();
+        try {
+            await auth.signInWithPopup(provider);
+            // No profile work here — index.html opens the Edit Profile dialog
+            // automatically for any account that has not been set up yet.
+            goToApp();
+        } catch(e) {
+            authBusy = false;
+            showError('login-error', e.message);
+            showError('reg-error', e.message);
+        }
+    }
+
+    // Profile setup (name, ministry, parish, avatar) is no longer collected
+    // here — it happens once on index.html via the Edit Profile dialog, which
+    // opens automatically for any account that hasn't been set up yet.
+
+    function toggleGlobalTheme() {
+        const current = document.body.getAttribute('data-theme') || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', next);
+        localStorage.setItem('fides_theme', next);
+    }
+
+    // Apply theme immediately
+    (function() {
+        const saved = localStorage.getItem('fides_theme');
+        const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.body.setAttribute('data-theme', theme);
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Conversum AI — Chosen Generations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A0806; --bg2: #100D0A; --surface: #161210;
+            --text: #F0EAE0; --text2: #9A8E82;
+            --cyan: #5BA8C0; --cyan2: #7AD4E4; --cyan-dim: rgba(91,168,192,0.12); --cyan-glow: rgba(91,168,192,0.25);
+            --rose: #B07B9A; --rose2: #E0AECE; --rose-dim: rgba(176,123,154,0.12); --rose-glow: rgba(176,123,154,0.25);
+            --border: rgba(91,168,192,0.12);
+            --radius: 12px; --transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+            --header-h: 64px;
+        }
+        [data-theme="light"] {
+            --bg: #F5F0E8; --bg2: #EDE7DB; --surface: #FFFFFF;
+            --text: #1A1410; --text2: #6B6058;
+            --cyan: #3a7888; --cyan2: #5a9fae; --cyan-dim: rgba(58,120,136,0.08); --cyan-glow: rgba(58,120,136,0.2);
+            --rose: #8A4A6A; --rose2: #B46B94; --rose-dim: rgba(138,74,106,0.08); --rose-glow: rgba(138,74,106,0.2);
+            --border: rgba(58,120,136,0.15);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; overflow: hidden; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+        body::before { content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 0.02; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+
+        /* LAYOUT */
+        .layout { display: flex; flex-direction: column; height: 100vh; }
+
+        /* HEADER */
+        .header {
+            height: var(--header-h); flex-shrink: 0;
+            background: var(--bg); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; position: relative; z-index: 10;
+        }
+        .header-left { display: flex; align-items: center; gap: 14px; }
+        .back-btn {
+            display: flex; align-items: center; gap: 8px;
+            color: var(--text2); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+            text-decoration: none; transition: var(--transition); padding: 8px 0;
+        }
+        .back-btn:hover { color: var(--cyan); }
+        .back-arrow { width: 18px; height: 18px; opacity: 0.6; }
+        .header-divider { width: 1px; height: 24px; background: var(--border); }
+        .header-brand { display: flex; align-items: center; gap: 10px; }
+        .header-cross { width: 22px; height: 30px; }
+        .header-title-group { display: flex; flex-direction: column; }
+        .header-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--cyan); line-height: 1; letter-spacing: 0.02em; }
+        .header-subtitle { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text2); margin-top: 2px; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #6DA37A; box-shadow: 0 0 6px rgba(109,163,122,0.6); animation: pulse-dot 2.5s ease-in-out infinite; }
+        @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .status-label { font-size: 11px; color: var(--text2); letter-spacing: 0.08em; }
+        .clear-btn {
+            background: none; border: 1px solid var(--border); border-radius: 8px;
+            color: var(--text2); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 6px 14px; cursor: pointer; transition: var(--transition); font-family: 'DM Sans', sans-serif;
+        }
+        .clear-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+        /* MESSAGES */
+        .messages-wrap {
+            flex: 1; overflow-y: auto; overflow-x: hidden;
+            scroll-behavior: smooth; position: relative;
+        }
+        .messages-wrap::-webkit-scrollbar { width: 4px; }
+        .messages-wrap::-webkit-scrollbar-track { background: transparent; }
+        .messages-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        /* WELCOME STATE */
+        .welcome {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100%; padding: 40px 24px; text-align: center;
+        }
+        .welcome-icon { width: 56px; height: 56px; margin-bottom: 24px; }
+        .welcome-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; font-style: italic; color: var(--text); margin-bottom: 10px; }
+        .welcome-sub { font-size: 13px; color: var(--text2); line-height: 1.6; max-width: 360px; margin-bottom: 32px; }
+        .welcome-starters { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 420px; }
+        .starter-btn {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 14px 18px; text-align: left; cursor: pointer; transition: var(--transition);
+            color: var(--text2); font-size: 13px; font-family: 'DM Sans', sans-serif;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .starter-btn:hover { border-color: var(--cyan); color: var(--text); background: var(--cyan-dim); }
+        .starter-icon { font-size: 16px; flex-shrink: 0; }
+        .external-note {
+            margin-top: 28px; padding: 12px 18px;
+            background: var(--cyan-dim); border: 1px solid var(--border); border-radius: 10px;
+            font-size: 12px; color: var(--text2); max-width: 360px; line-height: 1.5;
+        }
+        .external-note a { color: var(--cyan); text-decoration: none; }
+        .external-note a:hover { text-decoration: underline; }
+
+        /* MESSAGE LIST */
+        .messages-list { padding: 24px 0 12px; display: flex; flex-direction: column; gap: 0; }
+
+        /* DATE DIVIDER */
+        .date-divider { display: flex; align-items: center; gap: 12px; padding: 16px 24px; }
+        .date-divider-line { flex: 1; height: 1px; background: var(--border); }
+        .date-divider-text { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text2); }
+
+        /* MESSAGE ROW */
+        .msg-row { display: flex; padding: 10px 24px; gap: 12px; animation: fadeSlideIn 0.3s ease forwards; }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .msg-row.user { flex-direction: row-reverse; }
+        .msg-avatar {
+            width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 13px; margin-top: 2px;
+        }
+        .msg-avatar.ai { background: var(--cyan-dim); border: 1px solid var(--border); }
+        .msg-avatar.user { background: var(--rose-dim); border: 1px solid rgba(176,123,154,0.2); }
+        .msg-content { max-width: 72%; display: flex; flex-direction: column; gap: 4px; }
+        .msg-row.user .msg-content { align-items: flex-end; }
+        .msg-name { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text2); padding: 0 4px; }
+        .msg-bubble {
+            padding: 12px 16px; border-radius: 14px;
+            font-size: 14px; line-height: 1.65; word-break: break-word;
+        }
+        .msg-row.ai .msg-bubble {
+            background: var(--surface); border: 1px solid var(--border);
+            color: var(--text); border-radius: 4px 14px 14px 14px;
+        }
+        .msg-row.user .msg-bubble {
+            background: var(--cyan-dim); border: 1px solid rgba(91,168,192,0.2);
+            color: var(--text); border-radius: 14px 4px 14px 14px;
+        }
+        .msg-time { font-size: 10px; color: var(--text2); padding: 0 4px; }
+
+        /* TYPING INDICATOR */
+        .typing-bubble { display: flex; gap: 5px; align-items: center; padding: 14px 16px; }
+        .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); opacity: 0.4; animation: typingBounce 1.2s ease-in-out infinite; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-5px);opacity:1} }
+
+        /* EXTERNAL LINK CARD */
+        .link-card {
+            margin-top: 12px; padding: 14px 16px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+            display: flex; align-items: center; gap: 12px; text-decoration: none;
+            transition: var(--transition);
+        }
+        .link-card:hover { border-color: var(--cyan); background: var(--cyan-dim); }
+        .link-card-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--cyan-dim); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .link-card-text { flex: 1; }
+        .link-card-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+        .link-card-desc { font-size: 11px; color: var(--text2); }
+        .link-card-arrow { color: var(--cyan); font-size: 16px; }
+
+        /* INPUT AREA */
+        .input-area {
+            flex-shrink: 0; border-top: 1px solid var(--border);
+            background: var(--bg); padding: 16px 20px;
+        }
+        .input-row { display: flex; gap: 10px; align-items: flex-end; }
+        .input-box {
+            flex: 1; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 12px 16px; color: var(--text);
+            font-family: 'DM Sans', sans-serif; font-size: 14px;
+            resize: none; min-height: 46px; max-height: 140px; line-height: 1.5;
+            transition: var(--transition); overflow-y: auto;
+        }
+        .input-box::placeholder { color: var(--text2); }
+        .input-box:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
+        .send-btn {
+            width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+            background: var(--cyan-dim); border: 1px solid rgba(91,168,192,0.3);
+            color: var(--cyan); cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: var(--transition);
+        }
+        .send-btn:hover:not(:disabled) { background: var(--cyan); color: var(--bg); border-color: var(--cyan); }
+        .send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .input-footer { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; }
+        .input-hint { font-size: 11px; color: var(--text2); }
+        .open-full-btn {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 11px; letter-spacing: 0.08em; color: var(--cyan);
+            text-decoration: none; transition: var(--transition);
+        }
+        .open-full-btn:hover { color: var(--cyan2); }
+
+        /* MOBILE */
+        @media (max-width: 600px) {
+            .header { padding: 0 14px; }
+            .back-btn span { display: none; }
+            .status-label { display: none; }
+            .msg-row { padding: 8px 14px; }
+            .msg-content { max-width: 85%; }
+            .input-area { padding: 12px 14px; }
+            .welcome { padding: 28px 20px; }
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+<script>
+    const d = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.setAttribute('data-theme', d ? 'dark' : 'light');
+</script>
+
+<div class="layout">
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="back-btn">
+                <svg class="back-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 5l-7 7 7 7"/>
+                </svg>
+                <span>Back</span>
+            </a>
+            <div class="header-divider"></div>
+            <div class="header-brand">
+                <svg class="header-cross" viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="var(--cyan2)"/>
+                            <stop offset="100%" stop-color="#3a7888"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M 50 5 L 65 20 Q 55 30 55 45 Q 70 45 80 35 L 95 50 L 80 65 Q 70 55 55 55 Q 55 80 65 120 L 50 135 L 35 120 Q 45 80 45 55 Q 30 55 20 65 L 5 50 L 20 35 Q 30 45 45 45 Q 45 30 35 20 Z" fill="url(#hg)"/>
+                </svg>
+                <div class="header-title-group">
+                    <div class="header-title">Conversum AI</div>
+                    <div class="header-subtitle">Catholic Doctrine Guide</div>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="status-dot"></div>
+            <span class="status-label">Online</span>
+            <button class="clear-btn" onclick="clearChat()">Clear</button>
+        </div>
+    </header>
+
+    <!-- MESSAGES -->
+    <div class="messages-wrap" id="messagesWrap">
+
+        <!-- WELCOME (shown until first message) -->
+        <div class="welcome" id="welcomeState">
+            <svg class="welcome-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="wg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="var(--cyan2)"/>
+                        <stop offset="100%" stop-color="#3a7888"/>
+                    </linearGradient>
+                </defs>
+                <path d="M 50 5 L 60 15 Q 54 22 54 32 Q 64 32 72 24 L 82 34 L 72 44 Q 64 36 54 36 Q 54 58 62 90 L 50 100 L 38 90 Q 46 58 46 36 Q 36 36 28 44 L 18 34 L 28 24 Q 36 32 46 32 Q 46 22 40 15 Z" fill="url(#wg)"/>
+            </svg>
+            <h1 class="welcome-title">Ask anything about the Faith</h1>
+            <p class="welcome-sub">Conversum AI is your guide to Catholic doctrine, scripture, tradition, and moral theology — powered by the wisdom of the Church.</p>
+
+            <div class="welcome-starters">
+                <button class="starter-btn" onclick="sendStarter(this)">
+                    <span class="starter-icon">✝</span>
+                    <span>What does the Church teach about the Real Presence in the Eucharist?</span>
+                </button>
+                <button class="starter-btn" onclick="sendStarter(this)">
+                    <span class="starter-icon">📖</span>
+                    <span>Explain the concept of grace and how it works in salvation.</span>
+                </button>
+                <button class="starter-btn" onclick="sendStarter(this)">
+                    <span class="starter-icon">🙏</span>
+                    <span>What is the significance of the Rosary in Catholic devotion?</span>
+                </button>
+                <button class="starter-btn" onclick="sendStarter(this)">
+                    <span class="starter-icon">⭐</span>
+                    <span>Who were the early Church Fathers and why do they matter today?</span>
+                </button>
+            </div>
+
+            <div class="external-note">
+                Conversum AI is built on ChatGPT. For the full experience with memory and more,
+                <a href="https://chatgpt.com/g/g-isqoUQyVU-catholic-doctrine-guide-conversum-ai" target="_blank" rel="noopener">open Conversum AI on ChatGPT ↗</a>
+            </div>
+        </div>
+
+        <!-- MESSAGES LIST (hidden until first message) -->
+        <div class="messages-list" id="messagesList" style="display:none;"></div>
+
+    </div>
+
+    <!-- INPUT -->
+    <div class="input-area">
+        <div class="input-row">
+            <textarea
+                class="input-box"
+                id="inputBox"
+                placeholder="Ask about Catholic doctrine, scripture, tradition…"
+                rows="1"
+                onkeydown="handleKey(event)"
+                oninput="autoResize(this)"
+            ></textarea>
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled title="Send">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+            </button>
+        </div>
+        <div class="input-footer">
+            <span class="input-hint">Press Enter to send · Shift+Enter for new line</span>
+            <a class="open-full-btn" href="https://chatgpt.com/g/g-isqoUQyVU-catholic-doctrine-guide-conversum-ai" target="_blank" rel="noopener">
+                Open full Conversum AI
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const LINK = "https://chatgpt.com/g/g-isqoUQyVU-catholic-doctrine-guide-conversum-ai";
+
+// Catholic doctrine knowledge base for local responses
+const doctrine = {
+    greetings: ["hello","hi","hey","greetings","good morning","good evening","good afternoon"],
+    eucharist: ["eucharist","real presence","transubstantiation","communion","body of christ","bread and wine","mass","host"],
+    grace: ["grace","salvation","justification","sanctification","merit","heaven","purgatory","redemption","atonement"],
+    rosary: ["rosary","hail mary","mysteries","beads","our lady","mary","marian","fatima","lourdes"],
+    fathers: ["church fathers","patristic","origen","augustine","ambrose","jerome","tertullian","chrysostom","clement","ignatius","polycarp"],
+    sacraments: ["sacrament","baptism","confirmation","confession","reconciliation","anointing","holy orders","matrimony","marriage"],
+    saints: ["saint","canonized","beatification","canonization","veneration","intercession"],
+    prayer: ["prayer","pray","contemplation","liturgy","liturgy of the hours","divine office","lauds","vespers"],
+    scripture: ["scripture","bible","gospel","testament","canon","deuterocanonical","apocrypha","inspiration","inerrancy"],
+    morality: ["sin","mortal sin","venial sin","conscience","natural law","moral","ethics","abortion","contraception","euthanasia"],
+    trinity: ["trinity","father son holy spirit","three persons","triune","consubstantial","nicene","filioque"],
+    church: ["church","magisterium","pope","bishop","infallibility","apostolic succession","tradition","deposit of faith"],
+    mary: ["immaculate conception","assumption","perpetual virginity","theotokos","mother of god","queen of heaven"],
+    purgatory: ["purgatory","indulgence","temporal punishment","plenary","partial","souls in purgatory"],
+};
+
+const responses = {
+    greetings: () => `Peace be with you! I am Conversum AI, your guide to Catholic doctrine, scripture, and tradition.\n\nYou can ask me about:\n• The Seven Sacraments\n• Catholic moral teaching\n• Scripture and Tradition\n• The lives of the Saints\n• Prayer and liturgy\n• And much more.\n\nWhat would you like to explore today?`,
+
+    eucharist: () => `The **Real Presence** is one of the most central and distinctive teachings of the Catholic Faith.\n\nThe Church teaches that at the words of consecration during Holy Mass — *"This is My Body… This is My Blood"* — the bread and wine are substantially changed into the Body, Blood, Soul, and Divinity of Jesus Christ. This is called **Transubstantiation**.\n\nThis is not merely symbolic. The Council of Trent (1551) defined it solemnly:\n\n> *"In the sacrament of the Holy Eucharist, the body and blood, together with the soul and divinity, of our Lord Jesus Christ and, therefore, the whole Christ is truly, really, and substantially contained."*\n\nThe accidents (appearance, taste, smell) of bread and wine remain, while the substance is wholly transformed. This teaching flows from Christ's own words in John 6 ("My flesh is real food; my blood is real drink") and the Last Supper accounts.\n\nWould you like to explore the history of this doctrine, or its scriptural foundations?`,
+
+    grace: () => `**Grace** is God's free, unmerited gift of Himself to the soul — the very life of God shared with humanity.\n\nThe Church distinguishes several forms:\n\n**Sanctifying (Habitual) Grace** — the permanent state of holiness that makes us pleasing to God and adopted children of the Father. It is infused at Baptism and lost through mortal sin.\n\n**Actual Grace** — transient divine assistance for specific acts, helping us think, will, and act in accordance with God's purposes.\n\n**Sacramental Grace** — grace proper to each of the Seven Sacraments.\n\nCatholic teaching holds that salvation is entirely God's gift (sola gratia), yet human free will cooperates with grace. This is beautifully expressed in the Council of Trent's affirmation that we are justified not by faith alone, but by faith working through love.\n\nSt. Augustine wrote: *"Our heart is restless until it repose in Thee."* — pointing to grace as the origin and end of all our striving.\n\nShall I explain the difference between actual and sanctifying grace further, or explore purgatory's role in final sanctification?`,
+
+    rosary: () => `The **Holy Rosary** is a treasured Marian devotion consisting of 20 mysteries (or traditionally 15, before the Luminous Mysteries were added by St. John Paul II in 2002) that meditate on the life, death, and resurrection of Jesus Christ — always through the eyes of Mary.\n\nThe Rosary comprises:\n• **Joyful Mysteries** — the Annunciation, Visitation, Nativity, Presentation, Finding in the Temple\n• **Luminous Mysteries** — Baptism of Jesus, Wedding at Cana, Proclamation of the Kingdom, Transfiguration, Institution of the Eucharist\n• **Sorrowful Mysteries** — Agony in the Garden, Scourging, Crowning with Thorns, Carrying the Cross, Crucifixion\n• **Glorious Mysteries** — Resurrection, Ascension, Descent of the Holy Spirit, Assumption, Coronation of Mary\n\nOur Lady of Fatima (1917) specifically asked for the daily recitation of the Rosary for world peace and the conversion of sinners.\n\nDo you want to know how to pray the Rosary, or learn more about its history and saints who championed it?`,
+
+    fathers: () => `The **Church Fathers** are the great theologians and bishops of the first eight centuries whose writings shaped Catholic doctrine and defended the Faith against heresy.\n\nThey are divided into:\n\n**Apostolic Fathers** (1st–2nd c.) — those closest to the Apostles: St. Clement of Rome, St. Ignatius of Antioch, St. Polycarp of Smyrna.\n\n**Apologists** — who defended Christianity to pagan culture: Justin Martyr, Tertullian.\n\n**Great Fathers of the 4th–5th Century:**\n• **St. Augustine of Hippo** — towering genius on grace, original sin, the Trinity, and the Church\n• **St. Ambrose of Milan** — bishop, theologian, defender of orthodoxy\n• **St. Jerome** — translated the Scriptures into Latin (the Vulgate)\n• **St. John Chrysostom** — "Golden-Mouthed" preacher and Doctor of the Eucharist\n• **St. Basil the Great** — shaped monastic life and Trinitarian theology\n\nTheir writings carry great theological weight. The unanimous consent of the Fathers is considered a norm in Catholic interpretation of Scripture.\n\nWhich Father or period would you like to explore more deeply?`,
+
+    sacraments: () => `The Catholic Church has **Seven Sacraments** — outward signs instituted by Christ that confer the grace they signify.\n\n1. **Baptism** — the door to the Church; removes original sin; infuses sanctifying grace\n2. **Confirmation** — strengthens the baptismal gift through the Holy Spirit; Christian "coming of age"\n3. **Holy Eucharist** — the source and summit of Catholic life; the Body and Blood of Christ\n4. **Penance (Reconciliation)** — the forgiveness of sins committed after Baptism through the ministry of the priest\n5. **Anointing of the Sick** — healing and spiritual strengthening in illness or at death\n6. **Holy Orders** — consecrates bishops, priests, and deacons for sacred ministry\n7. **Matrimony** — the covenant of husband and wife, reflecting Christ's love for the Church\n\nThe Sacraments are grouped: three of *initiation* (Baptism, Confirmation, Eucharist); two of *healing* (Penance, Anointing); two of *service and vocation* (Orders, Matrimony).\n\nWhich Sacrament would you like to explore more deeply?`,
+
+    default: (q) => `That is a wonderful question for the Faith. While I can address many aspects of Catholic doctrine here, for a full, nuanced response on *"${q}"* with citations from the Catechism, Councils, and the Church Fathers, I recommend opening the full Conversum AI on ChatGPT where a more detailed conversation awaits you.\n\nIn the meantime — could you tell me more specifically what aspect you are curious about? I may be able to address foundations of the question from scripture, tradition, or the Magisterium right here.`
+};
+
+function matchTopic(text) {
+    const t = text.toLowerCase();
+    for (const [key, keywords] of Object.entries(doctrine)) {
+        if (keywords.some(k => t.includes(k))) return key;
+    }
+    return null;
+}
+
+function getAIResponse(userMsg) {
+    const topic = matchTopic(userMsg);
+    if (topic && responses[topic]) return responses[topic](userMsg);
+    return responses.default(userMsg);
+}
+
+// Chat state
+let messages = [];
+let isTyping = false;
+
+function now() {
+    return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+
+function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+    document.getElementById('sendBtn').disabled = !el.value.trim();
+}
+
+function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+}
+
+function sendStarter(btn) {
+    const text = btn.querySelector('span:last-child').textContent;
+    document.getElementById('inputBox').value = text;
+    autoResize(document.getElementById('inputBox'));
+    sendMessage();
+}
+
+function showMessages() {
+    document.getElementById('welcomeState').style.display = 'none';
+    document.getElementById('messagesList').style.display = 'flex';
+}
+
+function appendMessage(role, text) {
+    showMessages();
+    const list = document.getElementById('messagesList');
+    const row = document.createElement('div');
+    row.className = `msg-row ${role}`;
+
+    const isAI = role === 'ai';
+    const avatarEmoji = isAI ? '✝' : '✦';
+    const name = isAI ? 'Conversum AI' : 'You';
+
+    // Format text (bold & line breaks)
+    const formatted = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+
+    row.innerHTML = `
+        <div class="msg-avatar ${role}">${avatarEmoji}</div>
+        <div class="msg-content">
+            <div class="msg-name">${name}</div>
+            <div class="msg-bubble">${formatted}</div>
+            <div class="msg-time">${now()}</div>
+            ${isAI ? `<a class="link-card" href="${LINK}" target="_blank" rel="noopener">
+                <div class="link-card-icon"><svg width="18" height="25" viewBox="0 0 100 140"><defs><linearGradient id="lcg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="var(--cyan2)"/><stop offset="100%" stop-color="#3a7888"/></linearGradient></defs><path d="M 50 5 L 60 15 Q 54 22 54 32 Q 64 32 72 24 L 82 34 L 72 44 Q 64 36 54 36 Q 54 58 62 90 L 50 100 L 38 90 Q 46 58 46 36 Q 36 36 28 44 L 18 34 L 28 24 Q 36 32 46 32 Q 46 22 40 15 Z" fill="url(#lcg)"/></svg></div>
+                <div class="link-card-text">
+                    <div class="link-card-title">Continue on Conversum AI</div>
+                    <div class="link-card-desc">Full ChatGPT experience with memory & citations</div>
+                </div>
+                <div class="link-card-arrow">↗</div>
+            </a>` : ''}
+        </div>`;
+
+    list.appendChild(row);
+    scrollBottom();
+}
+
+function showTyping() {
+    showMessages();
+    const list = document.getElementById('messagesList');
+    const row = document.createElement('div');
+    row.id = 'typingRow';
+    row.className = 'msg-row ai';
+    row.innerHTML = `
+        <div class="msg-avatar ai">✝</div>
+        <div class="msg-content">
+            <div class="msg-name">Conversum AI</div>
+            <div class="msg-bubble" style="padding:0;">
+                <div class="typing-bubble">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>`;
+    list.appendChild(row);
+    scrollBottom();
+}
+
+function hideTyping() {
+    const t = document.getElementById('typingRow');
+    if (t) t.remove();
+}
+
+function scrollBottom() {
+    const wrap = document.getElementById('messagesWrap');
+    wrap.scrollTop = wrap.scrollHeight;
+}
+
+function sendMessage() {
+    const box = document.getElementById('inputBox');
+    const text = box.value.trim();
+    if (!text || isTyping) return;
+
+    box.value = '';
+    box.style.height = 'auto';
+    document.getElementById('sendBtn').disabled = true;
+
+    appendMessage('user', text);
+    messages.push({role:'user', content: text});
+
+    isTyping = true;
+    showTyping();
+
+    // Simulate natural response delay
+    const delay = 900 + Math.random() * 800;
+    setTimeout(() => {
+        hideTyping();
+        const reply = getAIResponse(text);
+        appendMessage('ai', reply);
+        messages.push({role:'ai', content: reply});
+        isTyping = false;
+    }, delay);
+}
+
+function clearChat() {
+    messages = [];
+    document.getElementById('messagesList').innerHTML = '';
+    document.getElementById('messagesList').style.display = 'none';
+    document.getElementById('welcomeState').style.display = 'flex';
+    isTyping = false;
+}
+</script>
+</body>
+</html>

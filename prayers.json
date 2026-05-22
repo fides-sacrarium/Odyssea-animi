@@ -1,0 +1,337 @@
+{
+  "core": {
+    "Sign of Cross": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+    "Apostles Creed": "I believe in God, the Father Almighty, Creator of Heaven and earth; and in Jesus Christ, His only Son, Our Lord, Who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died, and was buried.\n\nHe descended into hell; on the third day He arose again from the dead; He ascended into Heaven, and is seated at the right hand of God, the Father Almighty; from thence He shall come to judge the living and the dead.\n\nI believe in the Holy Spirit, the holy Catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen.",
+    "Our Father": "Our Father, Who art in heaven, hallowed be Thy name; Thy kingdom come; Thy will be done on earth as it is in heaven.\n\nGive us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen.",
+    "Hail Mary": "Hail Mary, full of grace. The Lord is with thee. Blessed art thou amongst women, and blessed is the fruit of thy womb, Jesus.\n\nHoly Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.",
+    "Glory Be": "Glory be to the Father, and to the Son, and to the Holy Spirit.\n\nAs it was in the beginning, is now, and ever shall be, world without end. Amen.",
+    "Fatima Prayer": "O my Jesus, forgive us our sins, save us from the fires of hell, and lead all souls to Heaven, especially those in most need of Thy mercy.",
+    "Hail Holy Queen": "Hail, Holy Queen, Mother of Mercy, our life, our sweetness and our hope.\n\nTo thee do we cry, poor banished children of Eve; to thee do we send up our sighs, mourning and weeping in this valley of tears.\n\nTurn then, most gracious Advocate, thine eyes of mercy toward us, and after this our exile, show unto us the blessed fruit of thy womb, Jesus.\n\nO clement, O loving, O sweet Virgin Mary!\n\nPray for us, O Holy Mother of God, that we may be made worthy of the promises of Christ.",
+    "Rosary Closing": "O God, whose only begotten Son, by His life, death, and resurrection, has purchased for us the rewards of eternal life, grant we beseech Thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ Our Lord. Amen.\n\nIn the name of the Father, and of the Son, and of the Holy Spirit. Amen."
+  },
+  "prayers": {
+    "rosary": {
+      "title": "Holy Rosary",
+      "accent": { "color": "#3B82F6", "glow": "rgba(59,130,246,0.55)", "main": "#60A5FA", "chain": "rgba(80,110,200,0.45)", "btnText": "#fff" },
+      "schedule": ["Glorious","Joyful","Sorrowful","Glorious","Luminous","Sorrowful","Joyful"],
+      "mysteries": {
+        "Joyful": [
+          { "title": "1st Joyful Mystery — The Annunciation", "meditation": "The Angel Gabriel announces to the Virgin Mary that she is to be the Mother of God. Mary humbly submits to God's will: 'Behold the handmaid of the Lord.'" },
+          { "title": "2nd Joyful Mystery — The Visitation", "meditation": "Mary visits her cousin Elizabeth, who is with child. At Mary's greeting, John leaps for joy in the womb, and Elizabeth cries: 'Blessed are you among women!'" },
+          { "title": "3rd Joyful Mystery — The Nativity", "meditation": "Jesus Christ, the Son of God, is born in a stable in Bethlehem. Angels announce His birth to the shepherds, and the star guides the Magi to the newborn King." },
+          { "title": "4th Joyful Mystery — The Presentation", "meditation": "Mary and Joseph present the child Jesus in the Temple. Simeon, filled with the Holy Spirit, takes Jesus in his arms and declares Him the Light of the World." },
+          { "title": "5th Joyful Mystery — Finding in the Temple", "meditation": "After three days of searching, Mary and Joseph find the twelve-year-old Jesus in the Temple, sitting among the teachers, listening and asking questions." }
+        ],
+        "Sorrowful": [
+          { "title": "1st Sorrowful Mystery — Agony in the Garden", "meditation": "Jesus prays in the Garden of Gethsemane until His sweat becomes as drops of blood. He accepts the Father's will: 'Not my will, but Thine be done.'" },
+          { "title": "2nd Sorrowful Mystery — Scourging at the Pillar", "meditation": "Jesus is bound to a pillar and scourged mercilessly. He bears every blow in reparation for the sins of the flesh and in love for each soul." },
+          { "title": "3rd Sorrowful Mystery — Crowning with Thorns", "meditation": "Soldiers weave a crown of thorns and press it upon Jesus' head, mocking Him as King of the Jews. He receives it in silence, a King of suffering and love." },
+          { "title": "4th Sorrowful Mystery — Carrying of the Cross", "meditation": "Jesus carries His heavy Cross through the streets of Jerusalem to Calvary, falling three times under its weight, yet rising each time to continue." },
+          { "title": "5th Sorrowful Mystery — The Crucifixion", "meditation": "Jesus is nailed to the Cross and dies after three hours of agony. His final words are a prayer of forgiveness and total surrender to the Father." }
+        ],
+        "Glorious": [
+          { "title": "1st Glorious Mystery — The Resurrection", "meditation": "On the third day, Jesus rises from the dead in glory. He appears to Mary Magdalene, the disciples on the road to Emmaus, and the Apostles, confirming eternal life." },
+          { "title": "2nd Glorious Mystery — The Ascension", "meditation": "Forty days after the Resurrection, Jesus ascends bodily into Heaven before His disciples on the Mount of Olives, promising the gift of the Holy Spirit." },
+          { "title": "3rd Glorious Mystery — Descent of the Holy Spirit", "meditation": "The Holy Spirit descends upon the Apostles and Mary in the Upper Room as tongues of fire on Pentecost, empowering them to proclaim the Gospel to all nations." },
+          { "title": "4th Glorious Mystery — The Assumption", "meditation": "At the end of her earthly life, the Virgin Mary is taken body and soul into heavenly glory, a foretaste of the resurrection of all the faithful." },
+          { "title": "5th Glorious Mystery — Coronation of Mary", "meditation": "Mary is crowned Queen of Heaven and Earth, Queen of Angels and Saints, interceding for us before the throne of her Son for all eternity." }
+        ],
+        "Luminous": [
+          { "title": "1st Luminous Mystery — Baptism in the Jordan", "meditation": "Jesus is baptized by John in the Jordan River. The heavens open, the Spirit descends as a dove, and the Father proclaims: 'This is my beloved Son.'" },
+          { "title": "2nd Luminous Mystery — Wedding at Cana", "meditation": "At Mary's intercession, Jesus performs His first miracle at the wedding in Cana, turning water into wine and revealing His glory to His disciples." },
+          { "title": "3rd Luminous Mystery — Proclamation of the Kingdom", "meditation": "Jesus proclaims the Kingdom of God, calling all to conversion of heart, and confirms His divine message with signs and miracles of healing and mercy." },
+          { "title": "4th Luminous Mystery — The Transfiguration", "meditation": "On Mount Tabor, Jesus is transfigured before Peter, James and John. His face shines like the sun, and the Father's voice declares: 'This is my beloved Son; listen to Him.'" },
+          { "title": "5th Luminous Mystery — Institution of the Eucharist", "meditation": "At the Last Supper, Jesus takes bread and wine and says: 'This is my Body... This is my Blood.' He institutes the Eucharist, the sacrament of His abiding presence." }
+        ]
+      }
+    },
+    "dmc": {
+      "title": "Divine Mercy Chaplet",
+      "accent": { "color": "#EF4444", "glow": "rgba(239,68,68,0.55)", "main": "#F87171", "chain": "rgba(190,60,60,0.45)", "btnText": "#fff" },
+      "closingText": "Eternal God, in whom mercy is endless and the treasury of compassion — inexhaustible, look kindly upon us and increase Your mercy in us, that in difficult moments we might not despair nor become despondent, but with great confidence submit ourselves to Your holy will, which is Love and Mercy itself.\n\nA Prayer to Divine Mercy:\nO, Greatly Merciful God, Infinite Goodness, today all mankind calls out from the abyss of its misery to Your mercy — to Your compassion, O God, and it is with its mighty voice of misery that it cries out: Gracious God, do not reject the prayer of this earth’s exiles! O Lord, Goodness beyond our understanding, who are acquainted with our misery through and through, and know that by our own power we cannot ascend to You, we implore You, anticipate us with Your grace and keep on increasing Your mercy in us, that we may faithfully do Your holy will all through our life and at death’s hour. Let the omnipotence of Your mercy shield us from the darts of our salvation’s enemies, that we may with confidence, as Your children, await Your final coming — that day known to You alone. And we expect to obtain everything promised us by Jesus in spite of all our wretchedness. For Jesus is our Hope: Through His merciful Heart as through an open gate we pass through to heaven."
+    },
+    "stmichael": {
+      "title": "Chaplet of St. Michael",
+      "accent": { "color": "#94A3B8", "glow": "rgba(148,163,184,0.55)", "main": "#CBD5E1", "chain": "rgba(100,120,140,0.45)", "btnText": "#000" },
+      "opening": "O God, come to my assistance.\nO Lord, make haste to help me.\n\nGlory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen.",
+      "intro": "In honor of the nine choirs of holy Angels and Archangels, we pray the Chaplet of St. Michael. For each choir, pray one Our Father and three Hail Marys.",
+      "choirs": [
+        "By the intercession of St. Michael and the celestial Choir of Seraphim, may the Lord make us worthy to burn with the fire of perfect charity. Amen.",
+        "By the intercession of St. Michael and the celestial Choir of Cherubim, may the Lord grant us the grace to leave the ways of sin and run in the paths of Christian perfection. Amen.",
+        "By the intercession of St. Michael and the celestial Choir of Thrones, may the Lord infuse into our hearts a true and sincere spirit of humility. Amen.",
+        "By the intercession of St. Michael and the celestial Choir of Dominations, may the Lord give us grace to govern our senses and overcome any unruly passions. Amen.",
+        "By the intercession of St. Michael and the celestial Choir of Virtues, may the Lord preserve us from evil and falling into temptation. Amen.",
+        "By the intercession of St. Michael and the celestial Choir of Powers, may the Lord protect our souls against the snares and temptations of the devil. Amen.",
+        "By the intercession of St. Michael and the celestial Choir of Principalities, may God fill our souls with a true spirit of obedience. Amen.",
+        "By the intercession of St. Michael and the celestial Choir of Archangels, may the Lord give us perseverance in faith and in all good works in order that we may attain the glory of Heaven. Amen.",
+        "By the intercession of St. Michael and the celestial Choir of Angels, may the Lord grant us to be protected by them in this mortal life and conducted in the life to come to Heaven. Amen."
+      ],
+      "toMichael": "O glorious prince St. Michael, chief and commander of the heavenly hosts, guardian of souls, vanquisher of rebel spirits, servant in the house of the Divine King and our admirable conductor — you who shine with excellence and superhuman virtue — deliver us from all evil, who turn to you with confidence and enable us by your gracious protection to serve God more and more faithfully every day.",
+      "closing": "Almighty and Everlasting God, Who, by a prodigy of goodness and a merciful desire for the salvation of all men, has appointed the most glorious Archangel St. Michael Prince of Your Church, make us worthy, we ask You, to be delivered from all our enemies, that none of them may harass us at the hour of death, but that we may be conducted by him into Your Presence. Through the merits of Jesus Christ Our Lord. Amen."
+    },
+    "wotc": {
+      "title": "Way of the Cross",
+      "accent": { "color": "#8B5CF6", "glow": "rgba(139,92,246,0.55)", "main": "#A78BFA", "chain": "rgba(120,80,220,0.45)", "btnText": "#fff" },
+      "stations": [
+        { "title": "Jesus is Condemned to Death", "meditation": "Pilate yields to the cries of the crowd and condemns the innocent Jesus to death. How often do we yield to the crowd and compromise our faith? Lord, grant us courage to stand for truth." },
+        { "title": "Jesus Takes Up His Cross", "meditation": "Jesus takes up the heavy Cross without complaint. He carries it willingly out of love for each of us. What cross do you carry today? Offer it to Him." },
+        { "title": "Jesus Falls the First Time", "meditation": "Exhausted and weak, Jesus falls beneath the weight of the Cross. Yet He rises. His fall shows our human fragility; His rising shows divine perseverance. Rise with Him." },
+        { "title": "Jesus Meets His Sorrowful Mother", "meditation": "Mary meets her Son on the way to Calvary. Their eyes meet in unspeakable sorrow and love. Mary stood firm in faith when all others fled. Ask her to strengthen your faith." },
+        { "title": "Simon of Cyrene Helps Carry the Cross", "meditation": "Simon is compelled to help Jesus carry the Cross. He who came as a bystander became a sharer in redemption. How do we help carry the cross of our neighbors?" },
+        { "title": "Veronica Wipes the Face of Jesus", "meditation": "A woman of Jerusalem steps forward and wipes the face of Jesus. An act of tender mercy in the midst of cruelty. On her cloth, His image remains. Do we seek His face?" },
+        { "title": "Jesus Falls a Second Time", "meditation": "Jesus falls again. The weight of our sins and the sins of the world press Him down. Still He rises for love of us. How many times has He lifted us from our own falls?" },
+        { "title": "Jesus Speaks to the Women of Jerusalem", "meditation": "Jesus pauses to console the weeping women: 'Daughters of Jerusalem, weep not for me, but for yourselves and your children.' Even in agony, His heart is for others." },
+        { "title": "Jesus Falls a Third Time", "meditation": "Jesus falls a third time, nearly unable to continue. The end is near. He could call ten thousand angels — but does not. Love holds Him to the Cross." },
+        { "title": "Jesus is Stripped of His Garments", "meditation": "Jesus is stripped of His garments, left with nothing. He is humiliated so that we might be clothed in grace and dignity. He empties Himself so we may be filled." },
+        { "title": "Jesus is Nailed to the Cross", "meditation": "The nails pierce His hands and feet. He is fixed to the Cross. 'Father, forgive them, for they know not what they do.' His first word is forgiveness. For us." },
+        { "title": "Jesus Dies on the Cross", "meditation": "'It is finished.' Jesus bows His head and gives up His spirit. The veil of the Temple tears in two. In His death, the door to the Father is opened for all." },
+        { "title": "Jesus is Taken Down from the Cross", "meditation": "The body of Jesus is laid in the arms of His Mother. Mary holds Him as she did at Bethlehem. From manger to tomb, she was faithful. Entrust yourself to her arms." },
+        { "title": "Jesus is Laid in the Tomb", "meditation": "Jesus is laid in the tomb and the stone is rolled shut. It appears to be the end. But this is not the end — it is three days before the dawn of eternity." }
+      ],
+      "closing": "Lord Jesus Christ, Your passion and death is the sacrifice that unites earth and heaven and reconciles all people to You. May we who have faithfully reflected on these mysteries follow in Your steps and so come to share Your glory in heaven where You live and reign with the Father and the Holy Spirit, one God, for ever and ever. Amen."
+    },
+    "litany": {
+      "title": "Litany of the Saints",
+      "accent": { "color": "#10B981", "glow": "rgba(16,185,129,0.55)", "main": "#34D399", "chain": "rgba(20,140,100,0.45)", "btnText": "#fff" },
+      "sections": [
+        { "title": "Lord Have Mercy", "text": "Lord, have mercy on us.\nChrist, have mercy on us.\nLord, have mercy on us.\nChrist, hear us.\nChrist, graciously hear us.\n\nGod the Father of heaven, have mercy on us.\nGod the Son, Redeemer of the world, have mercy on us.\nGod the Holy Spirit, have mercy on us.\nHoly Trinity, one God, have mercy on us." },
+        { "title": "Holy Mary & Angels", "text": "Holy Mary, pray for us.\nHoly Mother of God, pray for us.\nHoly Virgin of virgins, pray for us.\nSt. Michael, pray for us.\nSt. Gabriel, pray for us.\nSt. Raphael, pray for us.\nAll you holy Angels and Archangels, pray for us." },
+        { "title": "Patriarchs & Prophets", "text": "St. John the Baptist, pray for us.\nSt. Joseph, pray for us.\nAll you holy Patriarchs and Prophets, pray for us." },
+        { "title": "Apostles & Evangelists", "text": "St. Peter, pray for us.\nSt. Paul, pray for us.\nSt. Andrew, pray for us.\nSt. James, pray for us.\nSt. John, pray for us.\nSt. Thomas, pray for us.\nSt. Mary Magdalene, pray for us.\nAll you holy Apostles and Evangelists, pray for us." },
+        { "title": "Holy Martyrs", "text": "St. Stephen, pray for us.\nSt. Lawrence, pray for us.\nSt. Agnes, pray for us.\nSt. Cecilia, pray for us.\nSt. Perpetua & Felicity, pray for us.\nAll you holy Martyrs, pray for us." },
+        { "title": "Bishops & Doctors", "text": "St. Gregory the Great, pray for us.\nSt. Ambrose, pray for us.\nSt. Augustine, pray for us.\nSt. Jerome, pray for us.\nSt. Thomas Aquinas, pray for us.\nAll you holy Bishops and Confessors, pray for us." },
+        { "title": "Priests & Religious", "text": "St. Anthony of Padua, pray for us.\nSt. Benedict, pray for us.\nSt. Dominic, pray for us.\nSt. Francis of Assisi, pray for us.\nSt. Ignatius of Loyola, pray for us.\nAll you holy Priests and Levites, pray for us." },
+        { "title": "Holy Women & All Saints", "text": "St. Anne, pray for us.\nSt. Monica, pray for us.\nSt. Teresa of Ávila, pray for us.\nSt. Thérèse of Lisieux, pray for us.\nAll you holy men and women, Saints of God, make intercession for us." },
+        { "title": "Deliverances", "text": "Be merciful, spare us, O Lord.\nBe merciful, graciously hear us, O Lord.\n\nFrom all evil, deliver us, O Lord.\nFrom all sin, deliver us, O Lord.\nFrom Your wrath, deliver us, O Lord.\nFrom a sudden and unprovided death, deliver us, O Lord.\nBy the mystery of Your holy Incarnation, deliver us, O Lord.\nBy Your Cross and Passion, deliver us, O Lord.\nBy Your death and burial, deliver us, O Lord.\nBy Your holy Resurrection, deliver us, O Lord.\nBy Your Ascension into heaven, deliver us, O Lord." }
+      ],
+      "closing": "Lamb of God, who takes away the sins of the world, spare us, O Lord.\nLamb of God, who takes away the sins of the world, graciously hear us, O Lord.\nLamb of God, who takes away the sins of the world, have mercy on us.\n\nO God, our refuge and our strength, look down with mercy upon Your people. By the intercession of the glorious and immaculate Virgin Mary, Mother of God, of Saint Joseph her spouse, of the blessed Apostles, and of all the saints, in Your mercy hear our prayers. Through Christ Our Lord. Amen."
+    },
+    "anima": {
+      "title": "Anima Christi",
+      "accent": { "color": "#E11D48", "glow": "rgba(225,29,72,0.55)", "main": "#FB7185", "chain": "rgba(200,30,60,0.45)", "btnText": "#fff" },
+      "sections": [
+        { 
+          "title": { "en": "Soul of Christ — Sanctify Me", "la": "Anima Christi" },
+          "text": { "en": "Soul of Christ, sanctify me.\nBody of Christ, save me.\nBlood of Christ, inebriate me.\nWater from the side of Christ, wash me.", "la": "Anima Christi, sanctifica me.\nCorpus Christi, salva me.\nSanguis Christi, inebria me.\nAqua lateris Christi, lava me." }
+        },
+        { 
+          "title": { "en": "Passion of Christ — Strengthen Me", "la": "Passio Christi" },
+          "text": { "en": "Passion of Christ, strengthen me.\nO Good Jesus, hear me.\nWithin Thy wounds hide me.", "la": "Passio Christi, conforta me.\nO bone Iesu, exaudi me.\nIntra tua vulnera absconde me." }
+        },
+        { 
+          "title": { "en": "Defend Me in the Hour of Death", "la": "In hora mortis" },
+          "text": { "en": "Suffer me not to be separated from Thee.\nFrom the malignant enemy, defend me.\nAt the hour of my death, call me.", "la": "Ne permittas me separari a te.\nAb hoste maligno defende me.\nIn hora mortis meae voca me." }
+        },
+        { 
+          "title": { "en": "With Thy Saints — Forever", "la": "Cum Sanctis tuis" },
+          "text": { "en": "And bid me come unto Thee,\nThat with Thy Saints I may praise Thee,\nForever and ever. Amen.", "la": "Et iube me venire ad te,\nUt cum Sanctis tuis laudem te\nIn saecula saeculorum. Amen." }
+        }
+      ]
+    },
+    "stpatrick": {
+      "title": "St. Patrick's Breastplate",
+      "accent": { "color": "#0D9488", "glow": "rgba(13,148,136,0.55)", "main": "#2DD4BF", "chain": "rgba(10,100,90,0.45)", "btnText": "#fff" },
+      "sections": [
+        { "title": "I Arise Today — The Trinity", "text": "I arise today\nThrough a mighty strength, the invocation of the Trinity,\nThrough belief in the Threeness,\nThrough confession of the Oneness\nOf the Creator of creation." },
+        { "title": "Through Christ's Life", "text": "I arise today\nThrough the strength of Christ's birth with His baptism,\nThrough the strength of His crucifixion with His burial,\nThrough the strength of His resurrection with His ascension,\nThrough the strength of His descent for the judgment of doom." },
+        { "title": "Through the Angels & Saints", "text": "I arise today\nThrough the strength of the love of cherubim,\nIn the obedience of angels,\nIn the service of archangels,\nIn hope of resurrection to meet with reward,\nIn prayers of patriarchs,\nIn predictions of prophets,\nIn preachings of apostles,\nIn faith of confessors,\nIn innocence of holy virgins,\nIn deeds of righteous men." },
+        { "title": "God's Shield", "text": "I arise today, through\nGod's strength to pilot me,\nGod's might to uphold me,\nGod's wisdom to guide me,\nGod's eye to look before me,\nGod's ear to hear me,\nGod's word to speak for me,\nGod's hand to guard me,\nGod's shield to protect me,\nGod's host to save me\nFrom snares of devils,\nFrom temptation of vices,\nFrom everyone who shall wish me ill." },
+        { "title": "Christ Be With Me", "text": "Christ with me,\nChrist before me,\nChrist behind me,\nChrist in me,\nChrist beneath me,\nChrist above me,\nChrist on my right,\nChrist on my left,\nChrist when I lie down,\nChrist when I sit down,\nChrist when I arise." },
+        { "title": "Christ In All Things", "text": "Christ in the heart of every man who thinks of me,\nChrist in the mouth of everyone who speaks of me,\nChrist in every eye that sees me,\nChrist in every ear that hears me.\n\nI arise today\nThrough a mighty strength, the invocation of the Trinity,\nThrough belief in the Threeness,\nThrough confession of the Oneness\nOf the Creator of creation." }
+      ],
+      "closing": "Salvation is of the Lord.\nSalvation is of the Lord.\nSalvation is of Christ.\nMay Thy salvation, O Lord, be ever with us. Amen."
+    },
+    "precatio": {
+      "title": "Precatio Impossibilis",
+      "accent": { "color": "#D946EF", "glow": "rgba(217,70,239,0.55)", "main": "#F0ABFC", "chain": "rgba(180,60,200,0.45)", "btnText": "#000" },
+      "seq": {
+        "cross": { "en": "Sign of Cross", "la": "Signum Crucis" },
+        "ourFather": { "en": "Our Father", "la": "Pater Noster" },
+        "crux1": { "en": "Holy Cross (I)", "la": "Crux Sacra (I)" },
+        "crux2": { "en": "Holy Cross (II)", "la": "Crux Sacra (II)" },
+        "crux3": { "en": "Holy Cross (III)", "la": "Crux Sacra (III)" },
+        "gloryBe": { "en": "Glory Be", "la": "Gloria Patri" },
+        "begin": { "en": "Begin Chaplet", "la": "Incipite Corona" },
+        "decadeStart": { "en": "Christ Commands", "la": "Christus Imperat" },
+        "salve": { "en": "Hail Holy Queen", "la": "Salve Regina" },
+        "stmichael": { "en": "St. Michael's Prayer", "la": "Sancte Michael Archangele" }
+      },
+      "texts": {
+        "sign": { "en": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.", "la": "In nomine Patris, et Filii, et Spiritus Sancti. Amen." },
+        "ourFather": {
+          "en": "Our Father, Who art in heaven, hallowed be Thy name; Thy kingdom come; Thy will be done on earth as it is in heaven.\n\nGive us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen.",
+          "la": "Pater noster, qui es in caelis, sanctificetur nomen tuum. Adveniat regnum tuum. Fiat voluntas tua, sicut in caelo et in terra.\n\nPanem nostrum quotidianum da nobis hodie, et dimitte nobis debita nostra sicut et nos dimittimus debitoribus nostris. Et ne nos inducas in tentationem, sed libera nos a malo. Amen."
+        },
+        "crux": {
+          "en": "Holy cross be my light, let not the dragon be my guide.\nStep back Satan, never suggest vain things to me.\nEvil are the things you offer, drink your own poison.",
+          "la": "Crux sacra sit mihi lux, non draco sit mihi dux.\nVade retro satana, nunquam suade mihi vana.\nSunt mala quae libas, ipse venena bibas."
+        },
+        "gloryBe": {
+          "en": "Glory be to the Father, and to the Son, and to the Holy Spirit. As it was in the beginning, is now, and ever shall be, world without end. Amen.",
+          "la": "Gloria Patri, et Filio, et Spiritui Sancto. Sicut erat in principio, et nunc, et semper, et in saecula saeculorum. Amen."
+        },
+        "begin": {
+          "en": "On the large beads:\nChrist conquers, Christ reigns, Christ commands.\n\nOn the 10 small beads:\nHoly [Name of Saint], help him/her/them.",
+          "la": "On the large beads:\nChristus vincit, Christus regnat, Christus imperat.\n\nOn the 10 small beads:\nSancte/a [Nomen Sancti], tu illum/illam/eos adiuva."
+        },
+        "christus": { "en": "Christ conquers, Christ reigns, Christ commands.", "la": "Christus vincit, Christus regnat, Christus imperat." },
+        "salve": {
+          "en": "Hail, Holy Queen, Mother of Mercy, our life, our sweetness and our hope. To thee do we cry, poor banished children of Eve; to thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious Advocate, thine eyes of mercy toward us, and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary!",
+          "la": "Salve, Regina, mater misericordiae; vita, dulcedo et spes nostra, salve. Ad te clamamus exsules filii Hevae. Ad te suspiramus gementes et flentes in hac lacrimarum valle. Eia ergo, advocata nostra, illos tuos misericordes oculos ad nos converte. Et Iesum, benedictum fructum ventris tui, nobis post hoc exsilium ostende. O clemens, o pia, o dulcis Virgo Maria."
+        },
+        "stmichael": {
+          "en": "St. Michael the Archangel, defend us in battle, be our protection against the wickedness and snares of the devil. May God rebuke him we humbly pray; and do thou, O Prince of the Heavenly host, by the power of God, cast into hell Satan and all the evil spirits who prowl about the world seeking the ruin of souls. Amen.",
+          "la": "Sancte Michael Archangele, defende nos in proelio, contra nequitiam et insidias diaboli esto praesidium. Imperet illi Deus, supplices deprecamur: tuque, Princeps militiae caelestis, Satanam aliosque spiritus malignos, qui ad perditionem animarum pervagantur in mundo, divina virtute, in infernum detrude. Amen."
+        }
+      },
+      "saints": [
+        {"prefixEn": "", "nameEn": "Redeemer of the World", "prefixLa": "", "nameLa": "Redemptor Mundi"},
+        {"prefixEn": "Holy", "nameEn": "Mother Mary", "prefixLa": "Sancta", "nameLa": "Mater Maria"},
+        {"prefixEn": "St.", "nameEn": "Joseph", "prefixLa": "Sancte", "nameLa": "Ioseph"},
+        {"prefixEn": "St.", "nameEn": "Michael", "prefixLa": "Sancte", "nameLa": "Michael"},
+        {"prefixEn": "St.", "nameEn": "Gabriel", "prefixLa": "Sancte", "nameLa": "Gabriel"},
+        {"prefixEn": "St.", "nameEn": "Raphael", "prefixLa": "Sancte", "nameLa": "Raphael"},
+        {"prefixEn": "St.", "nameEn": "Peter", "prefixLa": "Sancte", "nameLa": "Petre"},
+        {"prefixEn": "St.", "nameEn": "Paul", "prefixLa": "Sancte", "nameLa": "Paule"},
+        {"prefixEn": "St.", "nameEn": "John", "prefixLa": "Sancte", "nameLa": "Ioannes"},
+        {"prefixEn": "St.", "nameEn": "James", "prefixLa": "Sancte", "nameLa": "Iacobe"},
+        {"prefixEn": "St.", "nameEn": "Andrew", "prefixLa": "Sancte", "nameLa": "Andrea"},
+        {"prefixEn": "St.", "nameEn": "Thomas", "prefixLa": "Sancte", "nameLa": "Thoma"},
+        {"prefixEn": "St.", "nameEn": "Matthew", "prefixLa": "Sancte", "nameLa": "Matthaee"},
+        {"prefixEn": "St.", "nameEn": "Mark", "prefixLa": "Sancte", "nameLa": "Marce"},
+        {"prefixEn": "St.", "nameEn": "Luke", "prefixLa": "Sancte", "nameLa": "Luca"},
+        {"prefixEn": "St.", "nameEn": "Stephen", "prefixLa": "Sancte", "nameLa": "Stephane"},
+        {"prefixEn": "St.", "nameEn": "Lawrence", "prefixLa": "Sancte", "nameLa": "Laurenti"},
+        {"prefixEn": "St.", "nameEn": "Benedict", "prefixLa": "Sancte", "nameLa": "Benedicte"},
+        {"prefixEn": "St.", "nameEn": "Francis", "prefixLa": "Sancte", "nameLa": "Francisce"},
+        {"prefixEn": "St.", "nameEn": "Dominic", "prefixLa": "Sancte", "nameLa": "Dominice"},
+        {"prefixEn": "St.", "nameEn": "Ignatius", "prefixLa": "Sancte", "nameLa": "Ignati"},
+        {"prefixEn": "St.", "nameEn": "Augustine", "prefixLa": "Sancte", "nameLa": "Augustine"},
+        {"prefixEn": "St.", "nameEn": "Anthony", "prefixLa": "Sancte", "nameLa": "Antoni"},
+        {"prefixEn": "St.", "nameEn": "Thomas Aquinas", "prefixLa": "Sancte", "nameLa": "Thoma Aquinas"},
+        {"prefixEn": "St.", "nameEn": "Jude", "prefixLa": "Sancte", "nameLa": "Iuda"},
+        {"prefixEn": "St.", "nameEn": "Gerard Majella", "prefixLa": "Sancte", "nameLa": "Gerardo Majella"},
+        {"prefixEn": "St.", "nameEn": "Patrick", "prefixLa": "Sancte", "nameLa": "Patrici"},
+        {"prefixEn": "St.", "nameEn": "Maximilian Kolbe", "prefixLa": "Sancte", "nameLa": "Maximiliane Kolbe"},
+        {"prefixEn": "St.", "nameEn": "John Bosco", "prefixLa": "Sancte", "nameLa": "Ioannes Bosco"},
+        {"prefixEn": "St.", "nameEn": "Pio of Pietrelcina", "prefixLa": "Sancte", "nameLa": "Pio"},
+        {"prefixEn": "St.", "nameEn": "Charbel", "prefixLa": "Sancte", "nameLa": "Charbel"},
+        {"prefixEn": "St.", "nameEn": "Mary Magdalene", "prefixLa": "Sancta", "nameLa": "Maria Magdalena"},
+        {"prefixEn": "St.", "nameEn": "Martha", "prefixLa": "Sancta", "nameLa": "Martha"},
+        {"prefixEn": "St.", "nameEn": "Anne", "prefixLa": "Sancta", "nameLa": "Anna"},
+        {"prefixEn": "St.", "nameEn": "Joan of Arc", "prefixLa": "Sancta", "nameLa": "Ioanna de Arc"},
+        {"prefixEn": "St.", "nameEn": "Therese of Lisieux", "prefixLa": "Sancta", "nameLa": "Theresia a Iesu Infante"},
+        {"prefixEn": "St.", "nameEn": "Teresa of Avila", "prefixLa": "Sancta", "nameLa": "Teresia Abulensis"},
+        {"prefixEn": "St.", "nameEn": "Catherine of Siena", "prefixLa": "Sancta", "nameLa": "Catharina Senensis"},
+        {"prefixEn": "St.", "nameEn": "Clare", "prefixLa": "Sancta", "nameLa": "Clara"},
+        {"prefixEn": "St.", "nameEn": "Rose of Lima", "prefixLa": "Sancta", "nameLa": "Rosa Limana"},
+        {"prefixEn": "St.", "nameEn": "Monica", "prefixLa": "Sancta", "nameLa": "Monica"},
+        {"prefixEn": "St.", "nameEn": "Lucy", "prefixLa": "Sancta", "nameLa": "Lucia"},
+        {"prefixEn": "St.", "nameEn": "Agnes", "prefixLa": "Sancta", "nameLa": "Agnes"},
+        {"prefixEn": "St.", "nameEn": "Cecilia", "prefixLa": "Sancta", "nameLa": "Caecilia"},
+        {"prefixEn": "St.", "nameEn": "Maria Goretti", "prefixLa": "Sancta", "nameLa": "Maria Goretti"},
+        {"prefixEn": "St.", "nameEn": "Faustina", "prefixLa": "Sancta", "nameLa": "Faustina"},
+        {"prefixEn": "St.", "nameEn": "Bernadette", "prefixLa": "Sancta", "nameLa": "Bernadetta"},
+        {"prefixEn": "St.", "nameEn": "Philomena", "prefixLa": "Sancta", "nameLa": "Philomena"},
+        {"prefixEn": "St.", "nameEn": "Elizabeth", "prefixLa": "Sancta", "nameLa": "Elisabeth"},
+        {"prefixEn": "All Holy Saints of God", "nameEn": "", "prefixLa": "Omnes Sancti et Sanctae Dei", "nameLa": ""}
+      ]
+    },
+    "novena_stmichael": {
+      "title": "Novena to St. Michael",
+      "img": "images/st_michael.jpg",
+      "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
+      "days": [
+        { "text": "Glorious St. Michael, guardian and defender of the Church of Jesus Christ, come to the assistance of His followers, against whom the powers of hell are unchained." },
+        { "text": "St. Michael, Angel of Peace, pray for us that the peace of God, which surpasses all understanding, may guard our hearts and minds." },
+        { "text": "O Victorious Prince, most humble guardian of the Church of God and of faithful souls, who with such charity and zeal took part in so many conflicts, defend us." },
+        { "text": "St. Michael, you who stand by the altar of incense, present my prayers to the Most High." },
+        { "text": "Valiant warrior, defend us against the attacks of the enemy of our souls." },
+        { "text": "Angel of the Last Judgment, grant us the grace to live faithfully according to God's commandments." },
+        { "text": "Glorious Prince of the heavenly court, guide us in the ways of virtue." },
+        { "text": "St. Michael, support us in our final hour and bring us safely to the judgment seat of Christ." },
+        { "text": "O mighty Archangel, we entrust our lives, our families, and our parish to your vigilant protection." }
+      ]
+    },
+    "novena_olph": {
+      "title": "Novena to Our Lady of Perpetual Help",
+      "img": "images/olph.jpg",
+      "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
+      "days": [
+        { "text": "O Mother of Perpetual Help, grant that I may ever invoke thy most powerful name, which is the safeguard of the living and the salvation of the dying." },
+        { "text": "O Purest Mary, O Sweetest Mary, let thy name henceforth be ever on my lips." },
+        { "text": "Delay not, O Blessed Lady, to help me whenever I call on thee, for, in all my needs, in all my temptations I shall never cease to call on thee." },
+        { "text": "O Mother of Perpetual Help, thou art the dispenser of all the goods which God grants to us miserable sinners." },
+        { "text": "O Mother of Perpetual Help, we come before thy picture to pour out our hearts to thee." },
+        { "text": "Thou art the advocate of the most wretched and abandoned sinners who have recourse to thee." },
+        { "text": "O Mother of Perpetual Help, thou art my hope. Help me, dearest Mother, for I recommend myself to thee." },
+        { "text": "In thy hands I place my eternal salvation and to thee do I entrust my soul." },
+        { "text": "O Mother of Perpetual Help, beg of Jesus to grant me the grace to always have recourse to thee." }
+      ]
+    },
+    "novena_holyspirit": {
+      "title": "Novena to the Holy Spirit",
+      "img": "images/holy_spirit.jpg",
+      "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
+      "days": [
+        { "text": "Holy Spirit! Lord of Light! From Your clear celestial height, Your pure beaming radiance give." },
+        { "text": "Come, Father of the poor. Come, treasures which endure; Come, Light of all that live!" },
+        { "text": "Thou, of all consolers best, Visiting the troubled breast, Dost refreshing peace bestow." },
+        { "text": "Thou in toil art comfort sweet, Pleasant coolness in the heat, Solace in the midst of woe." },
+        { "text": "Light immortal! Light Divine! Visit Thou these hearts of Thine, And our inmost being fill!" },
+        { "text": "If Thou take Thy grace away, Nothing pure in man will stay, All his good is turn'd to ill." },
+        { "text": "Heal our wounds; our strength renew; On our dryness pour Thy dew; Wash the stains of guilt away." },
+        { "text": "Bend the stubborn heart and will; Melt the frozen, warm the chill; Guide the steps that go astray." },
+        { "text": "Thou, on those who evermore Thee confess and Thee Adore, In Thy sevenfold gifts, Descend. Amen." }
+      ]
+    },
+    "novena_stjude": {
+      "title": "Novena to St. Jude Thaddeus",
+      "img": "images/st_jude.jpg",
+      "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
+      "days": [
+        { "text": "Most holy Apostle, St. Jude, faithful servant and friend of Jesus, the Church honors and invokes you universally, as the patron of difficult cases, of things almost despaired of." },
+        { "text": "Pray for me, I am so helpless and alone. Intercede with God for me that He bring visible and speedy help where help is almost despaired of." },
+        { "text": "Come to my assistance in this great need that I may receive the consolation and help of heaven in all my necessities, tribulations, and sufferings." },
+        { "text": "I promise you, O Blessed St. Jude, to be ever mindful of this great favor granted me by God." },
+        { "text": "I promise to always honor you as my special and powerful patron, and to gratefully encourage devotion to you." },
+        { "text": "May the Most Sacred Heart of Jesus be adored, and loved in all the tabernacles until the end of time." },
+        { "text": "May the most Holy Heart of Jesus be praised and glorified now and forever." },
+        { "text": "St. Jude, pray for us and hear our prayers. St. Jude, maker of miracles, pray for us." },
+        { "text": "St. Jude, helper of the hopeless, pray for us. Amen." }
+      ]
+    },
+    "novena_staugustine": {
+      "title": "Novena to St. Augustine",
+      "img": "images/st_augustine.jpg",
+      "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
+      "days": [
+        { "text": "O glorious St. Augustine, the light and oracle of the faithful, I most fervently join with thee in returning thanks to God for the endless blessings bestowed on thee." },
+        { "text": "Thou who wast once a captive of error and a slave to thy passions, obtained by the tears of thy holy mother, St. Monica, the grace of a sincere conversion." },
+        { "text": "O holy Doctor of the Church, pray that I may imitate thy profound humility and detest my past transgressions." },
+        { "text": "Obtain for me the grace of true contrition and a firm resolution to amend my life." },
+        { "text": "Intercede for me, that I may be consumed with the fire of divine love which so wholly possessed thy soul." },
+        { "text": "St. Augustine, guide my intellect and will, that I may clearly understand and firmly embrace the truths of our holy faith." },
+        { "text": "O great penitent, help me to remain watchful over my senses and passions." },
+        { "text": "Grant that, imitating thy example in life, I may, through thy intercession, reach the eternal joy of heaven." },
+        { "text": "O God, who didst wonderfully convert St. Augustine, grant us the grace to serve Thee with pure hearts and minds. Amen." }
+      ]
+    },
+    "novena_sacredheart": {
+      "title": "Novena to the Sacred Heart",
+      "img": "images/sacred_heart.jpg",
+      "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
+      "days": [
+        { "text": "O my Jesus, You have said: 'Truly I say to you, ask and you will receive, seek and you will find, knock and it will be opened to you.' Behold I knock, I seek and ask for the grace of..." },
+        { "text": "Sacred Heart of Jesus, I place all my trust in You." },
+        { "text": "O my Jesus, You have said: 'Truly I say to you, if you ask anything of the Father in My name, He will give it to you.' Behold, in Your name, I ask the Father for the grace of..." },
+        { "text": "Sacred Heart of Jesus, I place all my trust in You." },
+        { "text": "O my Jesus, You have said: 'Truly I say to you, heaven and earth will pass away, but My words will not pass away.' Encouraged by Your infallible words I now ask for the grace of..." },
+        { "text": "Sacred Heart of Jesus, I place all my trust in You." },
+        { "text": "O Sacred Heart of Jesus, for whom it is impossible not to have compassion on the afflicted, have pity on us miserable sinners." },
+        { "text": "Grant us the grace which we ask of You, through the Sorrowful and Immaculate Heart of Mary, Your tender Mother and ours." },
+        { "text": "Hail Holy Queen... St. Joseph, foster father of Jesus, pray for us. Amen." }
+      ]
+    }
+  }
+}

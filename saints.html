@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>The Saints - High Accuracy Scrollytelling</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A0806; --surface: #1A1512; 
+            --text: #F0EAE0; --text2: #9A8E82; 
+            --gold: #5BA8C0; --border: rgba(91,168,192,0.12);
+            --theme-color: #5BA8C0; --theme-glow: rgba(91,168,192,0.2);
+            --transition-puppet: all 1.2s cubic-bezier(0.25, 1, 0.15, 1);
+            --transition-card: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-ui: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; scroll-behavior: smooth; }
+        
+        /* Noise Overlay */
+        body::before { content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 0.035; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+
+        header { position: fixed; top: 0; left: 0; width: 100%; padding: 24px 40px; z-index: 100; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(10,8,6,0.9), transparent); opacity: 0; pointer-events: none; transition: var(--transition-ui); }
+        header.visible { opacity: 1; pointer-events: auto; }
+        .back-btn { background: none; border: none; color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .back-btn:hover { color: var(--theme-color); text-shadow: 0 0 10px var(--theme-color); }
+
+        /* SELECTION SCREEN */
+        #selection-view { min-height: 100vh; padding: 100px 20px 60px; display: flex; flex-direction: column; align-items: center; transition: var(--transition-ui); position: relative; z-index: 10; opacity: 1; }
+        #selection-view.hidden { opacity: 0; pointer-events: none; }
+        
+        .view-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 6vw, 56px); font-weight: 300; font-style: italic; color: var(--cyan); margin-bottom: 12px; text-shadow: 0 4px 20px rgba(91,168,192,0.2); text-align: center; }
+        .view-subtitle { font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text2); margin-bottom: 60px; text-align: center; }
+        
+        .saints-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; width: 100%; max-width: 1100px; }
+        .saint-card { background: linear-gradient(145deg, var(--surface), var(--bg)); border: 1px solid var(--border); border-radius: 16px; padding: 48px 24px; text-align: center; cursor: pointer; transition: var(--transition-card); position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+        .saint-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at top, var(--card-glow), transparent 70%); opacity: 0; transition: var(--transition-card); pointer-events: none; }
+        .saint-card:hover { border-color: var(--card-color); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px var(--card-glow); }
+        .saint-card:hover::before { opacity: 1; }
+        
+        .card-icon { width: 64px; height: 64px; border-radius: 50%; border: 1px solid var(--card-color); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; color: var(--card-color); font-family: 'Cormorant Garamond', serif; font-size: 28px; position: relative; z-index: 2; box-shadow: inset 0 0 15px var(--card-glow); transition: var(--transition-card); background: var(--bg); }
+        .card-icon svg { width: 32px; height: 32px; fill: currentColor; }
+        .saint-card:hover .card-icon { box-shadow: 0 0 20px var(--card-color), inset 0 0 20px var(--card-color); transform: scale(1.1); }
+        
+        .saint-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; margin-bottom: 8px; position: relative; z-index: 2; }
+        .saint-card p { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text2); position: relative; z-index: 2; font-weight: 500; }
+
+        /* SCROLLYTELLING CONTAINER */
+        #story-view { display: none; width: 100%; position: relative; opacity: 0; transition: var(--transition-ui); }
+        #story-view.visible { opacity: 1; }
+        
+        /* STAGE & LIGHTING */
+        .stage-container { position: fixed; top: 0; left: 0; width: 50vw; height: 100vh; display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 1; overflow: hidden; }
+        .ambient-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90vh; height: 90vh; border-radius: 50%; filter: blur(120px); opacity: 0.15; transition: background 1s ease, opacity 1s ease; mix-blend-mode: screen; }
+
+        /* =========================================
+           REFINED ARTICULATED PUPPET ENGINE 
+           ========================================= */
+        .character-svg {
+            width: 380px; height: 500px; overflow: visible !important; 
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8)); 
+            animation: floatIdle 6s ease-in-out infinite;
+            
+            /* Base Puppet Variables */
+            --char-scale: 1; --char-y: 0px; --char-rot: 0deg; --char-bright: 1;
+            --head-rot: 0deg; 
+            --arm-l-rot: 0deg; --arm-r-rot: 0deg;
+            --robe-skew: 0deg;
+            /* Prop Variables */
+            --wings-scale: 1; --wings-rot: 0deg; --wings-op: 1;
+            --cross-scale: 1; --cross-rot: 0deg; --cross-op: 0; --cross-color: var(--theme-color);
+            --sword-rot: 0deg; --sword-color: var(--theme-color);
+            --staff-rot: 0deg;
+            --scroll-rot: 0deg; --scroll-color: var(--bg);
+            --flames-scale: 1; --flames-op: 0;
+            --crown-y: -40px; --crown-op: 0;
+            --halo-op: 0.4;
+        }
+
+        @keyframes floatIdle { 0%, 100% { margin-top: 0; } 50% { margin-top: -15px; } }
+
+        /* Puppet Part Connections */
+        .puppet-part, .prop { transition: var(--transition-puppet); transform-origin: center; }
+        .puppet-fill { fill: var(--text); }
+        .puppet-stroke { stroke: var(--theme-color); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .prop-stroke { stroke: currentColor; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* Transform Bindings */
+        .character-svg { transform: scale(var(--char-scale)) translateY(var(--char-y)) rotate(var(--char-rot)); filter: brightness(var(--char-bright)) drop-shadow(0 20px 30px rgba(0,0,0,0.8)); }
+        
+        .p-head { transform-origin: 100px 50px; transform: rotate(var(--head-rot)); }
+        .p-halo { transform-origin: 100px 50px; opacity: var(--halo-op); }
+        .p-arm-l { transform-origin: 85px 65px; transform: rotate(var(--arm-l-rot)); }
+        .p-arm-r { transform-origin: 115px 65px; transform: rotate(var(--arm-r-rot)); }
+        .p-robe { transform-origin: 100px 120px; transform: skewX(var(--robe-skew)); }
+
+        .prop-wings { transform-origin: 100px 150px; transform: scale(var(--wings-scale)) rotate(var(--wings-rot)); opacity: var(--wings-op); }
+        .prop-flames { transform-origin: 100px 280px; transform: scaleY(var(--flames-scale)); opacity: var(--flames-op); }
+        
+        /* Crown is now relative to the head */
+        .prop-crown { transform: translateY(var(--crown-y)); opacity: var(--crown-op); }
+
+        /* Nested Hand Props */
+        .prop-sword { transform: rotate(var(--sword-rot)); color: var(--sword-color); }
+        .prop-cross { transform: rotate(var(--cross-rot)) scale(var(--cross-scale)); stroke: var(--cross-color); }
+        .prop-scroll { transform: rotate(var(--scroll-rot)); color: var(--theme-color); fill: var(--scroll-color); }
+        .prop-staff { transform: rotate(var(--staff-rot)); }
+
+        .prop-group { display: none; }
+        .prop-group.active { display: block; }
+
+        /* ========================================================
+           STATE KEYFRAMES (ACCURATE & NATURAL STORY BEATS)
+           ======================================================== */
+
+        /* --- MOTHER MARY --- */
+        .saint-mary.state-0 .character-svg { --head-rot: 10deg; --arm-l-rot: 15deg; --arm-r-rot: -15deg; --char-scale: 0.95; }
+        .saint-mary.state-1 .character-svg { --head-rot: -5deg; --arm-l-rot: -20deg; --arm-r-rot: 20deg; --char-scale: 1.05; --halo-op: 0.8; }
+        .saint-mary.state-2 .character-svg { --head-rot: 15deg; --arm-l-rot: 10deg; --arm-r-rot: -10deg; --char-bright: 0.7; --cross-op: 1; --cross-scale: 1; --cross-color: #FF4444; }
+        .saint-mary.state-3 .character-svg { --head-rot: -10deg; --arm-l-rot: -45deg; --arm-r-rot: 45deg; --char-scale: 1.1; --char-y: -10px; --crown-op: 1; --crown-y: 0px; --halo-op: 1; }
+
+        /* --- ST. MICHAEL --- */
+        .saint-michael.state-0 .character-svg { --wings-scale: 0.8; --sword-rot: 0deg; --arm-l-rot: 10deg; --arm-r-rot: -10deg; }
+        .saint-michael.state-1 .character-svg { --char-scale: 1.1; --char-y: -10px; --wings-scale: 1.4; --wings-rot: -5deg; --arm-l-rot: 20deg; --arm-r-rot: -50deg; --sword-rot: 20deg; --sword-color: #FFF; }
+        .saint-michael.state-2 .character-svg { --char-scale: 1.15; --char-y: 15px; --wings-rot: 10deg; --arm-l-rot: -20deg; --arm-r-rot: 40deg; --sword-rot: -90deg; --sword-color: #FFF; }
+        .saint-michael.state-3 .character-svg { --char-scale: 1.2; --char-y: -15px; --wings-scale: 1.5; --arm-l-rot: -30deg; --arm-r-rot: -30deg; --sword-rot: -10deg; }
+
+        /* --- ST. JOAN OF ARC --- */
+        .saint-joan.state-0 .character-svg { --head-rot: -10deg; --char-scale: 0.95; --arm-l-rot: 15deg; --arm-r-rot: -15deg; }
+        .saint-joan.state-1 .character-svg { --char-scale: 1.05; --head-rot: 0; --arm-l-rot: 10deg; --arm-r-rot: -40deg; --sword-rot: 20deg; --sword-color: #FFF; }
+        .saint-joan.state-2 .character-svg { --char-scale: 0.9; --char-y: 10px; --head-rot: 15deg; --arm-l-rot: -20deg; --arm-r-rot: 20deg; --sword-rot: -90deg; --sword-color: rgba(255,255,255,0.3); }
+        .saint-joan.state-3 .character-svg { --char-scale: 1.1; --char-y: -10px; --head-rot: -15deg; --flames-op: 0.9; --flames-scale: 1.5; --arm-l-rot: 30deg; --arm-r-rot: -50deg; --sword-rot: 30deg; --sword-color: #FFF; }
+
+        /* --- ST. GERARD --- */
+        .saint-gerard.state-0 .character-svg { --char-scale: 0.9; --head-rot: 10deg; --arm-l-rot: 10deg; --arm-r-rot: -10deg; }
+        .saint-gerard.state-1 .character-svg { --char-scale: 0.85; --robe-skew: -5deg; --head-rot: 15deg; --arm-l-rot: -20deg; --arm-r-rot: 20deg; --char-bright: 0.7; }
+        .saint-gerard.state-2 .character-svg { --char-scale: 1; --head-rot: -5deg; --arm-l-rot: 10deg; --arm-r-rot: -30deg; --cross-rot: 15deg; --cross-op: 1; --cross-color: #FFF; }
+        .saint-gerard.state-3 .character-svg { --char-scale: 1.05; --char-y: -10px; --head-rot: 0; --arm-l-rot: -10deg; --arm-r-rot: -40deg; --cross-rot: 10deg; --halo-op: 1; }
+
+        /* --- ST. PATRICK --- */
+        .saint-patrick.state-0 .character-svg { --char-scale: 0.9; --head-rot: 15deg; --robe-skew: -5deg; --arm-l-rot: 15deg; --arm-r-rot: -15deg; }
+        .saint-patrick.state-1 .character-svg { --char-scale: 1; --head-rot: -10deg; --arm-l-rot: -15deg; --arm-r-rot: -20deg; --staff-rot: 10deg; }
+        .saint-patrick.state-2 .character-svg { --char-scale: 1.05; --robe-skew: 5deg; --arm-l-rot: -10deg; --arm-r-rot: 10deg; --staff-rot: -5deg; }
+        .saint-patrick.state-3 .character-svg { --char-scale: 1.1; --char-y: -10px; --head-rot: -5deg; --arm-l-rot: 20deg; --arm-r-rot: -40deg; --staff-rot: 15deg; --flames-op: 0.8; --flames-scale: 1.2; }
+
+        /* --- ST. ANNE --- */
+        .saint-anne.state-0 .character-svg { --char-scale: 0.95; --head-rot: -5deg; --arm-l-rot: 10deg; --arm-r-rot: -10deg; }
+        .saint-anne.state-1 .character-svg { --char-scale: 1.05; --head-rot: 10deg; --arm-l-rot: 10deg; --arm-r-rot: -20deg; --scroll-rot: 5deg; --scroll-color: #FFF; }
+        .saint-anne.state-2 .character-svg { --char-scale: 1.08; --robe-skew: 5deg; --head-rot: 5deg; --arm-l-rot: -20deg; --arm-r-rot: -10deg; --scroll-rot: 0deg; }
+        .saint-anne.state-3 .character-svg { --char-scale: 1.1; --char-y: -10px; --head-rot: 0deg; --arm-l-rot: 30deg; --arm-r-rot: -30deg; --scroll-rot: 15deg; --halo-op: 1; }
+
+        /* --- ST. FAUSTINA --- */
+        .saint-faustina.state-0 .character-svg { --char-scale: 0.9; --head-rot: 10deg; --arm-l-rot: 10deg; --arm-r-rot: -10deg; }
+        .saint-faustina.state-1 .character-svg { --char-scale: 1; --head-rot: -5deg; --arm-l-rot: 15deg; --arm-r-rot: -30deg; --scroll-rot: 10deg; --scroll-color: #FFF; }
+        .saint-faustina.state-2 .character-svg { --char-scale: 1.05; --char-bright: 1.2; --head-rot: 15deg; --arm-l-rot: -20deg; --arm-r-rot: -10deg; --halo-op: 0.8; }
+        .saint-faustina.state-3 .character-svg { --char-scale: 1.1; --char-y: -10px; --head-rot: -10deg; --arm-l-rot: 20deg; --arm-r-rot: -45deg; --scroll-rot: 20deg; --halo-op: 1; }
+
+        /* --- ST. JOSEPH --- */
+        .saint-joseph.state-0 .character-svg { --char-scale: 0.95; --head-rot: 10deg; --arm-l-rot: -10deg; --arm-r-rot: 10deg; --staff-rot: 0deg; }
+        .saint-joseph.state-1 .character-svg { --char-scale: 1.05; --head-rot: 5deg; --arm-l-rot: -30deg; --arm-r-rot: -20deg; --staff-rot: 15deg; }
+        .saint-joseph.state-2 .character-svg { --char-scale: 1; --head-rot: 15deg; --arm-l-rot: -10deg; --arm-r-rot: 30deg; --staff-rot: 5deg; }
+        .saint-joseph.state-3 .character-svg { --char-scale: 1.1; --head-rot: -5deg; --arm-l-rot: -40deg; --arm-r-rot: -10deg; --staff-rot: 25deg; --halo-op: 1; }
+
+        /* --- ST. ANTHONY --- */
+        .saint-anthony.state-0 .character-svg { --char-scale: 0.9; --head-rot: 15deg; --arm-l-rot: 15deg; --arm-r-rot: -15deg; }
+        .saint-anthony.state-1 .character-svg { --char-scale: 1; --head-rot: 5deg; --arm-l-rot: 20deg; --arm-r-rot: -30deg; --scroll-rot: -10deg; }
+        .saint-anthony.state-2 .character-svg { --char-scale: 1.05; --head-rot: -10deg; --arm-l-rot: -20deg; --arm-r-rot: 20deg; --scroll-rot: 0deg; }
+        .saint-anthony.state-3 .character-svg { --char-scale: 1.1; --char-y: -5px; --head-rot: 5deg; --arm-l-rot: 30deg; --arm-r-rot: -40deg; --scroll-rot: 15deg; --halo-op: 1; }
+
+        /* --- ST. FRANCIS OF ASSISI --- */
+        .saint-francis.state-0 .character-svg { --char-scale: 0.9; --head-rot: 20deg; --arm-l-rot: 10deg; --arm-r-rot: -10deg; }
+        .saint-francis.state-1 .character-svg { --char-scale: 0.95; --head-rot: 10deg; --arm-l-rot: -20deg; --arm-r-rot: 20deg; --cross-rot: 10deg; --cross-scale: 0.8; --cross-op: 1; }
+        .saint-francis.state-2 .character-svg { --char-scale: 1.05; --head-rot: -15deg; --arm-l-rot: 45deg; --arm-r-rot: -45deg; --cross-op: 0; }
+        .saint-francis.state-3 .character-svg { --char-scale: 1.1; --char-y: -10px; --head-rot: 25deg; --arm-l-rot: 30deg; --arm-r-rot: -30deg; --cross-op: 1; --cross-rot: 0deg; --cross-scale: 1; --halo-op: 1; }
+
+        /* --- ST. PAUL --- */
+        .saint-paul.state-0 .character-svg { --char-scale: 1; --head-rot: -10deg; --arm-l-rot: -30deg; --arm-r-rot: -50deg; --sword-rot: -20deg; }
+        .saint-paul.state-1 .character-svg { --char-scale: 0.8; --char-y: 40px; --head-rot: 30deg; --arm-l-rot: 60deg; --arm-r-rot: 60deg; --sword-rot: -90deg; --char-bright: 2; }
+        .saint-paul.state-2 .character-svg { --char-scale: 1.05; --char-y: 0px; --head-rot: 5deg; --arm-l-rot: 20deg; --arm-r-rot: -30deg; --scroll-rot: 0deg; --scroll-color: #FFF; --sword-rot: 10deg; --char-bright: 1; }
+        .saint-paul.state-3 .character-svg { --char-scale: 1.1; --char-y: -10px; --head-rot: -5deg; --arm-l-rot: -20deg; --arm-r-rot: -45deg; --sword-rot: 30deg; --scroll-rot: 15deg; --halo-op: 1; }
+
+        /* --- ST. PETER --- */
+        .saint-peter.state-0 .character-svg { --char-scale: 1; --head-rot: 0deg; --arm-l-rot: 20deg; --arm-r-rot: -20deg; }
+        .saint-peter.state-1 .character-svg { --char-scale: 0.9; --head-rot: 25deg; --arm-l-rot: 40deg; --arm-r-rot: 40deg; }
+        .saint-peter.state-2 .character-svg { --char-scale: 1.05; --head-rot: -10deg; --arm-l-rot: -20deg; --arm-r-rot: -30deg; --cross-op: 1; --cross-rot: 0deg; }
+        .saint-peter.state-3 .character-svg { --char-scale: 1.1; --char-y: 10px; --head-rot: 30deg; --arm-l-rot: -40deg; --arm-r-rot: -60deg; --cross-op: 1; --cross-rot: 180deg; --halo-op: 1; }
+
+        /* --- ST. JOHN --- */
+        .saint-john.state-0 .character-svg { --char-scale: 0.95; --head-rot: 10deg; --arm-l-rot: 15deg; --arm-r-rot: -15deg; }
+        .saint-john.state-1 .character-svg { --char-scale: 1; --head-rot: 25deg; --arm-l-rot: 30deg; --arm-r-rot: 10deg; }
+        .saint-john.state-2 .character-svg { --char-scale: 1.05; --head-rot: -20deg; --arm-l-rot: -10deg; --arm-r-rot: -30deg; --scroll-rot: 0deg; --scroll-color: #FFF; }
+        .saint-john.state-3 .character-svg { --char-scale: 1.1; --char-y: -10px; --head-rot: -30deg; --arm-l-rot: 20deg; --arm-r-rot: -45deg; --scroll-rot: 15deg; --halo-op: 1; }
+
+        /* --- ST. JUDE --- */
+        .saint-jude.state-0 .character-svg { --char-scale: 0.95; --head-rot: 5deg; --arm-l-rot: -10deg; --arm-r-rot: 10deg; --staff-rot: 0deg; }
+        .saint-jude.state-1 .character-svg { --char-scale: 1; --head-rot: -10deg; --arm-l-rot: -20deg; --arm-r-rot: -20deg; --staff-rot: 10deg; --scroll-rot: 0deg; }
+        .saint-jude.state-2 .character-svg { --char-scale: 1.05; --head-rot: 10deg; --arm-l-rot: 10deg; --arm-r-rot: -30deg; --staff-rot: -10deg; --scroll-rot: 15deg; }
+        .saint-jude.state-3 .character-svg { --char-scale: 1.1; --char-y: -10px; --head-rot: -5deg; --arm-l-rot: -30deg; --arm-r-rot: -40deg; --staff-rot: 20deg; --scroll-rot: 20deg; --flames-op: 1; --flames-scale: 0.8; --halo-op: 1; }
+
+        /* --- ST. CARLO --- */
+        .saint-carlo.state-0 .character-svg { --char-scale: 0.95; --head-rot: 0deg; --arm-l-rot: 10deg; --arm-r-rot: -10deg; }
+        .saint-carlo.state-1 .character-svg { --char-scale: 1; --head-rot: 15deg; --arm-l-rot: 25deg; --arm-r-rot: 25deg; --scroll-rot: 0deg; --scroll-color: #FFF; }
+        .saint-carlo.state-2 .character-svg { --char-scale: 1.05; --head-rot: -10deg; --arm-l-rot: -20deg; --arm-r-rot: 10deg; --cross-op: 1; --cross-scale: 0.8; }
+        .saint-carlo.state-3 .character-svg { --char-scale: 1.1; --char-y: -10px; --head-rot: 5deg; --arm-l-rot: 30deg; --arm-r-rot: -30deg; --cross-scale: 1; --halo-op: 1; }
+
+        /* Right: Scrolling Text */
+        .story-scroll-container { margin-left: 50vw; width: 50vw; position: relative; z-index: 20; padding-bottom: 20vh; }
+        .story-step { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 40px 15%; opacity: 0.15; transition: opacity 0.8s ease, transform 0.8s ease; transform: translateY(60px); }
+        .story-step.is-active { opacity: 1; transform: translateY(0); }
+        
+        .step-chapter { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--theme-color); margin-bottom: 20px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+        .step-chapter::before { content: ''; display: block; width: 30px; height: 1px; background: var(--theme-color); }
+        .step-text { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 4vw, 48px); line-height: 1.2; color: var(--text); margin-bottom: 24px; font-weight: 300; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .step-desc { font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; color: var(--text2); font-weight: 300; }
+
+        /* MOBILE OPTIMIZATIONS */
+        @media (max-width: 900px) {
+            header { padding: 20px; }
+            .stage-container { width: 100vw; height: 100vh; position: fixed; top: 0; background: var(--bg); }
+            .character-svg { width: 280px; height: 400px; }
+            
+            .story-scroll-container { width: 100vw; margin-left: 0; padding-top: 65vh; padding-bottom: 10vh; }
+            .story-step { 
+                min-height: auto; margin: 0 20px 40px; padding: 40px 24px; 
+                background: rgba(10, 8, 6, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+                border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                transform: translateY(40px);
+            }
+            .story-step.is-active { transform: translateY(0); opacity: 1; }
+            .step-text { font-size: 28px; }
+        }
+
+        /* Dynamic Particle Effects */
+        .particle { position: absolute; border-radius: 50%; pointer-events: none; opacity: 0; }
+        @keyframes floatUp { 
+            0% { transform: translateY(0) scale(1); opacity: 0.8; } 
+            100% { transform: translateY(-300px) scale(0); opacity: 0; } 
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <header id="main-header">
+        <button class="back-btn" id="nav-btn" onclick="goHome()">← Return</button>
+    </header>
+
+    <div id="selection-view">
+        <h1 class="view-title">The Communion of Saints</h1>
+        <div class="view-subtitle">Select a soul to read their full story</div>
+        <div class="saints-grid" id="saints-grid"></div>
+    </div>
+
+    <div id="story-view">
+        <div class="stage-container" id="stage">
+            <div class="ambient-glow" id="ambient-glow"></div>
+            
+            <svg class="character-svg" viewBox="0 0 200 300">
+                <g class="prop-group" id="props-wings">
+                    <g class="prop prop-wings puppet-part">
+                        <path d="M 100 130 C 20 50, -10 180, 40 200 C 60 210, 80 160, 100 150 Z" class="puppet-stroke" fill="rgba(255,255,255,0.03)"/>
+                        <path d="M 100 130 C 180 50, 210 180, 160 200 C 140 210, 120 160, 100 150 Z" class="puppet-stroke" fill="rgba(255,255,255,0.03)"/>
+                    </g>
+                </g>
+
+                <g class="prop-group" id="props-flames">
+                    <g class="prop prop-flames puppet-part">
+                        <path d="M 80 280 Q 90 150 100 220 Q 110 130 120 280 Z" fill="var(--theme-color)" opacity="0.6"/>
+                        <path d="M 60 280 Q 75 180 90 250 Q 100 100 130 280 Z" fill="#FF4400" opacity="0.4"/>
+                        <path d="M 110 280 Q 130 160 140 240 Q 150 140 160 280 Z" fill="#FF8800" opacity="0.3"/>
+                    </g>
+                </g>
+
+                <g id="puppet-core">
+                    <circle cx="100" cy="50" r="32" class="puppet-stroke puppet-part p-halo" stroke-dasharray="2 6"/>
+                    
+                    <path d="M 80 120 C 100 120, 120 120, 120 120 C 135 200, 145 280, 145 280 L 55 280 C 55 280, 65 200, 80 120 Z" class="puppet-fill puppet-part p-robe"/>
+                    
+                    <path d="M 85 60 L 115 60 C 120 90, 120 120, 120 120 L 80 120 C 80 120, 80 90, 85 60 Z" class="puppet-fill puppet-part p-torso"/>
+                    
+                    <g class="puppet-part p-head">
+                        <circle cx="100" cy="50" r="16" class="puppet-fill"/>
+                        <g class="prop-group" id="props-crown">
+                            <g class="prop prop-crown" style="transform-origin: 100px 50px;">
+                                <path d="M 88 34 L 90 20 L 100 28 L 110 20 L 112 34 Z" fill="var(--theme-color)"/>
+                            </g>
+                        </g>
+                    </g>
+
+                    <g class="puppet-part p-arm-l">
+                        <path d="M 85 65 C 55 90, 60 130, 75 155" class="puppet-stroke" stroke-width="5"/>
+                        <circle cx="75" cy="155" r="5" class="puppet-fill"/>
+                        
+                        <g class="prop-group" id="props-staff">
+                            <g class="prop prop-staff" style="transform-origin: 75px 155px;">
+                                <path d="M 75 280 L 75 40 C 75 10, 105 0, 105 30 C 105 40, 95 50, 90 45" class="prop-stroke" stroke-width="4"/>
+                            </g>
+                        </g>
+                    </g>
+                    
+                    <g class="puppet-part p-arm-r">
+                        <path d="M 115 65 C 145 90, 140 130, 125 155" class="puppet-stroke" stroke-width="5"/>
+                        <circle cx="125" cy="155" r="5" class="puppet-fill"/>
+                        
+                        <g class="prop-group" id="props-sword">
+                            <g class="prop prop-sword" style="transform-origin: 125px 155px;">
+                                <line x1="125" y1="180" x2="125" y2="20" class="prop-stroke" stroke-width="4"/>
+                                <line x1="105" y1="145" x2="145" y2="145" class="prop-stroke" stroke-width="5"/>
+                                <circle cx="125" cy="185" r="4" class="puppet-fill"/>
+                            </g>
+                        </g>
+
+                        <g class="prop-group" id="props-scroll">
+                            <g class="prop prop-scroll" style="transform-origin: 125px 155px;">
+                                <rect x="110" y="125" width="30" height="40" rx="2" class="prop-stroke" />
+                                <line x1="115" y1="140" x2="135" y2="140" class="prop-stroke" stroke-width="1.5"/>
+                                <line x1="115" y1="150" x2="130" y2="150" class="prop-stroke" stroke-width="1.5"/>
+                            </g>
+                        </g>
+
+                        <g class="prop-group" id="props-cross">
+                            <g class="prop prop-cross" style="transform-origin: 125px 155px;">
+                                <line x1="125" y1="50" x2="125" y2="220" class="prop-stroke" stroke-width="4"/>
+                                <line x1="95" y1="100" x2="155" y2="100" class="prop-stroke" stroke-width="4"/>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </svg>
+            
+            <div id="particle-container" style="position: absolute; inset: 0; z-index: 0; pointer-events: none;"></div>
+        </div>
+
+        <div class="story-scroll-container" id="story-content"></div>
+    </div>
+
+    <script>
+        const saintsData = [
+            {
+                id: 'mary', name: 'Mother Mary', title: 'Queen of Heaven', 
+                icon: `<svg viewBox="0 0 100 100"><path d="M 25 80 L 50 30 L 75 80 M 35 60 L 65 60 M 15 80 L 15 40 L 50 65 L 85 40 L 85 80" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/><path d="M 50 15 L 55 22 L 65 18 L 60 25 L 70 30 L 60 32 L 50 40 L 40 32 L 30 30 L 40 25 L 35 18 L 45 22 Z" fill="currentColor"/></svg>`,
+                color: '#5C8AE0', activeProps: ['cross', 'crown'],
+                story: [
+                    { chapter: "The Annunciation", title: "The Gentle Fiat", desc: "In the obscure village of Nazareth, a young girl knelt in prayer. The air trembled as the Archangel Gabriel appeared, bringing a message that would alter the universe. God asked a question of humanity, and in pure humility, Mary answered: 'Let it be done unto me according to your word.'" },
+                    { chapter: "The Journey", title: "Carrying the Light", desc: "She became the Ark of the New Covenant, carrying the uncontainable God within her womb. Through cold nights, long journeys to Bethlehem, and flights into Egypt, she shielded the Light of the World from darkness. Her heart pondered all these mysteries in deep silence." },
+                    { chapter: "The Passion", title: "A Sword Pierces Her Soul", desc: "Thirty-three years later, she stood at the foot of the cross. While others fled, the Mother remained. As nails pierced His flesh, an invisible sword of immense sorrow pierced her immaculate heart. In His final agony, Christ looked down and gave her to us all: 'Behold your mother.'" },
+                    { chapter: "The Coronation", title: "Crowned with Stars", desc: "Having shared so intimately in His suffering, she was taken up, body and soul, into heavenly glory. The humble peasant girl of Nazareth was crowned Queen of Heaven and Earth with a diadem of twelve stars. She remains forever our greatest intercessor." }
+                ]
+            },
+            {
+                id: 'michael', name: 'St. Michael', title: 'The Archangel', icon: '⚔',
+                color: '#8AB4F8', activeProps: ['wings', 'sword'],
+                story: [
+                    { chapter: "The Dawn of Creation", title: "The Heavenly Courts", desc: "Before the earth was laid, the celestial courts resided in profound peace. God created angels as beings of pure spirit, intellect, and will. Among them stood Michael, a seraph of great devotion, dwelling in the harmonious radiance of the Almighty." },
+                    { chapter: "The Rebellion", title: "I Will Not Serve", desc: "Pride is a poison that can infect even the highest spirits. Lucifer, the morning star, looked upon his own brilliance and desired to be god. 'Non serviam,' he declared. A chilling silence fell across heaven as a third of the stars fell from the sky." },
+                    { chapter: "The Great Battle", title: "Quis ut Deus?", desc: "Then arose Michael. Not with a boast of his own strength, but with a question that shattered the cosmos: 'Quis ut Deus?' — Who is like God? Drawing a blade of uncreated light, Michael led the faithful angels into the ultimate spiritual warfare." },
+                    { chapter: "The Triumph", title: "The Fall of the Dragon", desc: "By the power of God, Michael struck down the ancient serpent, casting him into the abyss. Peace was restored to the heavens. Today, St. Michael stands with his sword drawn, the eternal defender of the Church against the snares of the devil." }
+                ]
+            },
+            {
+                id: 'joan', name: 'St. Joan of Arc', title: 'Maid of Orléans', icon: '⚜',
+                color: '#E09B5C', activeProps: ['sword', 'flames'],
+                story: [
+                    { chapter: "The Voices", title: "The Garden of Domrémy", desc: "A simple peasant girl tending sheep heard voices in her father's garden. Saints Michael, Catherine, and Margaret spoke to her of war. The kingdom of France was collapsing, and God had chosen this unlettered maiden to raise the siege of Orléans." },
+                    { chapter: "The Warrior", title: "Armor and Purity", desc: "Cutting her hair and donning armor forged for a man, Joan rode into battle wielding a white banner bearing the names of Jesus and Mary. She commanded generals, routed armies, and wept for the souls of the enemies she defeated." },
+                    { chapter: "The Betrayal", title: "Captured and Abandoned", desc: "Her victories secured the crown, but earthly politics are treacherous. Joan was captured by the Burgundians, sold to the English, and abandoned by the king she saved. She endured a grueling mock trial, yet her faith remained an impenetrable fortress." },
+                    { chapter: "The Martyrdom", title: "Through the Fire", desc: "Condemned as a heretic, nineteen-year-old Joan was tied to the pillar at Rouen. As the flames rose, she did not curse her betrayers. Instead, she asked a priest to hold a crucifix high. Her final word, ringing out over the fire, was: 'Jesus!'" }
+                ]
+            },
+            {
+                id: 'gerard', name: 'St. Gerard Majella', title: 'The Wonder Worker', 
+                icon: `<svg viewBox="0 0 100 100"><line x1="50" y1="20" x2="50" y2="80" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><line x1="30" y1="40" x2="70" y2="40" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>`,
+                color: '#E05C5C', activeProps: ['cross'],
+                story: [
+                    { chapter: "The Calling", title: "The Humble Tailor", desc: "Born into poverty, Gerard was a frail tailor whose only desire was to do the will of God entirely. Denied entry to religious orders due to his weak health, he persisted until the Redemptorists finally accepted him as a lay brother." },
+                    { chapter: "The Trial", title: "Profound Silence", desc: "When falsely accused of grave sin by a young woman, Gerard was called before St. Alphonsus Liguori. Rather than defend himself, Gerard remained completely silent, modeling his behavior on Christ before Pilate, until his accuser confessed she had lied." },
+                    { chapter: "The Miracle", title: "The Handkerchief", desc: "Once, while visiting a family, Gerard dropped his handkerchief. A young girl tried to return it, but he told her to keep it. Years later, while in mortal danger during childbirth, the woman held the cloth. Her pain ceased, and a healthy child was born." },
+                    { chapter: "The Legacy", title: "Patron of Mothers", desc: "Though he died of tuberculosis at just 29 years old, his profound obedience and miraculous intercessions made him legendary. Today, expectant mothers around the world whisper his name when bringing new life into the light." }
+                ]
+            },
+            {
+                id: 'patrick', name: 'St. Patrick', title: 'Apostle of Ireland', icon: '☘',
+                color: '#6DA37A', activeProps: ['staff', 'flames'],
+                story: [
+                    { chapter: "The Captive", title: "Sold into Slavery", desc: "Born in Roman Britain, a teenage Patrick was violently kidnapped by raiders and dragged across the sea to a cold, unforgiving island. Sold into slavery, he spent years as a shepherd on the lonely, freezing mountainsides of Ireland." },
+                    { chapter: "The Awakening", title: "Forged in Prayer", desc: "In the bitter cold, stripped of everything, Patrick found God. He prayed hundreds of times a day in the snow and rain. After six years, a voice in the night told him his ship was ready. He escaped and made a perilous journey back home." },
+                    { chapter: "The Return", title: "The Call Back", desc: "Safe in Britain, he had a vision of the Irish people calling out: 'We appeal to you, holy servant boy, to come and walk among us.' Ordained a bishop, he willingly returned to the very people who had enslaved him, armed only with the Gospel." },
+                    { chapter: "The Fire", title: "Light in the Darkness", desc: "In defiance of the pagan High King, Patrick lit the Paschal fire on the hill of Slane. The druids warned the king that if this fire was not extinguished, it would burn in Ireland forever. It was never extinguished, and a nation was won for Christ." }
+                ]
+            },
+            {
+                id: 'anne', name: 'St. Anne', title: 'Mother of the Virgin', icon: '📜',
+                color: '#D48CBA', activeProps: ['scroll'],
+                story: [
+                    { chapter: "The Wait", title: "The Empty Cradle", desc: "For decades, Anne and her husband Joachim endured the quiet, profound ache of an empty cradle. In a culture that viewed barrenness as a divine curse, they bore their sorrow with unwavering trust and continuous prayer to the God of Israel." },
+                    { chapter: "The Miracle", title: "The Immaculate Conception", desc: "In the twilight of their lives, an angel appeared to Joachim in the desert and Anne in her garden. God granted them a child unlike any other. Conceived without the stain of original sin, their daughter Mary was the dawn preceding the Sun of Justice." },
+                    { chapter: "The Teacher", title: "Preparing the Vessel", desc: "Tradition holds that Anne taught the little Virgin to read the sacred scrolls of Isaiah and the prophets. In the quiet of their home, Anne nurtured the profound faith and humility that would one day allow her daughter to say 'Yes' to the Archangel." },
+                    { chapter: "The Legacy", title: "Grandmother of Christ", desc: "Through her faithful, painful waiting, the door to mankind's salvation was finally opened. St. Anne remains a powerful symbol of patience, the patroness of grandmothers, educators, and all those who wait upon the Lord's perfect timing." }
+                ]
+            },
+            {
+                id: 'faustina', name: 'St. Faustina', title: 'Apostle of Mercy', icon: '📖',
+                color: '#FF9999', activeProps: ['scroll'],
+                story: [
+                    { chapter: "The Call", title: "Vision at the Dance", desc: "A young, impoverished Polish girl was at a dance when she suddenly saw the suffering Christ covered in wounds. He asked her, 'How long shall I put up with you and how long will you keep putting Me off?' Immediately, she left for Warsaw to join a convent." },
+                    { chapter: "The Diary", title: "Secretary of Mercy", desc: "Despite her lack of formal education, Jesus chose Faustina to be His secretary. Under obedience to her spiritual director, she began recording her profound mystical experiences in her diary, sharing God's unfathomable mercy with a despairing world." },
+                    { chapter: "The Image", title: "Vilnius and the Vision", desc: "In her cell, Christ appeared to her with two rays—one red, one pale—shining from His heart. He instructed her to have an image painted with the signature: 'Jesus, I trust in You.' This image would become a vessel of grace for millions." },
+                    { chapter: "The Legacy", title: "The First Saint of the Millennium", desc: "Faustina suffered deeply from tuberculosis and internal spiritual trials, offering her life for sinners. In the year 2000, Pope John Paul II canonized her as the first saint of the new millennium, establishing Divine Mercy Sunday for the universal Church." }
+                ]
+            },
+            {
+                id: 'joseph', name: 'St. Joseph', title: 'Terror of Demons', icon: '⚒️',
+                color: '#D4A373', activeProps: ['staff'],
+                story: [
+                    { chapter: "The Righteous Man", title: "Doubt and the Dream", desc: "Betrothed to Mary, Joseph was plunged into sorrow upon learning she was with child. Unwilling to expose her to shame, he resolved to divorce her quietly. But in a dream, an angel revealed the divine origin of the child, and Joseph, in absolute faith, took Mary into his home." },
+                    { chapter: "The Protector", title: "Flight into the Night", desc: "When Herod's soldiers marched to slaughter the innocents, Joseph was warned in another dream. Rising in the dead of night, he immediately fled with the Mother and Child into the harsh desert of Egypt, serving as the relentless shield of the Holy Family." },
+                    { chapter: "The Carpenter", title: "The Hidden Years", desc: "Returning to Nazareth, Joseph taught the Son of God the trade of a carpenter. He worked quietly, providing for his family with blistered hands. Through his deep, silent devotion, he sanctified the dignity of human labor." },
+                    { chapter: "The Patron", title: "Guardian of the Church", desc: "Dying peacefully in the arms of Jesus and Mary, Joseph became the patron of a happy death. Today, he stands as the Patron of the Universal Church, quietly guarding the mystical body of Christ just as he once guarded the Christ child." }
+                ]
+            },
+            {
+                id: 'anthony', name: 'St. Anthony', title: 'Hammer of Heretics', icon: '🍞',
+                color: '#8B5A2B', activeProps: ['scroll'],
+                story: [
+                    { chapter: "The Call", title: "Blood of the Martyrs", desc: "Born to nobility in Lisbon, Fernando joined the Augustinians. However, upon seeing the remains of the first Franciscan martyrs brought back from Morocco, his heart was set ablaze. He joined the Franciscans, taking the name Anthony, ready to die for Christ." },
+                    { chapter: "The Preacher", title: "Voice in the Wilderness", desc: "Sickness prevented his martyrdom. Instead, his profound theological knowledge and booming, eloquent voice made him the greatest preacher of his age. He preached to tens of thousands, converting hardened sinners and confounding heretics across Europe." },
+                    { chapter: "The Miracles", title: "Finder of the Lost", desc: "His life was marked by spectacular miracles—preaching to fish when humans wouldn't listen, protecting crowds from rain storms, and locating lost items. Even today, the faithful turn to him in their smallest frustrations and greatest spiritual losses." },
+                    { chapter: "The Vision", title: "The Infant Jesus", desc: "Near the end of his short life, Count Tiso observed a brilliant light shining from Anthony's room. Peering in, he saw the saint holding and conversing with the Infant Jesus. Anthony died at 36, his tongue remaining incorrupt to this day." }
+                ]
+            },
+            {
+                id: 'francis', name: 'St. Francis', title: 'The Poverello', icon: '🕊️',
+                color: '#654321', activeProps: ['cross'],
+                story: [
+                    { chapter: "The Youth", title: "The Spoil of War", desc: "Francis was a wealthy, frivolous youth of Assisi who dreamed of knightly glory. But after a brutal battle and a year in a dark, fever-ridden dungeon, his heart began to empty of worldly desires, making room for the King of Heaven." },
+                    { chapter: "The Call", title: "Rebuild My Church", desc: "Praying before the crucifix in the ruined chapel of San Damiano, Francis heard Christ speak: 'Go, Francis, and repair my house, which as you see is falling into ruin.' He renounced his inheritance, stripping off his fine clothes in the town square." },
+                    { chapter: "The Friar", title: "Brother Sun", desc: "Embracing Lady Poverty, Francis lived in radical simplicity. His love for God overflowed into a profound kinship with all creation—preaching to birds, taming a fierce wolf, and composing the glorious Canticle of the Sun." },
+                    { chapter: "The Marks", title: "Mount La Verna", desc: "Near the end of his life, while fasting on Mount La Verna, a six-winged seraph appeared to him. In a moment of agonizing ecstasy, Francis received the stigmata—the physical wounds of Christ's crucifixion—bearing the marks of the Savior he so loved." }
+                ]
+            },
+            {
+                id: 'paul', name: 'St. Paul', title: 'Apostle to the Gentiles', icon: '🗡️',
+                color: '#CC3333', activeProps: ['sword', 'scroll'],
+                story: [
+                    { chapter: "The Persecutor", title: "Breathing Murderous Threats", desc: "Saul of Tarsus was a zealous Pharisee, convinced that the followers of Jesus were a dangerous cult. He stood approvingly at the stoning of St. Stephen and marched toward Damascus with the authority to drag Christians into prison." },
+                    { chapter: "The Encounter", title: "Blinded by the Light", desc: "On the road to Damascus, a light brighter than the sun knocked Saul to the ground. A voice thundered: 'Saul, Saul, why are you persecuting me?' Blinded and humbled, his life was violently overturned. Saul the persecutor became Paul the Apostle." },
+                    { chapter: "The Missionary", title: "To the Ends of the Earth", desc: "Paul poured his immense zeal into spreading the Gospel. He endured shipwrecks, floggings, imprisonment, and riots to establish churches across the Roman Empire. From his prison cells, he wrote epistles that would forever shape Christian theology." },
+                    { chapter: "The Martyrdom", title: "The Good Fight", desc: "In Rome, under the persecution of Nero, Paul's race came to an end. 'I have fought the good fight, I have finished the race, I have kept the faith,' he wrote. As a Roman citizen, he was martyred by the sword, his blood seeding the early Church." }
+                ]
+            },
+            {
+                id: 'peter', name: 'St. Peter', title: 'The Rock', icon: '🗝️',
+                color: '#FFCC00', activeProps: ['cross'],
+                story: [
+                    { chapter: "The Fisherman", title: "Cast Out into the Deep", desc: "Simon was a rough, simple fisherman on the Sea of Galilee. After a miraculous catch of fish, Jesus called him away from his nets, renaming him Peter—the Rock—and promising to make him a fisher of men." },
+                    { chapter: "The Faith", title: "Walking on Water", desc: "Seeing Christ walk across the stormy sea, Peter boldly stepped out of the boat. For a moment, his faith held him above the waves. But taking his eyes off Jesus and seeing the wind, he began to sink, crying out, 'Lord, save me!'" },
+                    { chapter: "The Denial", title: "Bitter Tears", desc: "Despite boasting he would die for Christ, Peter crumbled in fear in the courtyard of the high priest, denying Jesus three times. When the rooster crowed and Jesus looked at him, Peter wept bitterly, learning that relying on his own strength was futile." },
+                    { chapter: "The Martyrdom", title: "Quo Vadis", desc: "Forgiven and commissioned to 'feed my sheep,' Peter led the early Church. Fleeing persecution in Rome, tradition says he met Christ walking toward the city. Peter turned back, willingly facing crucifixion. Deeming himself unworthy to die like his Lord, he was crucified upside down." }
+                ]
+            },
+            {
+                id: 'john', name: 'St. John', title: 'The Beloved Disciple', icon: '🦅',
+                color: '#A6CFD5', activeProps: ['scroll'],
+                story: [
+                    { chapter: "The Call", title: "Sons of Thunder", desc: "John and his brother James, fiercely passionate fishermen, were called by Jesus to leave their father's boat. Known for their zeal, Jesus affectionately nicknamed them the 'Sons of Thunder.' John would become the youngest of the apostles." },
+                    { chapter: "The Beloved", title: "Leaning on His Breast", desc: "At the Last Supper, John leaned intimately against the heart of Jesus. When all other apostles fled in terror during the Passion, John alone stood at the foot of the Cross alongside Mary, where Jesus entrusted His Mother to him." },
+                    { chapter: "The Exile", title: "Boiling Oil and Patmos", desc: "Tradition holds that John survived being thrown into a cauldron of boiling oil in Rome, miraculously unharmed. He was subsequently exiled to the barren island of Patmos, living out his days in deep contemplation of the Divine." },
+                    { chapter: "The Vision", title: "The Apocalypse", desc: "On Patmos, John received visions of heaven, cosmic battles, and the New Jerusalem, recording them in the Book of Revelation. Before dying quietly in Ephesus, his final, constant message to the faithful was simple: 'Little children, love one another.'" }
+                ]
+            },
+            {
+                id: 'jude', name: 'St. Jude', title: 'Patron of the Impossible', icon: '🔥',
+                color: '#006633', activeProps: ['staff', 'flames'],
+                story: [
+                    { chapter: "The Apostle", title: "Thaddaeus", desc: "Often confused with the traitor Judas, Jude Thaddaeus was a faithful apostle and a relative of Jesus. At the Last Supper, he asked Jesus why He revealed Himself only to the disciples and not to the world, prompting Christ to speak of the indwelling of the Trinity." },
+                    { chapter: "The Missionary", title: "Healing the King", desc: "Following Pentecost, Jude traveled through Judea, Samaria, Idumaea, Syria, and Mesopotamia. Tradition states he carried a miraculous image of Jesus to King Abgar of Edessa, curing the monarch of leprosy and bringing the Gospel to the region." },
+                    { chapter: "The Martyrdom", title: "Blood in Persia", desc: "Partnering with St. Simon the Zealot, Jude preached fearlessly in Persia amid hostile pagan priests. The two apostles were beaten and martyred together. Jude is often depicted holding the club or halberd used in his martyrdom." },
+                    { chapter: "The Legacy", title: "Hope of the Despairing", desc: "Because his name resembled the betrayer's, early Christians rarely prayed to him, leaving him seemingly 'forgotten.' Thus, God chose St. Jude to be the patron saint of desperate, lost, and impossible causes, answering the prayers of those who have nowhere else to turn." }
+                ]
+            },
+            {
+                id: 'carlo', name: 'St. Carlo Acutis', title: 'God’s Influencer', icon: '💻',
+                color: '#3366CC', activeProps: ['cross', 'scroll'],
+                story: [
+                    { chapter: "The Youth", title: "The Millennial", desc: "Born in 1991, Carlo was an ordinary teenager who loved playing video games, coding, and hanging out with friends. Yet beneath his ordinary exterior burned a profound love for the Eucharist, which he attended daily, dragging his secular parents along." },
+                    { chapter: "The Coder", title: "Highway to Heaven", desc: "A self-taught computer prodigy, Carlo used his skills not for vanity, but to build a vast online catalog documenting every approved Eucharistic miracle in the world. He famously said, 'The Eucharist is my highway to heaven.'" },
+                    { chapter: "The Suffering", title: "Offering the Pain", desc: "At the age of 15, Carlo was suddenly diagnosed with aggressive leukemia. Facing imminent death, he did not despair. Instead, he offered all his intense suffering to God for the Pope and the Church, dying with a serene smile." },
+                    { chapter: "The Legacy", title: "Jeans and Sneakers", desc: "Canonized in 2025, St. Carlo's body lies in Assisi, dressed in his favorite jeans, fleece, and Nike sneakers. He proved that holiness is not confined to ancient history or cloistered monasteries, but is achievable in the digital age." }
+                ]
+            }
+        ];
+
+        let currentSaintId = '';
+        let particleInterval;
+
+        function init() {
+            const grid = document.getElementById('saints-grid');
+            saintsData.forEach((saint, index) => {
+                const card = document.createElement('div');
+                card.className = 'saint-card';
+                card.style.setProperty('--card-color', saint.color);
+                card.style.setProperty('--card-glow', `${saint.color}30`); 
+                card.innerHTML = `
+                    <div class="card-icon">${saint.icon}</div>
+                    <h3>${saint.name}</h3>
+                    <p>${saint.title}</p>
+                `;
+                card.onclick = () => loadStory(index);
+                grid.appendChild(card);
+            });
+        }
+
+        function loadStory(index) {
+            const saint = saintsData[index];
+            currentSaintId = saint.id;
+            
+            document.documentElement.style.setProperty('--theme-color', saint.color);
+            document.documentElement.style.setProperty('--theme-glow', `${saint.color}80`);
+            document.getElementById('ambient-glow').style.background = saint.color;
+
+            document.getElementById('stage').className = `stage-container state-0 saint-${currentSaintId}`;
+
+            document.querySelectorAll('.prop-group').forEach(p => p.classList.remove('active'));
+            saint.activeProps.forEach(propId => {
+                document.getElementById(`props-${propId}`).classList.add('active');
+            });
+
+            const container = document.getElementById('story-content');
+            container.innerHTML = '';
+            
+            saint.story.forEach((part, i) => {
+                const step = document.createElement('div');
+                step.className = 'story-step';
+                step.setAttribute('data-step', i);
+                step.innerHTML = `
+                    <div class="step-chapter">${part.chapter}</div>
+                    <h2 class="step-text">${part.title}</h2>
+                    <p class="step-desc">${part.desc}</p>
+                `;
+                container.appendChild(step);
+            });
+
+            const selectionView = document.getElementById('selection-view');
+            const storyView = document.getElementById('story-view');
+            const header = document.getElementById('main-header');
+
+            selectionView.classList.add('hidden');
+            
+            setTimeout(() => {
+                selectionView.style.display = 'none';
+                storyView.style.display = 'block';
+                
+                // Force layout reflow
+                void storyView.offsetWidth; 
+                
+                storyView.classList.add('visible');
+                header.classList.add('visible');
+                
+                window.scrollTo(0, 0);
+                setupObserver();
+                startParticles(saint.color);
+            }, 600);
+        }
+
+        function goHome() {
+            const storyView = document.getElementById('story-view');
+            const selectionView = document.getElementById('selection-view');
+            const header = document.getElementById('main-header');
+
+            if (storyView.style.display === 'block') {
+                storyView.classList.remove('visible');
+                header.classList.remove('visible');
+                
+                setTimeout(() => {
+                    storyView.style.display = 'none';
+                    selectionView.style.display = 'flex';
+                    
+                    void selectionView.offsetWidth;
+                    selectionView.classList.remove('hidden');
+                    
+                    document.getElementById('stage').className = 'stage-container state-0';
+                    currentSaintId = '';
+                    clearInterval(particleInterval);
+                    document.getElementById('particle-container').innerHTML = '';
+                }, 600);
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function setupObserver() {
+            const steps = document.querySelectorAll('.story-step');
+            const stage = document.getElementById('stage');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        steps.forEach(s => s.classList.remove('is-active'));
+                        entry.target.classList.add('is-active');
+                        
+                        const stateIndex = entry.target.getAttribute('data-step');
+                        stage.className = `stage-container state-${stateIndex} saint-${currentSaintId}`;
+                    }
+                });
+            }, { rootMargin: '-35% 0px -35% 0px' });
+
+            steps.forEach(step => observer.observe(step));
+        }
+
+        function startParticles(color) {
+            clearInterval(particleInterval);
+            const container = document.getElementById('particle-container');
+            container.innerHTML = '';
+
+            particleInterval = setInterval(() => {
+                const stageClass = document.getElementById('stage').className;
+                const isIntense = stageClass.includes('state-3') || stageClass.includes('joan') || stageClass.includes('patrick') || stageClass.includes('jude');
+                
+                if (Math.random() > (isIntense ? 0.3 : 0.8)) {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    
+                    const size = Math.random() * 4 + 2;
+                    p.style.width = `${size}px`;
+                    p.style.height = `${size}px`;
+                    
+                    const isFire = (currentSaintId === 'joan' || currentSaintId === 'patrick' || currentSaintId === 'jude') && stageClass.includes('state-3');
+                    p.style.background = isFire ? (Math.random() > 0.5 ? '#FF4400' : '#FFCC00') : color;
+                    p.style.boxShadow = `0 0 ${size*2}px ${p.style.background}`;
+
+                    const startX = window.innerWidth * (window.innerWidth > 900 ? 0.25 : 0.5) + (Math.random() * 200 - 100);
+                    const startY = window.innerHeight * 0.8;
+                    p.style.left = `${startX}px`;
+                    p.style.top = `${startY}px`;
+                    
+                    const duration = Math.random() * 3 + 2;
+                    p.style.animation = `floatUp ${duration}s cubic-bezier(0.25, 1, 0.5, 1) forwards`;
+
+                    container.appendChild(p);
+                    setTimeout(() => { if(container.contains(p)) container.removeChild(p); }, duration * 1000);
+                }
+            }, 100);
+        }
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liturgical Calendar | Chosen Generations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050403;
+            --bg2: #0A0807;
+            --surface: rgba(12, 10, 8, 0.85);
+            --text: #F0EAE0;
+            --text2: #6A5E52;
+            --border: rgba(201,169,110,0.12);
+            --radius: 20px;
+
+            /* Liturgical Palette */
+            --purple: #9D7BB0;
+            --purple-glow: rgba(157,123,176,0.4);
+            --white-lit: #F9F6F0;
+            --white-glow: rgba(249,246,240,0.35);
+            --green: #6DA37A;
+            --green-glow: rgba(109,163,122,0.4);
+            --red: #B07B7B;
+            --red-glow: rgba(176,123,123,0.4);
+            --gold: #5BA8C0;
+            --gold-dim: rgba(91,168,192,0.15);
+
+            /* Dynamic */
+            --active-color: var(--white-lit);
+            --active-glow: var(--white-glow);
+            --active-rgb: 249,246,240;
+
+            /* Responsive Scaling Variables */
+            --scene-size: 520px;
+            --orb-size: 200px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html, body {
+            height: 100%;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden; /* Prevent body scroll; handled by dashboard */
+        }
+
+        /* ─── AMBIENT BACKGROUND ─── */
+        .bg-ambient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .bg-ambient::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 35% 50%, rgba(var(--active-rgb), 0.04) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 60% at 70% 50%, rgba(10,6,4,0.9) 0%, transparent 100%);
+            transition: background 1s ease;
+        }
+        .grid-lines {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            background-image:
+                linear-gradient(rgba(201,169,110,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(201,169,110,0.04) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+        }
+        .vignette {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 30%, rgba(5,4,3,0.85) 100%);
+            pointer-events: none;
+        }
+
+        /* ─── LAYOUT ─── */
+        .dashboard {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: 1.35fr 1fr;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* ─── LEFT PANEL ─── */
+        .visual-panel {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Header */
+        .site-header {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            padding: 28px 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 50;
+            border-bottom: 1px solid var(--border);
+        }
+        .back-btn {
+            color: var(--text2);
+            text-decoration: none;
+            font-size: 10px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn:hover { color: var(--cyan); }
+        .header-badge {
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--active-color);
+            box-shadow: 0 0 8px var(--active-glow);
+            animation: pulse-dot 2s ease-in-out infinite;
+            transition: background 0.8s, box-shadow 0.8s;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        /* Heading */
+        .panel-heading {
+            position: absolute;
+            top: 88px;
+            left: 0; right: 0;
+            text-align: center;
+            pointer-events: none;
+            z-index: 20;
+        }
+        .panel-heading .eyebrow {
+            font-size: 10px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--text2);
+            margin-bottom: 10px;
+            display: block;
+        }
+        .panel-heading h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(38px, 4vw, 52px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            color: var(--text);
+        }
+        .panel-heading h1 em {
+            font-style: italic;
+            color: var(--active-color);
+            transition: color 0.8s;
+        }
+
+        /* ─── 3D SCENE ─── */
+        .scene-wrap {
+            position: relative;
+            width: var(--scene-size);
+            height: var(--scene-size);
+            margin: 60px auto 0;
+        }
+        .scene {
+            width: 100%;
+            height: 100%;
+            perspective: 1800px;
+        }
+        .pivot {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform: rotateX(52deg) rotateZ(0deg);
+            position: relative;
+        }
+
+        /* SVG Rings */
+        .ring-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .ring-base {
+            filter: blur(4px);
+            opacity: 0.25;
+            transform: translateZ(-24px);
+        }
+        .ring-main {
+            filter: drop-shadow(0 0 16px rgba(var(--active-rgb), 0.3));
+            transition: filter 0.8s;
+        }
+
+        .season-arc {
+            fill: none;
+            stroke-width: 52;
+            stroke-linecap: butt;
+            cursor: pointer;
+            transition: stroke-width 0.35s, opacity 0.35s, filter 0.35s;
+            opacity: 0.75;
+        }
+        .season-arc:hover, .season-arc.active {
+            stroke-width: 64;
+            opacity: 1;
+        }
+        .season-arc.active {
+            filter: brightness(1.25);
+        }
+
+        /* Today Marker */
+        .marker-wrap {
+            position: absolute;
+            width: 0; height: 0;
+            top: 0; left: 0;
+            transform-style: preserve-3d;
+            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.1s, top 0.1s;
+            z-index: 10;
+        }
+        .marker-icon {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            transform: translate(-50%, -50%) rotateX(-52deg) translateZ(8px);
+            filter: drop-shadow(0 0 12px var(--active-glow));
+            transition: filter 0.8s;
+        }
+        .marker-icon svg {
+            width: 100%; height: 100%;
+            color: var(--active-color);
+            transition: color 0.8s;
+        }
+        .marker-pulse {
+            position: absolute;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--active-color);
+            transform: translate(-50%, -50%) rotateX(-52deg);
+            opacity: 0;
+            animation: marker-pulse 2.5s ease-out infinite;
+            transition: border-color 0.8s;
+        }
+        @keyframes marker-pulse {
+            0% { transform: translate(-50%, -50%) rotateX(-52deg) scale(0.5); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) rotateX(-52deg) scale(2); opacity: 0; }
+        }
+
+        /* ─── CENTER ORB ─── */
+        .orb-container {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: var(--orb-size);
+            height: var(--orb-size);
+            transform: translate(-50%, -50%) rotateX(-52deg);
+            z-index: 20;
+        }
+        /* Changed inset to percentages to scale with the wrapper dynamically */
+        .hud-ring {
+            position: absolute;
+            border-radius: 50%;
+            transition: border-color 0.8s;
+        }
+        .hud-ring-1 {
+            inset: -8%;
+            border: 1px dashed rgba(var(--active-rgb), 0.2);
+            animation: spin-ccw 25s linear infinite;
+        }
+        .hud-ring-2 {
+            inset: -16%;
+            border: 1px solid rgba(var(--active-rgb), 0.12);
+            border-top-color: transparent;
+            animation: spin-cw 15s linear infinite;
+        }
+        .hud-ring-3 {
+            inset: -26%;
+            border: 1px dashed rgba(201,169,110,0.08);
+            animation: spin-ccw 40s linear infinite;
+        }
+        @keyframes spin-cw  { to { transform: rotate(360deg); } }
+        @keyframes spin-ccw { to { transform: rotate(-360deg); } }
+
+        .glass-orb {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.08) 0%, rgba(5,4,3,0.6) 60%, rgba(0,0,0,0.9) 100%);
+            border: 1px solid rgba(var(--active-rgb), 0.1);
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 0 50px rgba(var(--active-rgb), 0.12), 0 0 100px rgba(var(--active-rgb), 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: border-color 0.8s, box-shadow 0.8s;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .orb-label {
+            font-size: 8px;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--text2);
+            margin-bottom: 6px;
+        }
+        .orb-season {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(20px, 3vw, 26px);
+            font-style: italic;
+            color: var(--active-color);
+            transition: color 0.8s;
+            line-height: 1.1;
+            padding: 0 12px;
+        }
+
+        /* ─── RIGHT PANEL ─── */
+        .info-panel {
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 48px 44px;
+            background: linear-gradient(135deg, rgba(10,8,6,0.95) 0%, rgba(5,4,3,1) 100%);
+            position: relative;
+        }
+        .info-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 280px; height: 280px;
+            background: radial-gradient(circle, rgba(var(--active-rgb), 0.04) 0%, transparent 70%);
+            transition: background 0.8s;
+            pointer-events: none;
+        }
+
+        /* Card */
+        .card {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--active-color);
+            border-radius: var(--radius);
+            padding: 40px;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            transition: border-top-color 0.8s;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(var(--active-rgb), 0.06) 0%, transparent 60%);
+            transition: background 0.8s;
+            pointer-events: none;
+        }
+
+        .card-eyebrow {
+            font-size: 10px;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .card-eyebrow::before {
+            content: '';
+            width: 24px; height: 1px;
+            background: var(--cyan);
+            opacity: 0.5;
+        }
+
+        .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(28px, 3vw, 38px);
+            font-weight: 400;
+            line-height: 1.15;
+            margin-bottom: 32px;
+            color: var(--text);
+        }
+
+        .divider {
+            width: 100%; height: 1px;
+            background: var(--border);
+            margin-bottom: 28px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+        .meta-label {
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text2);
+            margin-bottom: 8px;
+        }
+        .meta-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 17px;
+            font-style: italic;
+            color: var(--active-color);
+            transition: color 0.8s;
+            line-height: 1.5;
+        }
+
+        /* Season Legend */
+        .season-legend {
+            margin-top: 36px;
+            padding-top: 28px;
+            border-top: 1px solid var(--border);
+        }
+        .legend-title {
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text2);
+            margin-bottom: 14px;
+        }
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .legend-pill {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 12px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+            font-size: 11px;
+            color: var(--text2);
+            cursor: pointer;
+            transition: border-color 0.3s, color 0.3s, background 0.3s;
+        }
+        .legend-pill:hover {
+            color: var(--text);
+            background: rgba(255,255,255,0.05);
+        }
+        .legend-pill.active {
+            color: var(--text);
+            border-color: rgba(var(--active-rgb), 0.35);
+            background: rgba(var(--active-rgb), 0.07);
+        }
+        .legend-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ─── RESPONSIVE UPGRADES ─── */
+
+        /* Tablets & Standard Laptops */
+        @media (max-width: 1100px) {
+            :root {
+                --scene-size: 400px;
+                --orb-size: 160px;
+            }
+            .dashboard {
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto;
+                height: 100%;
+            }
+            .site-header {
+                position: fixed; /* Stick navigation for mobile scroll */
+                background: rgba(10, 8, 6, 0.65);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+            }
+            .visual-panel {
+                min-height: 100vh; /* Fill first viewport */
+                padding: 120px 20px 60px; 
+                justify-content: flex-start;
+            }
+            .panel-heading {
+                position: relative; /* Prevent overlap on flex shrink */
+                top: 0;
+                margin-bottom: 30px;
+            }
+            .info-panel {
+                border-left: none;
+                border-top: 1px solid var(--border);
+                padding: 60px 40px;
+            }
+        }
+
+        /* Mobile Phones */
+        @media (max-width: 600px) {
+            :root {
+                --scene-size: 300px;
+                --orb-size: 120px;
+            }
+            .site-header { padding: 20px; }
+            .visual-panel {
+                min-height: auto;
+                padding-top: 100px;
+            }
+            .scene-wrap { margin-top: 20px; }
+            .info-panel { padding: 40px 20px; }
+            .card { padding: 24px; }
+            .meta-grid { 
+                grid-template-columns: 1fr; /* Stack meta info vertically */
+                gap: 20px; 
+            }
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<div class="bg-ambient" id="bg-ambient"></div>
+<div class="grid-lines"></div>
+<div class="vignette"></div>
+
+<div class="dashboard">
+    <div class="visual-panel">
+        <div class="site-header">
+            <a href="index.html" class="back-btn">← Escape</a>
+            <div class="header-badge">
+                <div class="pulse-dot" id="pulse-dot"></div>
+                <span>Live · <span id="header-date">Apr 17, 2026</span></span>
+            </div>
+        </div>
+
+        <div class="panel-heading">
+            <span class="eyebrow">The Christian Cycle</span>
+            <h1>Liturgical <em id="heading-season">Calendar</em></h1>
+        </div>
+
+        <div class="scene-wrap">
+            <div class="scene">
+                <div class="pivot" id="pivot">
+                    <svg class="ring-layer ring-base" viewBox="0 0 500 500" id="ring-bottom" xmlns="http://www.w3.org/2000/svg"></svg>
+                    <svg class="ring-layer ring-main" viewBox="0 0 500 500" id="ring-top" xmlns="http://www.w3.org/2000/svg"></svg>
+
+                    <div class="marker-wrap" id="marker">
+                        <div class="marker-pulse"></div>
+                        <div class="marker-icon">
+                            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <ellipse cx="24" cy="24" rx="16" ry="10" />
+                                <path d="M 40,24 L 48,18 M 40,24 L 48,30" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="orb-container">
+                <div class="hud-ring hud-ring-3"></div>
+                <div class="hud-ring hud-ring-2"></div>
+                <div class="hud-ring hud-ring-1"></div>
+                <div class="glass-orb">
+                    <div class="orb-label">Current Season</div>
+                    <div class="orb-season" id="orb-season">Easter</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <div class="card">
+            <div class="card-eyebrow" id="card-eyebrow">Today · Apr 17, 2026</div>
+            <h2 class="card-title" id="card-title">Friday of the Second Week of Easter</h2>
+            <div class="divider"></div>
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <div class="meta-label">Liturgical Color</div>
+                    <div class="meta-val" id="card-color">White / Gold</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Sacred Lectionary</div>
+                    <div class="meta-val" id="card-readings">Acts 4:1–12<br>Ps 118<br>Jn 21:1–14</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Week Number</div>
+                    <div class="meta-val" id="card-week">Week II</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Liturgical Year</div>
+                    <div class="meta-val">Year C · 2026</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="season-legend">
+            <div class="legend-title">Seasons of the Year</div>
+            <div class="legend-items" id="legend-items"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   DATA
+══════════════════════════════════════════════════ */
+const seasons = [
+    { id: 'advent',    name: 'Advent',           colorVar: '--purple',    glowVar: '--purple-glow', colorHex: '#9D7BB0', rgbStr: '157,123,176', start: 0,   end: 25,  info: { color: 'Purple / Violet', week: 'Week I–IV', readings: 'Is 40:1–11\nLk 3:1–6\nRv 22:20' } },
+    { id: 'christmas', name: 'Christmas',        colorVar: '--white-lit', glowVar: '--white-glow', colorHex: '#F9F6F0', rgbStr: '249,246,240', start: 25,  end: 46,  info: { color: 'White / Gold', week: 'Octave', readings: 'Is 9:2–7\nTt 2:11–14\nLk 2:1–14' } },
+    { id: 'epiphany',  name: 'Ordinary Time I',  colorVar: '--green',     glowVar: '--green-glow', colorHex: '#6DA37A', rgbStr: '109,163,122', start: 46,  end: 80,  info: { color: 'Green', week: 'Weeks I–VI', readings: 'Is 60:1–6\nEph 3:2–3\nMt 2:1–12' } },
+    { id: 'lent',      name: 'Lent',             colorVar: '--purple',    glowVar: '--purple-glow', colorHex: '#9D7BB0', rgbStr: '157,123,176', start: 80,  end: 118, info: { color: 'Purple / Violet', week: 'Weeks I–V', readings: 'Jl 2:12–18\n2Co 5:20\nMt 6:1–6' } },
+    { id: 'holyweek',  name: 'Holy Week',        colorVar: '--red',       glowVar: '--red-glow',   colorHex: '#B07B7B', rgbStr: '176,123,123', start: 118, end: 126, info: { color: 'Red / Scarlet', week: 'Passion Week', readings: 'Is 50:4–7\nPh 2:6–11\nMk 14–15' } },
+    { id: 'easter',    name: 'Easter',           colorVar: '--white-lit', glowVar: '--white-glow', colorHex: '#F9F6F0', rgbStr: '249,246,240', start: 126, end: 173, info: { color: 'White / Gold', week: 'Week II', readings: 'Acts 4:1–12\nPs 118\nJn 21:1–14' } },
+    { id: 'pentecost', name: 'Pentecost',        colorVar: '--red',       glowVar: '--red-glow',   colorHex: '#B07B7B', rgbStr: '176,123,123', start: 173, end: 178, info: { color: 'Red / Fire', week: 'Pentecost Sunday', readings: 'Acts 2:1–11\n1Co 12:3\nJn 20:19–23' } },
+    { id: 'ordtime',   name: 'Ordinary Time II', colorVar: '--green',     glowVar: '--green-glow', colorHex: '#6DA37A', rgbStr: '109,163,122', start: 178, end: 360, info: { color: 'Green', week: 'Weeks IX–XXXIV', readings: 'Rm 5:12–15\n1Co 15:21\nMt 13:1–23' } }
+];
+
+const todaySeason = seasons.find(s => s.id === 'easter');
+const todayAngleDeg = 145; // position on ring
+
+/* ═══════════════════════════════════════════════
+   GEOMETRY
+══════════════════════════════════════════════════ */
+const CX = 250, CY = 250, R = 185;
+
+function toRad(deg) { return (deg - 90) * Math.PI / 180; }
+
+function polarToXY(angleDeg) {
+    const a = toRad(angleDeg);
+    return { x: CX + R * Math.cos(a), y: CY + R * Math.sin(a) };
+}
+
+function arcPath(startDeg, endDeg) {
+    const s = polarToXY(startDeg + 0.4);
+    const e = polarToXY(endDeg   - 0.4);
+    const large = (endDeg - startDeg) > 180 ? 1 : 0;
+    return `M ${s.x},${s.y} A ${R},${R} 0 ${large} 1 ${e.x},${e.y}`;
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER & RESPONSIVENESS
+══════════════════════════════════════════════════ */
+function buildRings() {
+    const top    = document.getElementById('ring-top');
+    const bottom = document.getElementById('ring-bottom');
+
+    seasons.forEach(s => {
+        const d = arcPath(s.start, s.end);
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('stroke', `var(${s.colorVar})`);
+        path.setAttribute('class', 'season-arc');
+        path.setAttribute('id', `arc-${s.id}`);
+
+        path.addEventListener('mouseenter', () => setActiveSeason(s));
+        path.addEventListener('mouseleave', () => setActiveSeason(todaySeason));
+
+        top.appendChild(path);
+
+        const clone = path.cloneNode(true);
+        clone.removeAttribute('id');
+        clone.style.cursor = 'default';
+        bottom.appendChild(clone);
+    });
+}
+
+function buildLegend() {
+    const wrap = document.getElementById('legend-items');
+    seasons.forEach(s => {
+        const pill = document.createElement('div');
+        pill.className = 'legend-pill' + (s.id === todaySeason.id ? ' active' : '');
+        pill.id = `pill-${s.id}`;
+        pill.innerHTML = `
+            <span class="legend-dot" style="background: ${s.colorHex}"></span>
+            <span>${s.name}</span>`;
+        pill.addEventListener('mouseenter', () => setActiveSeason(s));
+        pill.addEventListener('mouseleave', () => setActiveSeason(todaySeason));
+        wrap.appendChild(pill);
+    });
+}
+
+function placeMarker() {
+    const pos = polarToXY(todayAngleDeg);
+    // Dynamically query actual screen size to retain accurate 3D geometry
+    const wrap = document.querySelector('.scene-wrap');
+    const scale = wrap.offsetWidth / 500; 
+    
+    const marker = document.getElementById('marker');
+    marker.style.left  = (pos.x * scale) + 'px';
+    marker.style.top   = (pos.y * scale) + 'px';
+}
+
+/* ═══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════ */
+function setActiveSeason(s) {
+    const root = document.documentElement;
+    root.style.setProperty('--active-color',  `var(${s.colorVar})`);
+    root.style.setProperty('--active-glow',   `var(${s.glowVar})`);
+    root.style.setProperty('--active-rgb',    s.rgbStr);
+
+    document.getElementById('orb-season').textContent    = s.name;
+    document.getElementById('heading-season').textContent = s.name;
+    document.getElementById('card-color').textContent    = s.info.color;
+    document.getElementById('card-week').textContent     = s.info.week;
+    document.getElementById('card-readings').innerHTML   = s.info.readings.replace(/\n/g, '<br>');
+
+    // Arc highlights
+    document.querySelectorAll('.season-arc').forEach(el => el.classList.remove('active'));
+    const arc = document.getElementById(`arc-${s.id}`);
+    if (arc) arc.classList.add('active');
+
+    // Legend pills
+    document.querySelectorAll('.legend-pill').forEach(el => el.classList.remove('active'));
+    const pill = document.getElementById(`pill-${s.id}`);
+    if (pill) pill.classList.add('active');
+}
+
+/* ═══════════════════════════════════════════════
+   INIT & EVENT LISTENERS
+══════════════════════════════════════════════════ */
+function init() {
+    buildRings();
+    buildLegend();
+    placeMarker();
+    setActiveSeason(todaySeason);
+
+    // Set today's card title
+    document.getElementById('card-title').textContent = 'Friday of the Second Week of Easter';
+
+    // Recalculate 3D elements dynamically whenever resizing window or flipping phone
+    window.addEventListener('resize', placeMarker);
+}
+
+init();
+</script>
+</body>
+</html>

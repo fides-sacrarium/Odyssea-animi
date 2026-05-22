@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Fides Sacrarium</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+:root {
+  /* ── Palette: warm umber + slate cyan ── */
+  --bg:      #0d0b09;
+  --s1:      #141009;
+  --s2:      #1c1610;
+  --s3:      #241c14;
+  --s4:      #2e2419;
+  --tx:      #ede4d3;
+  --tx2:     #8a7a68;
+  --tx3:     #4a3e30;
+  --br:      rgba(160,120,70,0.12);
+
+  /* Primary: Cyan */
+  --umber:   #4a8fa0;
+  --umber2:  #6db8cc;
+  --umber3:  #9fd6e4;
+  --udim:    rgba(74,143,160,0.08);
+  --uglow:   rgba(74,143,160,0.22);
+
+  /* Accent: Slate Cyan */
+  --cyan:    #4a8fa0;
+  --cyan2:   #6db8cc;
+  --cyan3:   #9fd6e4;
+  --cdim:    rgba(74,143,160,0.08);
+  --cglow:   rgba(74,143,160,0.22);
+
+  /* Feature colors per pathway */
+  --c-gold:   #6db8cc;
+  --c-purple: #8868a8;
+  --c-blue:   #4878b0;
+  --c-red:    #986868;
+  --c-green:  #588870;
+  --c-cyan:   var(--cyan);
+  --c-rose:   #986878;
+  --c-amber:  #6db8cc;
+
+  --r: 14px;
+  --ease: cubic-bezier(0.16,1,0.3,1);
+}
+
+[data-theme="light"] {
+  --bg:#f0ebe0; --s1:#ffffff; --s2:#f7f3ea; --s3:#ede6d8; --s4:#e0d8c8;
+  --tx:#1a1208; --tx2:#6a5a44; --tx3:#a8987c;
+  --umber:#3a7888; --umber2:#5a9fae; --umber3:#80c0ce;
+  --udim:rgba(58,120,136,0.07); --uglow:rgba(58,120,136,0.18);
+  --cyan:#3a7888; --cyan2:#5a9fae; --cyan3:#80c0ce;
+  --cdim:rgba(58,120,136,0.07); --cglow:rgba(58,120,136,0.18);
+  --br:rgba(58,120,136,0.12);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;height:100%}
+body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;-webkit-font-smoothing:antialiased;min-height:100%;overflow-x:hidden}
+
+/* Grain */
+body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;opacity:0.032;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* Ambient blobs */
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.amb{position:absolute;border-radius:50%;filter:blur(120px);animation:ambFloat 24s ease-in-out infinite alternate}
+.amb-1{width:600px;height:600px;top:-200px;left:-180px;background:radial-gradient(circle,rgba(74,143,160,0.18) 0%,transparent 70%)}
+.amb-2{width:400px;height:400px;bottom:-150px;right:-100px;background:radial-gradient(circle,rgba(60,110,130,0.14) 0%,transparent 70%);animation-direction:alternate-reverse;animation-duration:30s}
+.amb-3{width:260px;height:260px;top:55%;left:55%;background:radial-gradient(circle,rgba(80,50,20,0.10) 0%,transparent 70%);animation:ambPulse 7s ease-in-out infinite}
+@keyframes ambFloat{0%{transform:translate(0,0)}100%{transform:translate(30px,-24px)}}
+@keyframes ambPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.9;transform:scale(1.15)}}
+
+/* Fine grid */
+.grid-bg{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 88px,rgba(74,143,160,0.018) 88px,rgba(74,143,160,0.018) 89px),
+             repeating-linear-gradient(90deg,transparent,transparent 88px,rgba(74,143,160,0.018) 88px,rgba(74,143,160,0.018) 89px)}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;z-index:8000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform 1.1s cubic-bezier(0.76,0,0.24,1),opacity 0.5s ease}
+#splash.gone{transform:translateY(-100%);opacity:0;pointer-events:none}
+.s-cross{width:52px;height:72px;perspective:600px;margin-bottom:36px;opacity:0;animation:fadeUp 0.8s var(--ease) 0.2s forwards}
+.s-cross-3d{width:100%;height:100%;transform-style:preserve-3d;animation:spinY 14s linear infinite}
+@keyframes spinY{from{transform:rotateY(0)}to{transform:rotateY(360deg)}}
+.s-obj{width:100%;height:100%;overflow:visible!important}
+.s-label{font-size:9px;letter-spacing:0.52em;text-transform:uppercase;color:var(--umber2);font-weight:500;margin-bottom:12px;opacity:0;animation:fadeUp 0.8s var(--ease) 0.5s forwards}
+.s-title{font-family:'DM Serif Display',serif;font-size:clamp(44px,12vw,90px);font-weight:400;line-height:0.9;text-align:center}
+.s-word{display:block;overflow:hidden}
+.s-word-inner{display:block;opacity:0;transform:translateY(100%);animation:slideUp 0.9s var(--ease) forwards}
+.s-word:nth-child(1) .s-word-inner{animation-delay:0.65s}
+.s-word:nth-child(2) .s-word-inner{animation-delay:0.80s;color:var(--umber2);font-style:italic}
+.s-rule{width:0;height:1px;margin:28px auto 0;background:linear-gradient(to right,transparent,var(--umber2),transparent);animation:growRule 0.9s var(--ease) 1.1s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{to{opacity:1;transform:translateY(0)}}
+@keyframes growRule{to{width:90px}}
+
+/* ── STICKY BAR ── */
+#sticky-bar{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:58px;padding:0 20px;
+  display:flex;align-items:center;gap:12px;
+  background:rgba(13,11,9,0.82);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  border-bottom:1px solid transparent;
+  transform:translateY(-100%);
+  transition:transform 0.5s var(--ease),border-color 0.4s;
+}
+[data-theme="light"] #sticky-bar{background:rgba(240,235,224,0.85)}
+#sticky-bar.visible{transform:translateY(0);border-color:var(--br)}
+.sb-av{width:32px;height:32px;border-radius:50%;background:var(--s3);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.sb-info{flex:1;min-width:0}
+.sb-name{font-size:12.5px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.sb-rank{font-size:9.5px;color:var(--umber2);letter-spacing:0.06em;line-height:1.2}
+.sb-score{font-family:'DM Serif Display',serif;font-size:15px;color:var(--umber3);flex-shrink:0}
+.sb-acts{display:flex;gap:6px}
+.sb-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--br);background:none;color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s;font-size:12px}
+.sb-btn:hover{border-color:var(--umber2);color:var(--umber2)}
+.sb-btn.danger:hover{border-color:#904040;color:#b06060}
+.sb-btn svg{width:13px;height:13px}
+
+/* ── MAIN ── */
+#main{position:relative;z-index:2;padding:0 20px 90px;opacity:0;animation:fadePage 0.8s ease 2.4s forwards}
+@keyframes fadePage{to{opacity:1}}
+.wrap{width:100%;max-width:1040px;margin:0 auto}
+
+.access-denied{background:rgba(160,60,60,0.1);border:1px solid rgba(160,60,60,0.22);border-radius:10px;padding:11px 16px;margin:20px auto 0;max-width:1040px;font-size:12px;color:#c08080;display:none}
+.access-denied.show{display:block}
+
+/* ── HERO ── */
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:72px 16px 56px;opacity:0;animation:fadeUp 0.9s var(--ease) 2.6s both}
+.hero-eyebrow{font-size:9px;letter-spacing:0.52em;text-transform:uppercase;color:var(--cyan2);font-weight:500;margin-bottom:28px}
+
+.ring-wrap{position:relative;width:152px;height:152px;margin-bottom:6px}
+.ring-svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--s4);stroke-width:4}
+.ring-fill{fill:none;stroke:var(--umber2);stroke-width:4;stroke-linecap:round;stroke-dasharray:452;stroke-dashoffset:452;transition:stroke-dashoffset 1.7s var(--ease),stroke 0.6s}
+.hero-av{position:absolute;inset:18px;border-radius:50%;background:var(--s2);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:52px;cursor:pointer;transition:transform 0.35s var(--ease),box-shadow 0.35s}
+.hero-av:hover{transform:scale(1.05);box-shadow:0 0 28px var(--uglow)}
+.rank-badge{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:40px;height:40px;border-radius:50%;background:var(--s1);border:2px solid var(--umber);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 5px 16px rgba(0,0,0,0.4)}
+
+.hero-name{font-family:'DM Serif Display',serif;font-size:clamp(30px,5vw,44px);line-height:1.1;margin-top:16px}
+.hero-meta{font-size:11.5px;color:var(--tx2);margin-top:6px;letter-spacing:0.06em}
+.hero-verse{font-family:'DM Serif Display',serif;font-style:italic;font-size:14px;color:var(--tx3);margin-top:16px;max-width:380px;line-height:1.55}
+
+.hero-tags{display:flex;gap:9px;margin-top:22px;flex-wrap:wrap;justify-content:center}
+.hero-tag{display:flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--br);border-radius:30px;padding:8px 16px;font-size:12px;color:var(--tx);font-family:'Outfit',sans-serif}
+button.hero-tag{cursor:pointer;transition:all 0.28s}
+button.hero-tag:hover{border-color:var(--cyan2);transform:translateY(-2px);box-shadow:0 6px 18px var(--cdim)}
+.tag-label{font-size:8.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--tx3);font-weight:600}
+.score-tag strong{font-family:'DM Serif Display',serif;font-size:16px;color:var(--umber3)}
+
+.hero-prog{width:100%;max-width:320px;margin-top:22px}
+.prog-track{height:5px;border-radius:5px;background:var(--s4);overflow:hidden}
+.prog-fill{height:100%;width:0%;border-radius:5px;background:var(--umber2);transition:width 1.7s var(--ease)}
+.prog-text{font-size:10px;color:var(--tx3);margin-top:8px;letter-spacing:0.05em}
+
+.hero-acts{display:flex;gap:8px;margin-top:24px;flex-wrap:wrap;justify-content:center}
+.btn-solid{padding:10px 22px;border-radius:24px;border:none;background:linear-gradient(135deg,var(--umber3),var(--umber));color:var(--bg);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.28s}
+.btn-solid:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--uglow)}
+.btn-ghost{padding:10px 22px;border-radius:24px;border:1px solid var(--br);background:none;color:var(--tx2);font-family:'Outfit',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.28s}
+.btn-ghost:hover{border-color:var(--cyan2);color:var(--cyan2)}
+.icon-pill{width:38px;height:38px;border-radius:50%;border:1px solid var(--br);background:none;color:var(--tx2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.28s}
+.icon-pill:hover{border-color:var(--umber2);color:var(--umber2)}
+.icon-pill.danger:hover{border-color:#904040;color:#b06060}
+.icon-pill svg{width:15px;height:15px}
+
+/* ── LEDGER ── */
+.ledger{padding-top:16px;opacity:0;animation:fadeUp 0.9s var(--ease) 2.85s both}
+.section-head{text-align:center;margin-bottom:30px}
+.sec-eye{font-size:9px;letter-spacing:0.45em;text-transform:uppercase;color:var(--cyan2);font-weight:500;margin-bottom:10px}
+.sec-title{font-family:'DM Serif Display',serif;font-size:clamp(22px,3.5vw,34px);font-weight:400;font-style:italic}
+.sec-sub{font-size:12px;color:var(--tx2);line-height:1.65;max-width:400px;margin:10px auto 0}
+
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stat-tile{position:relative;overflow:hidden;background:var(--s1);border:1px solid var(--br);border-radius:var(--r);padding:22px 20px;display:flex;flex-direction:column;gap:3px;transition:transform 0.35s var(--ease),border-color 0.3s,box-shadow 0.3s}
+.stat-tile::before{content:'';position:absolute;top:0;left:18px;right:18px;height:1px;background:linear-gradient(to right,transparent,var(--sc,var(--umber)),transparent);opacity:0.5}
+.stat-tile:hover{transform:translateY(-4px);border-color:rgba(255,255,255,0.05);box-shadow:0 18px 42px rgba(0,0,0,0.38)}
+.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.stat-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--s2);border:1px solid var(--br)}
+.stat-lbl{font-size:8.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--tx3);font-weight:700}
+.stat-val{font-family:'DM Serif Display',serif;font-size:32px;line-height:1;color:var(--tx)}
+.stat-val .sm{font-size:16px;color:var(--tx2)}
+.stat-sub{font-size:10.5px;color:var(--tx2);margin-top:3px}
+.stat-tile.feature{background:linear-gradient(145deg,var(--s1),var(--s2));border-color:rgba(196,144,80,0.18)}
+.stat-tile.feature .stat-val{color:var(--umber3)}
+
+/* ── RIVER ── */
+.river-section{padding-top:72px}
+.river-section .section-head{opacity:0;animation:fadeUp 0.9s var(--ease) 3.1s both}
+.river{position:relative;padding:16px 0 28px}
+.river-spine{position:absolute;top:0;bottom:0;left:50%;width:2px;transform:translateX(-1px);background:var(--s3);border-radius:2px}
+.river-fill{position:absolute;top:0;left:0;width:100%;height:0%;background:linear-gradient(180deg,transparent,var(--umber) 10%,var(--cyan2));border-radius:2px;box-shadow:0 0 12px var(--uglow);transition:height 0.18s linear}
+.river-fill::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:var(--cyan2);box-shadow:0 0 14px var(--cyan2)}
+
+.station{position:relative;display:flex;width:100%;padding:24px 0;text-decoration:none;color:inherit}
+.station.left{justify-content:flex-start}
+.station.right{justify-content:flex-end}
+.station-node{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--s3);border:2px solid var(--br);z-index:3;transition:all 0.45s var(--ease)}
+.station.lit .station-node{background:var(--c,var(--umber));border-color:var(--c,var(--umber));box-shadow:0 0 14px var(--c,var(--umber))}
+.station.lit .station-node::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:1px solid var(--c,var(--umber));opacity:0.35;animation:nodePulse 2.5s ease-in-out infinite}
+@keyframes nodePulse{0%,100%{transform:scale(1);opacity:.35}50%{transform:scale(1.4);opacity:0}}
+
+.station-card{position:relative;width:calc(50% - 46px);background:var(--s1);border:1px solid var(--br);border-radius:var(--r);padding:24px 24px 20px;display:flex;gap:16px;align-items:flex-start;opacity:0;transition:opacity 0.85s var(--ease),transform 0.85s var(--ease),border-color 0.3s,box-shadow 0.3s;will-change:transform,opacity}
+.station.left  .station-card{transform:translateY(44px) translateX(-40px)}
+.station.right .station-card{transform:translateY(44px) translateX(40px)}
+.station.in .station-card{opacity:1;transform:translateY(0) translateX(0)}
+.station-card::before{content:'';position:absolute;top:50%;height:1px;width:46px;background:linear-gradient(var(--cdir,to right),transparent,var(--c,var(--umber)));opacity:0.4}
+.station.left  .station-card::before{right:-46px;--cdir:to right}
+.station.right .station-card::before{left:-46px;--cdir:to left}
+.station:hover .station-card{border-color:rgba(255,255,255,0.07);box-shadow:0 24px 54px rgba(0,0,0,0.45),0 0 0 1px var(--c,var(--umber))}
+
+.station-idx{font-family:'DM Serif Display',serif;font-size:12px;color:var(--c,var(--umber));position:absolute;top:14px;right:16px;opacity:0.45}
+.station-icon{width:50px;height:50px;flex-shrink:0;transition:filter 0.3s,transform 0.3s}
+.icon-svg{width:100%;height:100%;overflow:visible}
+.station:hover .station-icon{filter:drop-shadow(0 4px 12px var(--c,var(--umber)))}
+.station-body{flex:1;min-width:0}
+.card-tag{font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;font-weight:600;margin-bottom:5px;color:var(--c,var(--umber))}
+.card-title{font-family:'DM Serif Display',serif;font-size:20px;line-height:1.2;color:var(--tx);margin-bottom:6px}
+.card-desc{font-size:12px;line-height:1.65;color:var(--tx2)}
+.station-foot{display:flex;align-items:center;gap:8px;margin-top:13px}
+.station-foot span{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--tx3);font-weight:600}
+.card-arrow{width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;color:var(--tx3);transition:transform 0.3s var(--ease),border-color 0.3s,color 0.3s}
+.station:hover .card-arrow{transform:translate(2px,-2px);border-color:var(--c,var(--umber));color:var(--c,var(--umber))}
+.badge-new{position:absolute;top:13px;left:16px;font-size:7.5px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;color:var(--cyan3);background:var(--cdim);border:1px solid rgba(74,143,160,0.22);padding:2px 7px;border-radius:20px}
+
+/* pathway colors */
+.c-gold{--c:var(--c-gold)} .c-purple{--c:var(--c-purple)} .c-blue{--c:var(--c-blue)}
+.c-red{--c:var(--c-red)} .c-green{--c:var(--c-green)} .c-cyan{--c:var(--c-cyan)}
+.c-rose{--c:var(--c-rose)} .c-amber{--c:var(--c-amber)}
+
+.river-foot{text-align:center;margin-top:44px;font-family:'DM Serif Display',serif;font-style:italic;font-size:14px;color:var(--tx3)}
+.river-foot .mark{color:var(--umber2);margin:0 8px}
+
+/* ── ICON ANIMATIONS (restored from v2) ── */
+.icon-song .note-stem{animation:noteBob 2.2s ease-in-out infinite}
+.icon-song .note-head{animation:noteBob 2.2s ease-in-out infinite}
+.icon-song .note-beam{transform-origin:left center;animation:beamFade 2.2s ease-in-out infinite}
+.icon-song .note-stem2{animation:noteBob 2.2s ease-in-out 0.15s infinite}
+.icon-song .note-head2{animation:noteBob 2.2s ease-in-out 0.15s infinite}
+@keyframes noteBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes beamFade{0%,100%{opacity:.5}50%{opacity:1}}
+
+.icon-bible .page-l{transform-origin:right center;animation:pageL 3.5s ease-in-out infinite}
+.icon-bible .page-r{transform-origin:left center;animation:pageR 3.5s ease-in-out infinite}
+@keyframes pageL{0%,100%{transform:skewY(0)}50%{transform:skewY(3deg)}}
+@keyframes pageR{0%,100%{transform:skewY(0)}50%{transform:skewY(-3deg)}}
+
+.icon-prayer .cross-body{animation:crossGlow 2.8s ease-in-out infinite}
+@keyframes crossGlow{0%,100%{filter:drop-shadow(0 0 2px rgba(72,120,176,0.3))}50%{filter:drop-shadow(0 0 9px rgba(72,120,176,0.9))}}
+
+.icon-saints .halo{transform-origin:50% 50%;animation:haloTilt 4s ease-in-out infinite}
+.icon-saints .figure{transform-origin:50% 90%;animation:sway 4s ease-in-out infinite}
+@keyframes haloTilt{0%,100%{transform:rotate(-8deg) scaleX(1)}50%{transform:rotate(8deg) scaleX(0.85)}}
+@keyframes sway{0%,100%{transform:rotate(0)}50%{transform:rotate(1.5deg)}}
+
+.icon-ign .flame{transform-origin:50% 100%;animation:flicker1 1.7s ease-in-out infinite}
+.icon-ign .flame2{transform-origin:50% 100%;animation:flicker2 1.4s ease-in-out 0.2s infinite}
+@keyframes flicker1{0%,100%{transform:scaleX(1) scaleY(1) rotate(0)}30%{transform:scaleX(0.85) scaleY(1.07) rotate(-2deg)}70%{transform:scaleX(1.08) scaleY(0.95) rotate(2deg)}}
+@keyframes flicker2{0%,100%{transform:scaleX(1) scaleY(1)}40%{transform:scaleX(0.8) scaleY(1.1)}80%{transform:scaleX(1.1) scaleY(0.9)}}
+
+.icon-cal .hand{transform-origin:26px 28px;animation:sweep 4s linear infinite}
+@keyframes sweep{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+.icon-conv .dot1{animation:dotPop 1.9s ease-in-out 0s infinite}
+.icon-conv .dot2{animation:dotPop 1.9s ease-in-out 0.32s infinite}
+.icon-conv .dot3{animation:dotPop 1.9s ease-in-out 0.64s infinite}
+@keyframes dotPop{0%,100%{r:2;opacity:.3}40%{r:3.5;opacity:1}}
+
+.icon-knight .knight-halo{transform-origin:26px 7px;animation:knightHalo 3.8s ease-in-out infinite}
+.icon-knight .knight-body{transform-origin:26px 40px;animation:knightSway 3.8s ease-in-out infinite}
+.icon-knight .knight-star1{animation:starTwinkle 2.1s ease-in-out 0s infinite}
+.icon-knight .knight-star2{animation:starTwinkle 2.1s ease-in-out 0.7s infinite}
+.icon-knight .knight-star3{animation:starTwinkle 2.1s ease-in-out 1.4s infinite}
+@keyframes knightHalo{0%,100%{transform:scaleX(1) rotate(0);filter:drop-shadow(0 0 3px rgba(160,120,40,0.4))}50%{transform:scaleX(0.88) rotate(4deg);filter:drop-shadow(0 0 9px rgba(196,148,80,0.85))}}
+@keyframes knightSway{0%,100%{transform:rotate(0)}50%{transform:rotate(1.5deg)}}
+@keyframes starTwinkle{0%,100%{opacity:.2;r:1}50%{opacity:1;r:2.2}}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.68);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal-box{background:var(--s1);border:1px solid var(--br);border-radius:20px;width:100%;max-width:470px;max-height:85vh;overflow-y:auto;padding:34px 30px;position:relative;transform:translateY(18px);transition:transform 0.35s var(--ease)}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--umber3);margin-bottom:5px}
+.modal-sub{font-size:12px;color:var(--tx2);margin-bottom:22px}
+.modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:1px solid var(--br);background:none;color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s}
+.modal-close:hover{border-color:var(--umber2);color:var(--umber2)}
+
+.ep-field{margin-bottom:15px}
+.ep-field label{display:block;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--tx2);margin-bottom:6px;font-weight:600}
+.ep-field input,.ep-field select{width:100%;padding:11px 13px;background:var(--s2);border:1px solid var(--br);border-radius:10px;color:var(--tx);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:all 0.25s;-webkit-appearance:none;appearance:none}
+.ep-field input:focus,.ep-field select:focus{border-color:var(--umber2);box-shadow:0 0 0 3px var(--udim)}
+.av-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:6px}
+.av-opt{position:relative;cursor:pointer}
+.av-opt input{position:absolute;opacity:0;width:0;height:0}
+.av-face{width:100%;aspect-ratio:1;border-radius:50%;background:var(--s2);border:2px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:19px;transition:all 0.25s}
+.av-opt input:checked~.av-face{border-color:var(--umber2);box-shadow:0 0 0 3px var(--udim)}
+.save-btn{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--umber3),var(--umber));color:var(--bg);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.28s;letter-spacing:0.1em;text-transform:uppercase;margin-top:6px}
+.save-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px var(--uglow)}
+
+/* lb */
+.lb-tabs{display:flex;gap:7px;margin-bottom:20px}
+.lb-tab{padding:7px 15px;border-radius:20px;border:1px solid var(--br);background:none;color:var(--tx2);font-size:11.5px;cursor:pointer;transition:all 0.25s;letter-spacing:0.04em;font-family:'Outfit',sans-serif}
+.lb-tab.active{background:var(--udim);border-color:var(--umber2);color:var(--umber2)}
+.lb-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.035)}
+.lb-rank{width:22px;text-align:center;font-size:11px;color:var(--tx3);font-weight:600}
+.lb-av{font-size:21px}
+.lb-info{flex:1}
+.lb-name{font-size:13px;font-weight:500;color:var(--tx)}
+.lb-detail{font-size:10.5px;color:var(--tx2);margin-top:1px}
+.lb-score{font-size:12px;font-weight:600;color:var(--umber2)}
+.hist-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.035)}
+.hist-ico{font-size:16px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:var(--s2);border-radius:8px}
+.hist-label{flex:1;font-size:12.5px;color:var(--tx)}
+.hist-pts{font-size:11px;color:var(--umber2);font-weight:600}
+.hist-time{font-size:10px;color:var(--tx3)}
+.ladder-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.035)}
+.ladder-row.here{background:var(--udim);border-radius:8px;padding-left:8px;padding-right:8px}
+.ladder-ico{font-size:17px;width:28px;text-align:center}
+.ladder-name{flex:1;font-size:12.5px;color:var(--tx);font-weight:500}
+.ladder-min{font-size:10.5px;color:var(--tx2)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  #main{padding:0 14px 70px}
+  .hero{padding:52px 12px 44px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .river-spine{left:24px;transform:none}
+  .river-fill::after{left:0;transform:none}
+  .station,.station.left,.station.right{justify-content:flex-start}
+  .station-node,.station.left .station-node,.station.right .station-node{left:24px;transform:translate(-50%,-50%)}
+  .station-card{width:auto;flex:1;min-width:0;margin-left:58px}
+  .station.left .station-card,.station.right .station-card{transform:translateY(38px)}
+  .station.in .station-card{transform:translateY(0)}
+  .station-card::before,.station.left .station-card::before,.station.right .station-card::before{left:-34px;right:auto;width:34px;--cdir:to left}
+  .sb-score{display:none}
+  #sticky-bar{padding:0 16px}
+}
+@media(max-width:520px){
+  .stat-grid{grid-template-columns:1fr}
+  .station-card{padding:20px 18px 18px}
+  .modal-box{padding:28px 22px}
+}
+</style>
+</head>
+<body>
+<div class="ambient"><div class="amb amb-1"></div><div class="amb amb-2"></div><div class="amb amb-3"></div></div>
+<div class="grid-bg"></div>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="s-cross">
+    <div class="s-cross-3d">
+      <svg class="s-obj" viewBox="0 0 100 140">
+        <defs>
+          <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9fd6e4"/>
+            <stop offset="50%" stop-color="#4a8fa0"/>
+            <stop offset="100%" stop-color="#2a5a70"/>
+          </linearGradient>
+          <filter id="cf"><feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#4a8fa0" flood-opacity="0.45"/></filter>
+        </defs>
+        <path d="M50 5 L65 20 Q55 30 55 45 Q70 45 80 35 L95 50 L80 65 Q70 55 55 55 Q55 80 65 120 L50 135 L35 120 Q45 80 45 55 Q30 55 20 65 L5 50 L20 35 Q30 45 45 45 Q45 30 35 20 Z" fill="url(#cg)" filter="url(#cf)"/>
+      </svg>
+    </div>
+  </div>
+  <div class="s-label">Digital Companion</div>
+  <h1 class="s-title">
+    <span class="s-word"><span class="s-word-inner">Fides</span></span>
+    <span class="s-word"><span class="s-word-inner">Sacrarium</span></span>
+  </h1>
+  <div class="s-rule"></div>
+</div>
+
+<!-- STICKY BAR -->
+<div id="sticky-bar">
+  <div class="sb-av" id="sb-avatar">🕊️</div>
+  <div class="sb-info">
+    <div class="sb-name" id="sb-name">—</div>
+    <div class="sb-rank" id="sb-rank">—</div>
+  </div>
+  <div class="sb-score" id="sb-score">0 pts</div>
+  <div class="sb-acts">
+    <button class="sb-btn" onclick="openEditProfile()" title="Edit profile">✎</button>
+    <button class="sb-btn" onclick="toggleGlobalTheme()" title="Toggle theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="sb-btn danger" onclick="doSignOut()" title="Sign out">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
+  </div>
+</div>
+
+<main id="main">
+  <div class="access-denied" id="access-denied-banner">You don't have access to that page. The Songbook is available to CG ministry members only.</div>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="hero-eyebrow">Pax Tecum · Digital Companion</div>
+
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 152 152">
+          <circle class="ring-bg" cx="76" cy="76" r="66"/>
+          <circle class="ring-fill" id="ring-fill" cx="76" cy="76" r="66"/>
+        </svg>
+        <div class="hero-av" id="prof-avatar" onclick="openEditProfile()" title="Edit profile">🕊️</div>
+        <div class="rank-badge" id="rank-icon">🕯️</div>
+      </div>
+
+      <h1 class="hero-name" id="prof-name">Loading…</h1>
+      <div class="hero-meta" id="prof-meta">Complete your profile</div>
+      <p class="hero-verse">"Be still, and know that I am God." — Psalm 46:10</p>
+
+      <div class="hero-tags">
+        <button class="hero-tag" onclick="openLeaderboard()" title="View ranks">
+          <span class="tag-label">Rank</span>
+          <span id="rank-name">Seeker</span>
+        </button>
+        <div class="hero-tag score-tag">
+          <span class="tag-label">Score</span>
+          <strong id="rank-score">0</strong>&nbsp;<span style="font-size:10px;color:var(--tx3)">pts</span>
+        </div>
+        <div class="hero-tag">
+          <span class="tag-label">Tier</span>
+          <span id="rank-tier">1 / 15</span>
+        </div>
+      </div>
+
+      <div class="hero-prog">
+        <div class="prog-track"><div class="prog-fill" id="rank-progress"></div></div>
+        <div class="prog-text" id="rank-next">Begin your journey to earn your first rank.</div>
+      </div>
+
+      <div class="hero-acts">
+        <button class="btn-solid" onclick="openEditProfile()">Edit Profile</button>
+        <button class="btn-ghost" onclick="openLeaderboard()">Ranks &amp; Leaderboard</button>
+        <button class="icon-pill" onclick="toggleGlobalTheme()" title="Toggle theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <button class="icon-pill danger" onclick="doSignOut()" title="Sign out">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- LEDGER -->
+    <section class="ledger" id="ledger">
+      <div class="section-head">
+        <div class="sec-eye">Your Sacred Ledger</div>
+        <h2 class="sec-title">The fruits of your devotion</h2>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-tile feature" style="--sc:var(--umber)">
+          <div class="stat-top"><div class="stat-ico">⭐</div><div class="stat-lbl">Total Score</div></div>
+          <div class="stat-val" id="stat-score">0</div>
+          <div class="stat-sub">Every act of devotion counted</div>
+        </div>
+        <div class="stat-tile" style="--sc:var(--umber2)">
+          <div class="stat-top"><div class="stat-ico" id="stat-rank-ico">🕯️</div><div class="stat-lbl">Current Rank</div></div>
+          <div class="stat-val" id="stat-rank-name" style="font-size:26px">Seeker</div>
+          <div class="stat-sub" id="stat-rank-blurb">The first spark.</div>
+        </div>
+        <div class="stat-tile feature" style="--sc:var(--cyan)">
+          <div class="stat-top"><div class="stat-ico">♟️</div><div class="stat-lbl">Chess with Saints</div></div>
+          <div class="stat-val"><span id="stat-chess-wins">0</span><span class="sm" id="stat-chess-games"> / 0</span></div>
+          <div class="stat-sub">Victories / Played</div>
+        </div>
+        <div class="stat-tile" style="--sc:var(--c-blue)">
+          <div class="stat-top"><div class="stat-ico">✝️</div><div class="stat-lbl">Prayers Offered</div></div>
+          <div class="stat-val" id="stat-prayers">0</div>
+          <div class="stat-sub">Chaplets &amp; novenas</div>
+        </div>
+        <div class="stat-tile" style="--sc:var(--c-green)">
+          <div class="stat-top"><div class="stat-ico">🕯️</div><div class="stat-lbl">Lectio Divina</div></div>
+          <div class="stat-val" id="stat-lectio">0</div>
+          <div class="stat-sub">Contemplations completed</div>
+        </div>
+        <div class="stat-tile" style="--sc:var(--c-purple)">
+          <div class="stat-top"><div class="stat-ico">📖</div><div class="stat-lbl">Sacred Scripture</div></div>
+          <div class="stat-val" id="stat-bible">0</div>
+          <div class="stat-sub">Verses drawn in prayer</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIVER / PATHWAYS -->
+    <section class="river-section">
+      <div class="section-head">
+        <div class="sec-eye">Choose Your Path</div>
+        <h2 class="sec-title">Eight sacred pathways</h2>
+        <p class="sec-sub">Let devotion carry you downstream — every prayer, scripture and game deepens your journey.</p>
+      </div>
+
+      <div class="river" id="river">
+        <div class="river-spine"><div class="river-fill" id="riverFill"></div></div>
+
+        <!-- 01 Song Book -->
+        <a href="songbook.html" class="station left c-gold">
+          <span class="station-node"></span>
+          <div class="station-card">
+            <div class="station-idx">01</div>
+            <div class="station-icon">
+              <svg class="icon-svg icon-song" viewBox="0 0 52 52">
+                <defs>
+                  <linearGradient id="g-s" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e0b878"/><stop offset="100%" stop-color="#b89050"/></linearGradient>
+                  <filter id="fs"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#b89050" flood-opacity="0.5"/></filter>
+                </defs>
+                <g class="note-stem"><rect x="27" y="11" width="3" height="22" rx="1.5" fill="url(#g-s)" filter="url(#fs)"/><ellipse class="note-head" cx="25" cy="33" rx="6" ry="4.5" transform="rotate(-15 25 33)" fill="url(#g-s)" filter="url(#fs)"/></g>
+                <rect class="note-beam" x="27" y="11" width="14" height="3" rx="1.5" fill="url(#g-s)"/>
+                <g class="note-stem2"><rect x="38" y="11" width="3" height="18" rx="1.5" fill="url(#g-s)"/><ellipse class="note-head2" cx="36.5" cy="29" rx="5.5" ry="4" transform="rotate(-15 36.5 29)" fill="url(#g-s)"/></g>
+                <line x1="8" y1="42" x2="44" y2="42" stroke="rgba(184,144,80,0.18)" stroke-width="1"/>
+                <line x1="8" y1="46" x2="44" y2="46" stroke="rgba(184,144,80,0.18)" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="station-body">
+              <div class="card-tag">Music</div>
+              <div class="card-title">Song Book</div>
+              <div class="card-desc">Chord sheets, lyrics, and arrangements for worship.</div>
+              <div class="station-foot"><span>Open library</span><span class="card-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg></span></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- 02 Scripture -->
+        <a href="bible.html" class="station right c-purple">
+          <span class="station-node"></span>
+          <div class="station-card">
+            <div class="station-idx">02</div>
+            <div class="station-icon">
+              <svg class="icon-svg icon-bible" viewBox="0 0 52 52">
+                <defs>
+                  <linearGradient id="g-b" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c4a8dc"/><stop offset="100%" stop-color="#8868a8"/></linearGradient>
+                  <filter id="fb"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#8868a8" flood-opacity="0.45"/></filter>
+                </defs>
+                <path class="page-l" d="M26 8 C20 8 10 11 8 15 L8 44 C10 41 20 40 26 42 Z" fill="url(#g-b)" filter="url(#fb)" opacity="0.9"/>
+                <path class="page-r" d="M26 8 C32 8 42 11 44 15 L44 44 C42 41 32 40 26 42 Z" fill="url(#g-b)" filter="url(#fb)"/>
+                <line x1="26" y1="8" x2="26" y2="42" stroke="rgba(13,11,9,0.5)" stroke-width="2"/>
+                <line x1="35" y1="19" x2="35" y2="34" stroke="rgba(13,11,9,0.35)" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="29" y1="24" x2="41" y2="24" stroke="rgba(13,11,9,0.35)" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="station-body">
+              <div class="card-tag">Scripture</div>
+              <div class="card-title">Speak Lord</div>
+              <div class="card-desc">Guided readings into the sacred scriptures.</div>
+              <div class="station-foot"><span>Open scripture</span><span class="card-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg></span></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- 03 Prayer -->
+        <a href="prayerbook.html" class="station left c-blue">
+          <span class="station-node"></span>
+          <div class="station-card">
+            <div class="station-idx">03</div>
+            <div class="station-icon">
+              <svg class="icon-svg icon-prayer" viewBox="0 0 52 52">
+                <defs>
+                  <linearGradient id="g-p" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#90b8f0"/><stop offset="100%" stop-color="#4878b0"/></linearGradient>
+                  <filter id="fp"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#4878b0" flood-opacity="0.55"/></filter>
+                </defs>
+                <g class="cross-body" filter="url(#fp)">
+                  <rect x="22" y="8" width="8" height="36" rx="3" fill="url(#g-p)"/>
+                  <rect x="10" y="18" width="32" height="8" rx="3" fill="url(#g-p)"/>
+                </g>
+                <circle cx="10" cy="10" r="2.5" fill="url(#g-p)" opacity="0.45"/>
+                <circle cx="42" cy="10" r="2.5" fill="url(#g-p)" opacity="0.45"/>
+                <circle cx="10" cy="42" r="2.5" fill="url(#g-p)" opacity="0.45"/>
+                <circle cx="42" cy="42" r="2.5" fill="url(#g-p)" opacity="0.45"/>
+              </svg>
+            </div>
+            <div class="station-body">
+              <div class="card-tag">Devotion</div>
+              <div class="card-title">Prayer Book</div>
+              <div class="card-desc">Chaplets, daily mysteries, and digital beads.</div>
+              <div class="station-foot"><span>Begin prayer</span><span class="card-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg></span></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- 04 Saints -->
+        <a href="saints.html" class="station right c-red">
+          <span class="station-node"></span>
+          <div class="station-card">
+            <div class="station-idx">04</div>
+            <div class="station-icon">
+              <svg class="icon-svg icon-saints" viewBox="0 0 52 52">
+                <defs>
+                  <linearGradient id="g-r" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d8acac"/><stop offset="100%" stop-color="#986868"/></linearGradient>
+                  <filter id="fr"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#986868" flood-opacity="0.4"/></filter>
+                </defs>
+                <ellipse class="halo" cx="26" cy="15" rx="10" ry="3.5" fill="none" stroke="url(#g-r)" stroke-width="2.5" filter="url(#fr)"/>
+                <g class="figure" filter="url(#fr)">
+                  <circle cx="26" cy="21" r="5" fill="url(#g-r)"/>
+                  <path d="M18 28 Q14 44 18 46 L34 46 Q38 44 34 28 Q30 33 26 33 Q22 33 18 28Z" fill="url(#g-r)"/>
+                  <line x1="16" y1="33" x2="10" y2="39" stroke="url(#g-r)" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="36" y1="33" x2="42" y2="39" stroke="url(#g-r)" stroke-width="2.5" stroke-linecap="round"/>
+                </g>
+              </svg>
+            </div>
+            <div class="station-body">
+              <div class="card-tag">Communion of Saints</div>
+              <div class="card-title">The Saints</div>
+              <div class="card-desc">Lives, writings, and intercessions of the holy.</div>
+              <div class="station-foot"><span>Discover saints</span><span class="card-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg></span></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- 05 Ignatian -->
+        <a href="lectio.html" class="station left c-green">
+          <span class="station-node"></span>
+          <div class="station-card">
+            <div class="station-idx">05</div>
+            <div class="station-icon">
+              <svg class="icon-svg icon-ign" viewBox="0 0 52 52">
+                <defs>
+                  <linearGradient id="g-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#96c49e"/><stop offset="100%" stop-color="#588870"/></linearGradient>
+                  <linearGradient id="g-fl" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#c4a060"/><stop offset="100%" stop-color="#f4e080"/></linearGradient>
+                  <filter id="fglow"><feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#f0c840" flood-opacity="0.7"/></filter>
+                  <filter id="fg"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#588870" flood-opacity="0.4"/></filter>
+                </defs>
+                <rect x="20" y="31" width="12" height="17" rx="2" fill="url(#g-g)" filter="url(#fg)"/>
+                <rect x="18" y="46" width="16" height="3" rx="1.5" fill="url(#g-g)"/>
+                <line x1="26" y1="31" x2="26" y2="28" stroke="#c8a090" stroke-width="1.5" stroke-linecap="round"/>
+                <path class="flame" d="M26 27 C23.5 24 21.5 20.5 23.5 16.5 C24.5 14.5 26 12 26 12 C26 12 27.5 14.5 28.5 16.5 C30.5 20.5 28.5 24 26 27Z" fill="url(#g-fl)" filter="url(#fglow)"/>
+                <path class="flame2" d="M26 25 C24.5 23 23.5 20 24.5 18 C25 17 26 16 26 16 C26 16 27 17 27.5 18 C28.5 20 27.5 23 26 25Z" fill="rgba(255,248,200,0.92)"/>
+              </svg>
+            </div>
+            <div class="station-body">
+              <div class="card-tag">Contemplation</div>
+              <div class="card-title">Ignatian</div>
+              <div class="card-desc">Lectio Divina and Visio Divina — enter the scene.</div>
+              <div class="station-foot"><span>Begin contemplation</span><span class="card-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg></span></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- 06 Calendar -->
+        <a href="lc.html" class="station right c-cyan">
+          <span class="station-node"></span>
+          <div class="station-card">
+            <div class="station-idx">06</div>
+            <div class="station-icon">
+              <svg class="icon-svg icon-cal" viewBox="0 0 52 52">
+                <defs>
+                  <linearGradient id="g-c" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#9fd6e4"/><stop offset="100%" stop-color="#4a8fa0"/></linearGradient>
+                  <filter id="fc"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#4a8fa0" flood-opacity="0.45"/></filter>
+                </defs>
+                <circle cx="26" cy="28" r="18" fill="none" stroke="url(#g-c)" stroke-width="2.5" filter="url(#fc)"/>
+                <circle cx="26" cy="28" r="2.5" fill="url(#g-c)"/>
+                <line x1="26" y1="12" x2="26" y2="15.5" stroke="url(#g-c)" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="26" y1="40.5" x2="26" y2="44" stroke="url(#g-c)" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="10" y1="28" x2="13.5" y2="28" stroke="url(#g-c)" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="38.5" y1="28" x2="42" y2="28" stroke="url(#g-c)" stroke-width="2.2" stroke-linecap="round"/>
+                <line class="hand" x1="26" y1="28" x2="26" y2="13" stroke="url(#g-c)" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="26" y1="28" x2="37" y2="28" stroke="url(#g-c)" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+              </svg>
+            </div>
+            <div class="station-body">
+              <div class="card-tag">Liturgical Year</div>
+              <div class="card-title">Calendar</div>
+              <div class="card-desc">Seasons, feasts, and daily readings of the Church year.</div>
+              <div class="station-foot"><span>View calendar</span><span class="card-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg></span></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- 07 Conversum AI -->
+        <a href="chat.html" class="station left c-rose">
+          <span class="station-node"></span>
+          <div class="station-card">
+            <div class="badge-new">New</div>
+            <div class="station-idx">07</div>
+            <div class="station-icon">
+              <svg class="icon-svg icon-conv" viewBox="0 0 52 52">
+                <defs>
+                  <linearGradient id="g-ro" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d8a8c4"/><stop offset="100%" stop-color="#986878"/></linearGradient>
+                  <filter id="fro"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#986878" flood-opacity="0.45"/></filter>
+                </defs>
+                <rect x="6" y="8" width="36" height="26" rx="8" fill="url(#g-ro)" filter="url(#fro)"/>
+                <path d="M12 34 L8 44 L22 34Z" fill="url(#g-ro)"/>
+                <circle class="dot1" cx="19" cy="21" r="2.5" fill="rgba(13,11,9,0.5)"/>
+                <circle class="dot2" cx="26" cy="21" r="2.5" fill="rgba(13,11,9,0.5)"/>
+                <circle class="dot3" cx="33" cy="21" r="2.5" fill="rgba(13,11,9,0.5)"/>
+              </svg>
+            </div>
+            <div class="station-body">
+              <div class="card-tag">AI Companion</div>
+              <div class="card-title">Conversum AI</div>
+              <div class="card-desc">Catholic doctrine, scripture, and tradition — guided by AI.</div>
+              <div class="station-foot"><span>Start conversation</span><span class="card-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg></span></div>
+            </div>
+          </div>
+        </a>
+
+        <!-- 08 Chess -->
+        <a href="chess.html" class="station right c-amber">
+          <span class="station-node"></span>
+          <div class="station-card">
+            <div class="station-idx">08</div>
+            <div class="station-icon">
+              <svg class="icon-svg icon-knight" viewBox="0 0 52 52">
+                <defs>
+                  <linearGradient id="g-kn" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e2b830"/><stop offset="100%" stop-color="#a07828"/></linearGradient>
+                  <filter id="fkn"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#a07828" flood-opacity="0.5"/></filter>
+                </defs>
+                <circle class="knight-star1" cx="8" cy="9" r="1.5" fill="#e0b878"/>
+                <circle class="knight-star2" cx="44" cy="7" r="1.5" fill="#e0b878"/>
+                <circle class="knight-star3" cx="6" cy="22" r="1" fill="#e0b878"/>
+                <ellipse class="knight-halo" cx="26" cy="7" rx="9" ry="2.8" fill="none" stroke="url(#g-kn)" stroke-width="1.8" filter="url(#fkn)"/>
+                <g class="knight-body" filter="url(#fkn)">
+                  <rect x="11" y="45" width="30" height="4" rx="2" fill="url(#g-kn)"/>
+                  <rect x="16" y="40" width="20" height="6" rx="1.5" fill="url(#g-kn)"/>
+                  <rect x="17" y="37" width="18" height="4" rx="1.5" fill="url(#g-kn)"/>
+                  <path d="M20 37 C19 33 17 30 18 26 C19 22 21 20 22 18 L30 18 C32 20 33 23 32 27 C31 31 29 34 29 37 Z" fill="url(#g-kn)"/>
+                  <path d="M22 18 C22 16 21 14 22 12 C23 10 25 9 27 9 C29 9 31 10 32 12 C33 13 33 15 32 17 C31 18 30 18 30 18 Z" fill="url(#g-kn)"/>
+                  <path d="M32 14 C34 14 35 15 34 17 C33 18 32 18 32 17 Z" fill="url(#g-kn)"/>
+                  <path d="M27 9 L25 5 L29 8 Z" fill="url(#g-kn)"/>
+                  <circle cx="29" cy="13" r="1.5" fill="rgba(13,11,9,0.55)"/>
+                </g>
+              </svg>
+            </div>
+            <div class="station-body">
+              <div class="card-tag">Holy Strategy</div>
+              <div class="card-title">Play Chess</div>
+              <div class="card-desc">Chess with the communion of heaven — let the saints guide your game.</div>
+              <div class="station-foot"><span>Make your move</span><span class="card-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/></svg></span></div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="river-foot">Ad Maiorem Dei Gloriam <span class="mark">✦</span> For the Greater Glory of God</div>
+    </section>
+  </div>
+</main>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal-box">
+    <button class="modal-close" id="ep-close" onclick="closeModal('edit-modal')">✕</button>
+    <div class="modal-title" id="ep-title">Edit Profile</div>
+    <div class="modal-sub" id="ep-sub">Update your details and save to the cloud.</div>
+    <div class="ep-field"><label>First Name</label><input type="text" id="ep-fname"></div>
+    <div class="ep-field"><label>Last Name</label><input type="text" id="ep-lname"></div>
+    <div class="ep-field"><label>Ministry</label>
+      <select id="ep-ministry">
+        <option value="">— Select your ministry —</option>
+        <option value="CG">CG (Chosen Generations)</option><option value="STASS">STASS</option>
+        <option value="Servers">Servers</option><option value="Catechism">Catechism</option>
+        <option value="Hospitality Minister">Hospitality Minister</option><option value="AV/IT">AV / IT</option>
+        <option value="Social Media">Social Media</option><option value="Intercessory">Intercessory</option>
+        <option value="Sacristan">Sacristan</option><option value="Priest">Priest</option>
+        <option value="OYP">OYP</option><option value="Others">Others</option>
+      </select>
+    </div>
+    <div class="ep-field"><label>Parish</label>
+      <select id="ep-parish">
+        <option value="">— Select your parish —</option>
+        <option>Cathedral of the Good Shepherd</option><option>Church of Christ the King</option>
+        <option>Church of Divine Mercy</option><option>Church of Holy Cross</option>
+        <option>Church of Holy Family</option><option>Church of Holy Spirit</option>
+        <option>Church of Holy Trinity</option><option>Church of Immaculate Heart of Mary</option>
+        <option>Church of Mary Queen of Peace</option><option>Church of Our Lady of Lourdes</option>
+        <option>Church of Our Lady of Perpetual Succour</option><option>Church of Our Lady Queen of Peace</option>
+        <option>Church of Our Lady Star of the Sea</option><option>Church of Risen Christ</option>
+        <option>Church of Sacred Heart</option><option>Church of Saint Alphonsus</option>
+        <option>Church of Saint Anne</option><option>Church of Saint Anthony</option>
+        <option>Church of Saint Bernadette</option><option>Church of Saint Francis of Assisi</option>
+        <option>Church of Saint Francis Xavier</option><option>Church of Saint Ignatius</option>
+        <option>Church of Saint Joseph (Bukit Timah)</option><option>Church of Saint Joseph (Victoria Street)</option>
+        <option>Church of Saint Mary of the Angels</option><option>Church of Saint Michael</option>
+        <option>Church of Saint Stephen</option><option>Church of Saint Teresa</option>
+        <option>Church of Saint Vincent de Paul</option><option>Church of Saints Peter and Paul</option>
+        <option>Church of The Nativity of the Blessed Virgin Mary</option>
+        <option>Church of Transfiguration</option><option>Church of True Light</option>
+        <option>Novena Church</option>
+      </select>
+    </div>
+    <div class="ep-field"><label>Avatar</label>
+      <div class="av-grid">
+        <label class="av-opt"><input type="radio" name="ep-avatar" value="avatar1"><div class="av-face">🕊️</div></label>
+        <label class="av-opt"><input type="radio" name="ep-avatar" value="avatar2"><div class="av-face">⚔️</div></label>
+        <label class="av-opt"><input type="radio" name="ep-avatar" value="avatar3"><div class="av-face">🌿</div></label>
+        <label class="av-opt"><input type="radio" name="ep-avatar" value="avatar4"><div class="av-face">🕯️</div></label>
+        <label class="av-opt"><input type="radio" name="ep-avatar" value="avatar5"><div class="av-face">🌹</div></label>
+        <label class="av-opt"><input type="radio" name="ep-avatar" value="avatar6"><div class="av-face">✝️</div></label>
+      </div>
+    </div>
+    <button class="save-btn" onclick="saveProfile()">Save Changes</button>
+  </div>
+</div>
+
+<!-- LEADERBOARD MODAL -->
+<div class="modal-overlay" id="lb-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('lb-modal')">✕</button>
+    <div class="modal-title">Ranks &amp; History</div>
+    <div class="modal-sub">Your journey, the ladder of ranks, and the community leaderboard.</div>
+    <div class="lb-tabs">
+      <button class="lb-tab active" onclick="showLbTab('history')">My History</button>
+      <button class="lb-tab" onclick="showLbTab('ranks')">Ranks</button>
+      <button class="lb-tab" onclick="showLbTab('leaderboard')">Leaderboard</button>
+    </div>
+    <div id="lb-history"></div>
+    <div id="lb-ranks" style="display:none"></div>
+    <div id="lb-leaderboard" style="display:none"></div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="score.js"></script>
+<script>
+const AVATARS = {avatar1:'🕊️',avatar2:'⚔️',avatar3:'🌿',avatar4:'🕯️',avatar5:'🌹',avatar6:'✝️'};
+const HIST_ICONS = {bible:'📖',chess:'♟️',lectio:'🕯️',prayer:'✝️',rosary:'📿'};
+let _profile=null, _stats=null, _uid=null, _promptedComplete=false, _setupMode=false;
+
+// Build marker — if you DON'T see this in the browser console, you are
+// running an old cached copy of this file. Hard-refresh or redeploy.
+console.log('%c✓ Fides index.html — PROFILE-SAVE FIX build','color:#6db8cc;font-weight:bold;font-size:13px');
+
+// Theme
+(function(){
+  const t = localStorage.getItem('fides_theme') || (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  document.body.setAttribute('data-theme', t);
+})();
+
+// Splash
+setTimeout(()=>document.getElementById('splash').classList.add('gone'), 2200);
+
+// Access denied
+if(new URLSearchParams(window.location.search).get('accessDenied'))
+  document.getElementById('access-denied-banner').classList.add('show');
+
+// Auth
+auth.onAuthStateChanged(user => {
+  if(!user){ window.location.href='auth.html'; return; }
+  _uid = user.uid;
+  loadUserData(user);
+});
+
+function loadUserData(user){
+  db.ref('users/'+user.uid).on('value', snap => {
+    const data = snap.val()||{};
+    _profile = data.profile||{};
+    _stats   = data.stats||{score:0};
+
+    // ── FIRST-TIME PROFILE SETUP ───────────────────────────
+    // A fully set-up profile has a name, ministry, parish and a createdAt
+    // stamp. A brand-new account (just registered with Google or email) has
+    // none of these, so the Edit Profile dialog opens automatically — ONCE —
+    // to collect them. After the first save it never auto-opens again.
+    const profileNeedsSetup = !_profile.fname || !_profile.lname
+                           || !_profile.ministry || !_profile.parish
+                           || !_profile.createdAt;
+
+    renderProfile();
+
+    if(profileNeedsSetup && !_promptedComplete){
+      _promptedComplete = true;
+      setTimeout(()=>openEditProfile(true), 3400); // after the splash clears
+    }
+  });
+}
+
+// ── RENDER ────────────────────────────────────────────
+function renderProfile(){
+  const score  = (_stats&&_stats.score)||0;
+  const rank   = Fides.getRank(score);
+  const avatar = (_profile&&_profile.avatar)||'avatar1';
+  const name   = (_profile&&_profile.displayName)||'Pilgrim';
+  const ministry = (_profile&&_profile.ministry)||'';
+  const parish   = (_profile&&_profile.parish)||'';
+  const av = AVATARS[avatar]||'🕊️';
+
+  // hero
+  document.getElementById('prof-avatar').textContent = av;
+  document.getElementById('prof-name').textContent   = name;
+  document.getElementById('prof-meta').textContent   = [ministry,parish].filter(Boolean).join('  ·  ')||'Complete your profile';
+  document.getElementById('rank-icon').textContent   = rank.icon;
+  document.getElementById('rank-name').textContent   = rank.name;
+  document.getElementById('rank-name').style.color   = rank.color||'var(--umber2)';
+  document.getElementById('rank-score').textContent  = score.toLocaleString();
+  document.getElementById('rank-tier').textContent   = (rank.index+1)+' / '+rank.total;
+
+  // SVG ring
+  const C = 2*Math.PI*66; // 414.7
+  const rf = document.getElementById('ring-fill');
+  rf.style.strokeDasharray = C;
+  rf.style.strokeDashoffset = C - (rank.pct/100)*C;
+  rf.style.stroke = rank.color||'var(--umber2)';
+
+  // progress bar
+  const pf = document.getElementById('rank-progress');
+  pf.style.width = (rank.pct||0)+'%';
+  pf.style.background = rank.color||'var(--umber2)';
+  document.getElementById('rank-next').textContent = rank.next
+    ? (rank.toNext.toLocaleString()+' pts to '+rank.nextName)
+    : '✦ Highest rank attained — Saintly ✦';
+
+  // sticky bar
+  document.getElementById('sb-avatar').textContent = av;
+  document.getElementById('sb-name').textContent   = name;
+  document.getElementById('sb-rank').textContent   = rank.icon+' '+rank.name;
+  document.getElementById('sb-score').textContent  = score.toLocaleString()+' pts';
+
+  // ledger
+  document.getElementById('stat-score').textContent      = score.toLocaleString();
+  document.getElementById('stat-rank-ico').textContent   = rank.icon;
+  document.getElementById('stat-rank-name').textContent  = rank.name;
+  document.getElementById('stat-rank-name').style.color  = rank.color||'var(--umber2)';
+  document.getElementById('stat-rank-blurb').textContent = rank.blurb;
+  document.getElementById('stat-chess-wins').textContent = (_stats.chessWon||0);
+  document.getElementById('stat-chess-games').textContent = ' / '+(_stats.chessPlayed||0);
+  document.getElementById('stat-prayers').textContent    = (_stats.prayersCompleted||0);
+  document.getElementById('stat-lectio').textContent     = (_stats.lectioCompleted||0);
+  document.getElementById('stat-bible').textContent      = (_stats.bibleDrawn||0);
+}
+
+// ── STICKY BAR ────────────────────────────────────────
+(function(){
+  const bar  = document.getElementById('sticky-bar');
+  const hero = document.getElementById('hero');
+  let ticking=false;
+  function check(){
+    ticking=false;
+    bar.classList.toggle('visible', hero.getBoundingClientRect().bottom < 0);
+  }
+  window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(check);}},{passive:true});
+})();
+
+// ── EDIT PROFILE ──────────────────────────────────────
+function openEditProfile(setup){
+  if(!_profile) return;
+  _setupMode = !!setup;
+
+  // First-time setup vs. an ordinary edit
+  document.getElementById('ep-title').textContent = setup
+    ? 'Welcome — Set Up Your Profile' : 'Edit Profile';
+  document.getElementById('ep-sub').textContent = setup
+    ? 'Tell us a little about yourself to get started. This is saved to your account.'
+    : 'Update your details and save to the cloud.';
+  // During first-time setup the dialog cannot be dismissed until it is saved.
+  document.getElementById('ep-close').style.display = setup ? 'none' : 'flex';
+
+  // Pre-fill the name — for a brand-new Google account use the Google name.
+  let fname = _profile.fname||'', lname = _profile.lname||'';
+  const u = auth.currentUser;
+  if(!fname && !lname && u && u.displayName){
+    const parts = u.displayName.trim().split(/\s+/);
+    fname = parts[0]||''; lname = parts.slice(1).join(' ')||'';
+  }
+  document.getElementById('ep-fname').value = fname;
+  document.getElementById('ep-lname').value = lname;
+  document.getElementById('ep-ministry').value = _profile.ministry||'';
+  document.getElementById('ep-parish').value   = _profile.parish||'';
+  const av = _profile.avatar||'avatar1';
+  document.querySelectorAll('input[name="ep-avatar"]').forEach(r=>r.checked=r.value===av);
+  openModal('edit-modal');
+}
+async function saveProfile(){
+  const fname    = document.getElementById('ep-fname').value.trim();
+  const lname    = document.getElementById('ep-lname').value.trim();
+  const ministry = document.getElementById('ep-ministry').value;
+  const parish   = document.getElementById('ep-parish').value;
+  const checked  = document.querySelector('input[name="ep-avatar"]:checked');
+  const avatar   = checked ? checked.value : 'avatar1';
+  if(!fname||!lname){alert('Please enter your first and last name.');return;}
+  if(!ministry){alert('Please select your ministry.');return;}
+  if(!parish){alert('Please select your parish.');return;}
+  const btn = document.querySelector('#edit-modal .save-btn');
+  if(btn){ btn.disabled=true; btn.textContent='Saving…'; }
+  try{
+    // Save straight to the database; the live listener re-renders the page.
+    // Stamp createdAt/email so the profile counts as fully set up and the
+    // dialog never auto-opens again.
+    await db.ref('users/'+_uid+'/profile').update({
+      fname, lname, displayName:fname+' '+lname, ministry, parish, avatar,
+      email: (auth.currentUser&&auth.currentUser.email) || (_profile&&_profile.email) || '',
+      createdAt: (_profile&&_profile.createdAt) || Date.now()
+    });
+    // Seed the stats node on first-time setup so the pilgrim has a full record.
+    const statsSnap = await db.ref('users/'+_uid+'/stats').once('value');
+    if(!statsSnap.exists()){
+      await db.ref('users/'+_uid+'/stats').set({
+        score:0,bibleDrawn:0,chessPlayed:0,chessWon:0,
+        lectioCompleted:0,prayersCompleted:0,rosaryCompleted:0,lastActivity:Date.now()
+      });
+    }
+    _setupMode = false; // setup complete — no more auto pop-up
+    closeModal('edit-modal');
+  }catch(e){
+    alert('Could not save your profile: '+e.message);
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='Save Changes'; }
+  }
+}
+
+// ── LEADERBOARD ───────────────────────────────────────
+function openLeaderboard(){openModal('lb-modal');showLbTab('history')}
+function showLbTab(tab){
+  const order=['history','ranks','leaderboard'];
+  document.querySelectorAll('.lb-tab').forEach((t,i)=>t.classList.toggle('active',order[i]===tab));
+  document.getElementById('lb-history').style.display   = tab==='history'?'block':'none';
+  document.getElementById('lb-ranks').style.display     = tab==='ranks'?'block':'none';
+  document.getElementById('lb-leaderboard').style.display = tab==='leaderboard'?'block':'none';
+  if(tab==='history') loadHistory();
+  else if(tab==='ranks') loadRanks();
+  else loadLeaderboard();
+}
+function loadHistory(){
+  const el=document.getElementById('lb-history');
+  el.innerHTML='<div style="color:var(--tx2);font-size:12px;padding:20px 0">Loading…</div>';
+  db.ref('users/'+_uid+'/history').orderByChild('ts').limitToLast(40).once('value').then(snap=>{
+    const items=[];
+    snap.forEach(c=>items.unshift(c.val()));
+    if(!items.length){el.innerHTML='<div style="color:var(--tx2);font-size:12px;padding:20px 0;text-align:center">No activity yet. Begin a prayer or a game to earn your first points!</div>';return;}
+    el.innerHTML=items.map(h=>`
+      <div class="hist-item">
+        <div class="hist-ico">${HIST_ICONS[h.type]||'📜'}</div>
+        <div style="flex:1"><div class="hist-label">${h.label||h.type}</div><div class="hist-time">${timeAgo(h.ts)}</div></div>
+        <div class="hist-pts">+${h.points} pts</div>
+      </div>`).join('');
+  });
+}
+function loadRanks(){
+  const el=document.getElementById('lb-ranks');
+  const score=(_stats&&_stats.score)||0;
+  const cur=Fides.getRank(score);
+  el.innerHTML='<div>'+Fides.RANKS.map((r,i)=>`
+    <div class="ladder-row ${i===cur.index?'here':''}">
+      <div class="ladder-ico">${r.icon}</div>
+      <div class="ladder-name">${r.name}${i===cur.index?' <span style="color:var(--umber2);font-size:9px">— you</span>':''}
+        <div style="font-size:10px;color:var(--tx3);font-weight:400">${r.blurb}</div>
+      </div>
+      <div class="ladder-min">${r.min.toLocaleString()}+</div>
+    </div>`).join('')+'</div>';
+}
+function loadLeaderboard(){
+  const el=document.getElementById('lb-leaderboard');
+  el.innerHTML='<div style="color:var(--tx2);font-size:12px;padding:20px 0">Loading…</div>';
+  db.ref('users').once('value').then(snap=>{
+    const users=[];
+    snap.forEach(c=>{const d=c.val();if(d&&d.profile)users.push({uid:c.key,...d.profile,...(d.stats||{})});});
+    users.sort((a,b)=>(b.score||0)-(a.score||0));
+    if(!users.length){el.innerHTML='<div style="color:var(--tx2);font-size:12px;padding:20px 0;text-align:center">No pilgrims yet.</div>';return;}
+    el.innerHTML=users.slice(0,25).map((u,i)=>{
+      const rank=Fides.getRank(u.score||0);
+      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'';
+      return`<div class="lb-row">
+        <div class="lb-rank">${medal}</div>
+        <div class="lb-av">${AVATARS[u.avatar]||'🕊️'}</div>
+        <div class="lb-info">
+          <div class="lb-name">${u.displayName||'Pilgrim'} ${u.uid===_uid?'<span style="color:var(--umber2);font-size:9px">(you)</span>':''}</div>
+          <div class="lb-detail">${rank.icon} ${rank.name} · ${u.ministry||''}</div>
+        </div>
+        <div class="lb-score">${(u.score||0).toLocaleString()} pts</div>
+      </div>`;
+    }).join('');
+  });
+}
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';
+  if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';
+}
+
+// ── MODALS ────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{
+  // Don't allow click-outside to close the profile dialog during first-time setup.
+  if(e.target===m && !(m.id==='edit-modal' && _setupMode)) m.classList.remove('open');
+}));
+
+function doSignOut(){auth.signOut().then(()=>window.location.href='auth.html')}
+function toggleGlobalTheme(){
+  const curr=document.body.getAttribute('data-theme')||'dark';
+  const next=curr==='dark'?'light':'dark';
+  document.body.setAttribute('data-theme',next);
+  localStorage.setItem('fides_theme',next);
+}
+
+// ── RIVER SCROLL REVEAL (Remotion-style) ──────────────
+(function(){
+  const stations = Array.from(document.querySelectorAll('.station'));
+  const river    = document.getElementById('river');
+  const fill     = document.getElementById('riverFill');
+
+  // IntersectionObserver for card reveal
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+    },{threshold:0.16, rootMargin:'0px 0px -6% 0px'});
+    stations.forEach(s=>io.observe(s));
+  } else {
+    stations.forEach(s=>s.classList.add('in'));
+  }
+
+  // Scroll-linked fill + node lighting + icon parallax
+  let ticking=false;
+  function frame(){
+    ticking=false;
+    const vh=window.innerHeight;
+    const rect=river.getBoundingClientRect();
+    const reach=(vh*0.52)-rect.top;
+    let pct=rect.height?reach/rect.height:0;
+    pct=Math.max(0,Math.min(1,pct));
+    fill.style.height=(pct*100)+'%';
+
+    stations.forEach(st=>{
+      const node=st.querySelector('.station-node');
+      const nr=node.getBoundingClientRect();
+      st.classList.toggle('lit',nr.top<vh*0.60);
+
+      // subtle icon parallax
+      const icon=st.querySelector('.station-icon');
+      if(icon){
+        const ir=icon.getBoundingClientRect();
+        const dist=(ir.top+ir.height/2)-vh/2;
+        icon.style.transform='translateY('+(dist*-0.03).toFixed(1)+'px)';
+      }
+    });
+  }
+  function onScroll(){if(!ticking){ticking=true;requestAnimationFrame(frame);}}
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+  setTimeout(frame,2600);
+})();
+</script>
+</body>
+</html>

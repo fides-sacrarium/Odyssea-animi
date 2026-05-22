@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>The Bible - Speak Lord</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A0806; --surface: #1A1512; 
+            --text: #F0EAE0; --text2: #9A8E82; 
+            --cyan: #5BA8C0; --cyan-dim: #3a8fa8;
+            --purple: #9D7BB0; --purple-glow: rgba(157,123,176,0.3);
+            --transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+        
+        /* Ambient Noise Overlay */
+        body::before { content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 0.035; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+
+        header { position: fixed; top: 0; left: 0; width: 100%; padding: 24px 40px; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        .back-btn { background: none; border: none; color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: 0.3s; z-index: 100; position: relative;}
+        .back-btn:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+
+        /* THE DIVINE UI CONTAINER */
+        #divine-interface { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; transition: var(--transition); }
+        
+        /* The Glowing Orb / Host */
+        .orb-container { position: relative; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .orb-container.disabled { pointer-events: none; opacity: 0.5; filter: grayscale(1); }
+        .orb-container:hover:not(.disabled) { transform: scale(1.05); }
+        .orb-container:active:not(.disabled) { transform: scale(0.95); }
+
+        .orb-glow { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle, var(--cyan) 0%, transparent 70%); filter: blur(30px); opacity: 0.4; animation: breathe 4s ease-in-out infinite; pointer-events: none; }
+        .orb-core { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: #FFF; box-shadow: 0 0 40px #FFF, 0 0 80px var(--cyan); display: flex; align-items: center; justify-content: center; z-index: 2; transition: var(--transition); }
+        
+        /* Surrounding Rings */
+        .ring { position: absolute; border: 1px solid rgba(91, 168, 192, 0.2); border-radius: 50%; pointer-events: none; }
+        .ring-1 { width: 140px; height: 140px; animation: spin 20s linear infinite; border-top-color: var(--cyan); }
+        .ring-2 { width: 180px; height: 180px; animation: spin 30s linear infinite reverse; border-bottom-color: var(--cyan); }
+        .ring-3 { width: 240px; height: 240px; border: 1px dashed rgba(232, 201, 144, 0.1); animation: spin 40s linear infinite; }
+
+        .call-to-action { margin-top: 60px; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; color: var(--cyan-dim); transition: var(--transition); text-shadow: 0 0 10px rgba(91,168,192,0.2); text-align: center; padding: 0 20px;}
+        .instruction { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text2); margin-top: 16px; opacity: 0.6; transition: var(--transition); }
+
+        /* REVEAL STATE (The Word) */
+        #verse-display { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; opacity: 0; pointer-events: none; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); z-index: 30; transform: translateY(40px); background: radial-gradient(circle at center, rgba(157,123,176,0.1) 0%, var(--bg) 100%); }
+        #verse-display.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+        /* REFINED VERSE TYPOGRAPHY */
+        .verse-text { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: clamp(24px, 4vw, 42px); /* Beautifully scales between mobile and desktop */
+            line-height: 1.4; 
+            font-weight: 300; 
+            text-align: center; 
+            max-width: 800px; /* Tighter width for easier reading */
+            color: rgba(255, 255, 255, 0.95); 
+            text-shadow: 0 4px 20px rgba(255,255,255,0.15); 
+            margin-bottom: 32px; 
+        }
+        
+        .verse-ref { 
+            font-family: 'DM Sans', sans-serif; 
+            font-size: clamp(12px, 2vw, 15px); 
+            letter-spacing: 0.3em; 
+            text-transform: uppercase; 
+            color: var(--cyan); 
+            font-weight: 500; 
+        }
+
+        .reset-btn { margin-top: 60px; background: none; border: 1px solid var(--border); border-radius: 30px; padding: 12px 32px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .reset-btn:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 20px rgba(91,168,192,0.2); }
+
+        /* Cinematic Light Burst */
+        #burst-overlay { position: fixed; inset: 0; background: #FFF; opacity: 0; pointer-events: none; z-index: 50; transition: opacity 0.8s ease-out; }
+        
+        /* Particle System */
+        #particle-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.3); opacity: 0.6; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* MOBILE ADJUSTMENTS */
+        @media (max-width: 768px) {
+            header { padding: 20px; }
+            .verse-text { padding: 0 10px; }
+            .call-to-action { font-size: 24px; }
+        }
+
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="score.js"></script>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">← Return</a>
+    </header>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div id="divine-interface">
+        <div class="orb-container disabled" id="orb-btn" onclick="speakLord()">
+            <div class="orb-glow"></div>
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-3"></div>
+            <div class="orb-core">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-dim)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="4" x2="12" y2="20"></line>
+                    <line x1="8" y1="9" x2="16" y2="9"></line>
+                </svg>
+            </div>
+        </div>
+        <div class="call-to-action">"Speak, Lord, your servant is listening."</div>
+        <div class="instruction" id="status-text">Gathering sacred texts...</div>
+    </div>
+
+    <div id="burst-overlay"></div>
+
+    <div id="verse-display">
+        <div class="verse-text" id="v-text"></div>
+        <div class="verse-ref" id="v-ref"></div>
+        <button class="reset-btn" onclick="resetInterface()">Draw Another</button>
+    </div>
+
+    <script>
+        // ==========================================
+        // DYNAMIC JSON FETCH LOGIC
+        // ==========================================
+        let bibleVerses = [];
+        let isLoaded = false;
+
+        async function loadVerses() {
+            try {
+                // Fetch the external JSON file
+                const response = await fetch('verses.json');
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                bibleVerses = await response.json();
+                isLoaded = true;
+                
+                // Enable the UI
+                document.getElementById('orb-btn').classList.remove('disabled');
+                document.getElementById('status-text').innerText = "Tap the light to receive a Word";
+            } catch (error) {
+                console.error("Error loading verses:", error);
+                document.getElementById('status-text').innerText = "Error loading sacred texts. Ensure verses.json is present and served via a local web server.";
+            }
+        }
+
+        // Initialize fetching on page load
+        window.addEventListener('DOMContentLoaded', loadVerses);
+
+        // ==========================================
+        // UI & ANIMATION LOGIC
+        // ==========================================
+        
+        // ── Score: each verse drawn from Scripture ──
+        function _addBibleScore() {
+            if (typeof Fides === 'undefined') return;
+            Fides.award({ type:'bible', statKey:'bibleDrawn', points:2, label:'Bible verse drawn' });
+        }
+
+        function speakLord() {
+            if (!isLoaded || bibleVerses.length === 0) return;
+
+            // Pick a random verse from the loaded JSON
+            const randomIndex = Math.floor(Math.random() * bibleVerses.length);
+            const verse = bibleVerses[randomIndex];
+            _addBibleScore();
+            
+            // Set text
+            document.getElementById('v-text').innerText = `"${verse.text}"`;
+            document.getElementById('v-ref').innerText = verse.ref;
+
+            // Trigger Cinematic Burst
+            const burst = document.getElementById('burst-overlay');
+            const interface = document.getElementById('divine-interface');
+            const display = document.getElementById('verse-display');
+            
+            burst.style.opacity = '1';
+            
+            setTimeout(() => {
+                // Swap views while screen is white
+                interface.style.opacity = '0';
+                interface.style.pointerEvents = 'none';
+                display.classList.add('active');
+                
+                // Ramp up particles
+                particleSpeed = 5;
+                
+                // Fade out burst
+                setTimeout(() => {
+                    burst.style.opacity = '0';
+                    particleSpeed = 0.5; // settle down
+                }, 200);
+
+            }, 400);
+        }
+
+        function resetInterface() {
+            const interface = document.getElementById('divine-interface');
+            const display = document.getElementById('verse-display');
+            
+            display.classList.remove('active');
+            
+            setTimeout(() => {
+                interface.style.opacity = '1';
+                interface.style.pointerEvents = 'auto';
+            }, 800);
+        }
+
+        // ==========================================
+        // AMBIENT PARTICLE SYSTEM (Divine Dust)
+        // ==========================================
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let particleSpeed = 0.5;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedY = (Math.random() - 1) * particleSpeed;
+                this.speedX = (Math.random() - 0.5) * particleSpeed;
+                this.opacity = Math.random() * 0.5;
+                this.fadeRate = Math.random() * 0.01;
+            }
+            update() {
+                this.y += this.speedY * (particleSpeed * 2);
+                this.x += this.speedX * particleSpeed;
+                this.opacity += this.fadeRate;
+
+                if (this.opacity > 0.8 || this.opacity < 0) this.fadeRate *= -1;
+                
+                if (this.y < 0 || this.x < 0 || this.x > canvas.width || this.y > canvas.height) {
+                    this.reset();
+                    this.y = canvas.height + 10;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(232, 201, 144, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 100; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

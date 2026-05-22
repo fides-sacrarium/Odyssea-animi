@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Ignatian Contemplation | Chosen Generations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A0806; --bg2: #100D0A; --surface: #161210; 
+            --text: #F0EAE0; --text2: #9A8E82; 
+            --green: #6DA37A; --green2: #92C29E; --green-dim: rgba(109,163,122,0.12); --green-glow: rgba(109,163,122,0.25);
+            --cyan: #5BA8C0; --cyan-dim: rgba(91,168,192,0.12); --cyan-glow: rgba(91,168,192,0.25);
+            --border: rgba(109,163,122,0.15);
+            --radius: 16px; --transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        [data-theme="light"] {
+            --bg: #F5F0E8; --bg2: #EDE7DB; --surface: #FFFFFF;
+            --text: #1A1410; --text2: #6B6058;
+            --green: #4A7A55; --green2: #6A9E77; --green-dim: rgba(74,122,85,0.08); --green-glow: rgba(74,122,85,0.2);
+            --cyan: #3a7888; --cyan-dim: rgba(58,120,136,0.08); --cyan-glow: rgba(58,120,136,0.2);
+            --border: rgba(74,122,85,0.2);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 0.025; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+        .bg-lines { position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 60px, var(--border) 60px, var(--border) 61px), repeating-linear-gradient(90deg, transparent, transparent 60px, var(--border) 60px, var(--border) 61px); opacity: 0.4; pointer-events: none; z-index: -1; }
+
+        /* HEADER & NAVIGATION */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 24px 5%; position: relative; z-index: 10; max-width: 1000px; margin: 0 auto; }
+        .back-btn { display: flex; align-items: center; gap: 8px; color: var(--text2); text-decoration: none; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; transition: var(--transition); }
+        .back-btn:hover { color: var(--green); }
+        .back-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        /* TABS */
+        .tabs-container { display: flex; justify-content: center; margin-bottom: 32px; position: relative; z-index: 10; }
+        .tabs { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 30px; padding: 6px; }
+        .tab-btn { background: transparent; border: none; color: var(--text2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; padding: 10px 24px; border-radius: 24px; cursor: pointer; transition: var(--transition); }
+        .tab-btn.active { background: var(--green-dim); color: var(--green); box-shadow: 0 4px 12px var(--green-glow); }
+
+        /* CONTENT AREAS */
+        .content-section { display: none; padding: 0 5% 64px; max-width: 800px; margin: 0 auto; position: relative; z-index: 10; animation: fadeIn 0.6s ease forwards; }
+        .content-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* SHARED CARD UI */
+        .date-header { text-align: center; color: var(--green); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 24px; font-weight: 600; }
+        .reflection-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; overflow: hidden; min-height: 500px; display: flex; flex-direction: column; }
+        .reflection-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; text-align: center; margin-bottom: 32px; color: var(--text); }
+        .loader { text-align: center; color: var(--text2); font-style: italic; font-family: 'Cormorant Garamond', serif; font-size: 20px; padding: 40px 0; margin: auto; }
+
+        /* STEP WIZARD UI */
+        #lectioWizard { display: none; flex-grow: 1; display: flex; flex-direction: column; }
+        .progress-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: var(--transition); }
+        .dot.active { background: var(--green); box-shadow: 0 0 8px var(--green-glow); transform: scale(1.2); }
+        .dot.completed { background: var(--green2); opacity: 0.5; }
+
+        .step-container { flex-grow: 1; position: relative; display: flex; flex-direction: column; justify-content: center; }
+        .step-card { display: none; animation: slideIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .step-card.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        .step-header { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 24px; text-align: center; }
+        .step-num { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; color: var(--surface); background: var(--green); padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+        .step-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-style: italic; color: var(--green2); font-weight: 300; }
+        .step-instruction { font-size: 14px; color: var(--text2); font-style: italic; text-align: center; margin-bottom: 32px; padding: 0 10%; line-height: 1.5; }
+        
+        .step-content { font-family: 'Cormorant Garamond', serif; font-size: 19px; line-height: 1.7; color: var(--text); }
+        .step-content p { margin-bottom: 20px; text-align: justify; }
+        .step-content i { color: var(--cyan); }
+
+        /* BUTTON LINK STYLES (Replaces <a> tags) */
+        .reading-link {
+            display: inline-flex; align-items: center; background: var(--green-dim); color: var(--green);
+            padding: 4px 14px; border-radius: 12px; text-decoration: none; font-family: 'DM Sans', sans-serif;
+            font-size: 13px; font-weight: 600; font-style: normal; letter-spacing: 0.05em; text-transform: uppercase;
+            transition: var(--transition); vertical-align: middle; margin: 0 4px; border: 1px solid transparent; 
+            white-space: nowrap; cursor: pointer; outline: none; line-height: 1.2;
+        }
+        .reading-link:hover { background: var(--surface); border-color: var(--green); box-shadow: 0 4px 12px var(--green-glow); transform: translateY(-2px); }
+        .reading-link::after { content: "↗"; font-size: 14px; margin-left: 4px; }
+
+        .gospel-quote { border-left: 2px solid var(--cyan); padding-left: 24px; margin: 24px 0; font-style: italic; color: var(--cyan); background: var(--cyan-dim); padding: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
+        .gospel-quote p:last-child { margin-bottom: 0; }
+
+        /* WIZARD CONTROLS */
+        .step-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); }
+        .ctrl-btn { background: transparent; border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; padding: 12px 24px; border-radius: 24px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 8px; }
+        .ctrl-btn svg { width: 14px; height: 14px; fill: currentColor; transition: var(--transition); }
+        .ctrl-btn:hover:not(:disabled) { border-color: var(--green); color: var(--green); }
+        .ctrl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-next { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+        .btn-next:hover { box-shadow: 0 4px 16px var(--green-glow); transform: translateX(2px); }
+        .btn-prev:hover { transform: translateX(-2px); }
+
+        /* VISIO DIVINA STYLES */
+        .visio-container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .shepherd-graphic { width: 250px; height: 300px; margin-bottom: 40px; animation: float 6s ease-in-out infinite; filter: drop-shadow(0 20px 30px var(--green-glow)); }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .verse-box { max-width: 600px; }
+        .verse-text { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-style: italic; font-weight: 300; line-height: 1.3; color: var(--text); margin-bottom: 24px; }
+        .verse-ref { font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--green); font-weight: 600; }
+
+        /* THANK YOU OVERLAY (JESUS ANIMATION) */
+        #thankYouScreen {
+            position: fixed; inset: 0; z-index: 9999; background: var(--bg);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 1s ease;
+        }
+        #thankYouScreen.active { opacity: 1; pointer-events: auto; }
+        
+        .jesus-blessing { width: 180px; height: 180px; animation: gentleFloat 4s ease-in-out infinite; filter: drop-shadow(0 10px 30px var(--cyan-glow)); margin-bottom: 32px; }
+        @keyframes gentleFloat { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        
+        .ty-text { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-style: italic; color: var(--cyan); text-align: center; font-weight: 300; animation: fadeUp 1.5s ease forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* RESPONSIVE OPTIMIZATION */
+        @media (max-width: 768px) {
+            .reflection-card { padding: 32px 24px; min-height: 60vh; }
+            .step-title { font-size: 24px; }
+            .step-content { font-size: 18px; }
+            .step-instruction { padding: 0; }
+            .ctrl-btn { padding: 12px 16px; font-size: 11px; }
+            .gospel-quote { padding: 16px; }
+            .ty-text { font-size: 26px; padding: 0 20px; }
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="score.js"></script>
+</head>
+<body>
+<script>
+    const d = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.setAttribute('data-theme', d ? 'dark' : 'light');
+</script>
+
+<div class="bg-lines"></div>
+
+<div id="thankYouScreen">
+    <svg class="jesus-blessing" viewBox="0 0 100 100">
+        <circle cx="50" cy="40" r="30" fill="none" stroke="var(--cyan)" stroke-width="2" opacity="0.6" stroke-dasharray="4 4"/>
+        <circle cx="50" cy="40" r="25" fill="var(--cyan-dim)"/>
+        <path d="M 50 15 L 50 40 M 25 40 L 75 40 M 50 40 L 50 65" stroke="var(--cyan)" stroke-width="1" opacity="0.5"/>
+        <path d="M 25 90 C 25 60, 75 60, 75 90 Z" fill="var(--surface)" stroke="var(--text)" stroke-width="2"/>
+        <path d="M 65 65 C 65 50, 75 50, 75 65 L 75 80 C 75 90, 65 90, 65 80 Z" fill="var(--surface)" stroke="var(--text)" stroke-width="1.5"/>
+        <path d="M 68 55 L 68 65 M 72 55 L 72 65" stroke="var(--text)" stroke-width="1" stroke-linecap="round"/>
+        <path d="M 50 75 C 55 70, 60 75, 50 85 C 40 75, 45 70, 50 75 Z" fill="var(--text)"/>
+    </svg>
+    <div class="ty-text">"Thank you for spending time with me."</div>
+</div>
+
+<header>
+    <a href="index.html" class="back-btn">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Return
+    </a>
+</header>
+
+<div class="tabs-container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('lectio')">Lectio Divina</button>
+        <button class="tab-btn" onclick="switchTab('visio')">Visio Divina</button>
+    </div>
+</div>
+
+<section id="lectio" class="content-section active">
+    <div class="date-header" id="currentDate">Loading Date...</div>
+    <div class="reflection-card">
+        <h2 class="reflection-title" id="refTitle">Daily Contemplation</h2>
+        
+        <div class="loader" id="loaderText">Drawing today's reflection from the source...</div>
+
+        <div id="lectioWizardWrapper" style="display: none; flex-grow: 1; display: flex; flex-direction: column;">
+            
+            <div class="progress-dots" id="progressDots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <div class="step-container" id="stepsContainer">
+                <div class="step-card active">
+                    <div class="step-header">
+                        <span class="step-num">Step 1</span>
+                        <span class="step-title">Statio (Preparation)</span>
+                    </div>
+                    <div class="step-instruction">Take a deep breath. Quiet your mind and lay aside the anxieties of the day. Acknowledge that you are in the presence of God.</div>
+                    <div class="step-content">
+                        <p style="text-align: center;"><i>"Lord, I desire to see you, to hear you, and to be transformed by your Word. Send your Spirit to guide my heart in this time of prayer."</i></p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-num">Step 2</span>
+                        <span class="step-title">Lectio (Read)</span>
+                    </div>
+                    <div class="step-instruction">Read the Gospel quote slowly. Do not rush. Listen for a specific word or phrase that tugs at your heart.</div>
+                    <div class="step-content gospel-quote" id="dynLectio"></div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-num">Step 3</span>
+                        <span class="step-title">Meditatio (Meditate)</span>
+                    </div>
+                    <div class="step-instruction">What is God saying to you in this passage? Delve into the meaning of the text.</div>
+                    <div class="step-content" id="dynMeditatio"></div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-num">Step 4</span>
+                        <span class="step-title">Oratio (Pray)</span>
+                    </div>
+                    <div class="step-instruction">Respond to God. Speak to Him frankly, as a friend speaks to a friend.</div>
+                    <div class="step-content">
+                        <div id="dynOratio"></div>
+                        <p><i>Take a few moments to add your own personal prayers and intentions based on what stirred in your heart.</i></p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-num">Step 5</span>
+                        <span class="step-title">Contemplatio & Actio</span>
+                    </div>
+                    <div class="step-instruction">Rest quietly in God's presence, then decide how this prayer will bear fruit today.</div>
+                    <div class="step-content">
+                        <p>Close your eyes and allow yourself to rest in His grace without needing to use words. Surrender your thoughts to Him.</p>
+                        <p>When you are ready to conclude, ask yourself: <br><br><b>What is one concrete action I can take today to live out this Gospel message?</b></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-controls">
+                <button class="ctrl-btn btn-prev" id="btnPrev" onclick="navigateStep(-1)" disabled>
+                    <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+                    Previous
+                </button>
+                <button class="ctrl-btn btn-next" id="btnNext" onclick="navigateStep(1)">
+                    Next Step
+                    <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section id="visio" class="content-section">
+    <div class="visio-container">
+        <svg class="shepherd-graphic" viewBox="0 0 200 250">
+            <defs>
+                <linearGradient id="robe-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="var(--green2)" />
+                    <stop offset="100%" stop-color="var(--green)" />
+                </linearGradient>
+            </defs>
+            <ellipse cx="100" cy="45" rx="25" ry="25" fill="none" stroke="var(--cyan)" stroke-width="2" opacity="0.6"/>
+            <path d="M 130 230 L 130 60 C 130 40 150 40 150 55" stroke="var(--cyan)" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M 100 60 L 125 220 L 75 220 Z" fill="url(#robe-grad)"/>
+            <path d="M 100 60 L 75 120 L 125 120 Z" fill="var(--green2)" opacity="0.4"/>
+            <path d="M 65 75 C 65 55, 135 55, 135 75 C 135 85, 65 85, 65 75 Z" fill="var(--text)"/>
+            <circle cx="55" cy="80" r="10" fill="var(--surface)" stroke="var(--text)" stroke-width="3"/>
+            <path d="M 75 80 L 70 100 M 85 80 L 80 95 M 115 80 L 120 95 M 125 80 L 130 100" stroke="var(--text)" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+
+        <div class="verse-box">
+            <div class="verse-text">"I am the good shepherd. The good shepherd lays down his life for the sheep."</div>
+            <div class="verse-ref">John 10:11</div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Realtime System Date Setup
+    const systemDate = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').innerText = systemDate.toLocaleDateString('en-US', options);
+
+    // Tab Logic
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // Completion Animation Logic
+    function triggerFinishAnimation() {
+        const tyScreen = document.getElementById('thankYouScreen');
+        tyScreen.classList.add('active');
+        addActivityScore('lectio');   // record the completed Lectio Divina
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 4000);
+    }
+
+    // Step Wizard Logic
+    let currentStep = 0;
+    const steps = document.querySelectorAll('.step-card');
+    const dots = document.querySelectorAll('.dot');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+
+    function updateWizardUI() {
+        steps.forEach((step, index) => {
+            step.classList.toggle('active', index === currentStep);
+        });
+
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentStep);
+            dot.classList.toggle('completed', index < currentStep);
+        });
+
+        btnPrev.disabled = currentStep === 0;
+        
+        if (currentStep === steps.length - 1) {
+            btnNext.innerHTML = 'Finish <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>';
+        } else {
+            btnNext.innerHTML = 'Next Step <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>';
+        }
+    }
+
+    function navigateStep(direction) {
+        if (currentStep === steps.length - 1 && direction === 1) {
+            triggerFinishAnimation();
+            return;
+        }
+        currentStep += direction;
+        document.querySelector('.reflection-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        updateWizardUI();
+    }
+
+    // Data Fetcher
+    async function fetchDailyReflection() {
+        const rssUrl = 'https://catholic-daily-reflections.com/feed/';
+        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.status === 'ok' && data.items.length > 0) {
+                // Formatting local laptop time to match RSS feed date pattern
+                const yyyy = systemDate.getFullYear();
+                const mm = String(systemDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(systemDate.getDate()).padStart(2, '0');
+                const targetDate = `${yyyy}-${mm}-${dd}`;
+
+                // Force to pull reading corresponding to laptop's local current day
+                let todayReflection = data.items.find(item => item.pubDate && item.pubDate.startsWith(targetDate));
+                if (!todayReflection) {
+                    todayReflection = data.items[0]; // Fallback to newest if not found in feed
+                }
+
+                document.getElementById('refTitle').innerText = todayReflection.title;
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(todayReflection.content || todayReflection.description, 'text/html');
+                
+                // Strip unnecessary elements 
+                doc.querySelectorAll('img, script, a.share-btn, .addtoany_share_save_container').forEach(el => el.remove());
+                
+                // Clean unwanted marketing text (Holy Trinity promo logic)
+                doc.querySelectorAll('p, div, span').forEach(el => {
+                    if (el.textContent.toLowerCase().includes('holy trinity')) {
+                        el.remove();
+                    }
+                });
+
+                // The fix: Transform standard <a> tags into <button> elements with working onclick attributes
+                // We use setAttribute so the event listener survives when converted to strings using innerHTML later
+                doc.querySelectorAll('a').forEach(a => {
+                    const btn = document.createElement('button');
+                    btn.className = 'reading-link';
+                    btn.innerHTML = a.innerHTML;
+                    
+                    const href = a.getAttribute('href');
+                    if (href) {
+                        btn.setAttribute('onclick', `window.open('${href}', '_blank')`);
+                    }
+                    
+                    a.parentNode.replaceChild(btn, a);
+                });
+                
+                const paragraphs = Array.from(doc.querySelectorAll('p')).filter(p => p.innerText.trim().length > 0);
+
+                let gospelQuote = "", meditation = "", prayer = "";
+
+                if (paragraphs.length >= 3) {
+                    gospelQuote = `<p>"${paragraphs[0].innerHTML}"</p>`;
+                    prayer = `<p><i>${paragraphs[paragraphs.length - 1].innerHTML}</i></p>`;
+                    const midContent = paragraphs.slice(1, paragraphs.length - 1);
+                    meditation = midContent.map(p => `<p>${p.innerHTML}</p>`).join('');
+                } else {
+                    meditation = paragraphs.map(p => `<p>${p.innerHTML}</p>`).join('');
+                    gospelQuote = "<p><i>Read the daily Gospel reading to begin your reflection.</i></p>";
+                    prayer = "<p><i>Lord, guide my heart in this day. Amen.</i></p>";
+                }
+
+                document.getElementById('dynLectio').innerHTML = gospelQuote;
+                document.getElementById('dynMeditatio').innerHTML = meditation;
+                document.getElementById('dynOratio').innerHTML = prayer;
+
+                document.getElementById('loaderText').style.display = 'none';
+                document.getElementById('lectioWizardWrapper').style.display = 'flex';
+            } else {
+                throw new Error("Feed empty");
+            }
+        } catch (error) {
+            document.getElementById('loaderText').innerText = "Unable to load today's reflection. Check connection.";
+        }
+    }
+
+    // Initialize
+    fetchDailyReflection();
+
+    // ── Score: a completed Lectio Divina contemplation ──
+    function addActivityScore(type) {
+        if (typeof Fides === 'undefined') return;
+        if (type === 'rosary') {
+            Fides.award({ type:'rosary', statKey:'rosaryCompleted', points:40, label:'Rosary completed' });
+        } else {
+            Fides.award({ type:'lectio', statKey:'lectioCompleted', points:15, label:'Lectio Divina completed' });
+        }
+    }
+</script>
+</body>
+</html>
