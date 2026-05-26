@@ -494,6 +494,8 @@ function goBack(){
   } else if (!nm.classList.contains('hidden')) {
     nm.classList.add('hidden');
     setTimeout(()=>document.getElementById('mainMenu').classList.remove('hidden'),300);
+  } else {
+    window.location.href = 'index.html';
   }
 }
 
