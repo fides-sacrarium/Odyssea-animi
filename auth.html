@@ -27,11 +27,9 @@
         *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
         html, body { height:100%; font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
 
-        /* noise overlay */
         body::after { content:''; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:0.035;
             background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-        /* ambient */
         .ambient { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
         .amb { position:absolute; border-radius:50%; filter:blur(120px); }
         .amb-1 { width:600px; height:600px; top:-200px; left:-150px; background:radial-gradient(circle,rgba(160,100,30,0.2) 0%,transparent 70%); animation:af1 22s ease-in-out infinite alternate; }
@@ -41,7 +39,6 @@
 
         .page-wrap { position:relative; z-index:1; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
 
-        /* card */
         .auth-card {
             width:100%; max-width:460px; background:var(--surface);
             border:1px solid var(--border); border-radius:24px;
@@ -59,19 +56,16 @@
         .brand-name { font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:300; color:var(--text); }
         .brand-sub { font-size:10px; letter-spacing:0.38em; text-transform:uppercase; color:var(--cyan2); margin-top:6px; font-weight:500; }
 
-        /* TABS */
         .tabs { display:flex; background:var(--surface2); border-radius:var(--radius-sm); padding:4px; margin-bottom:32px; gap:4px; }
         .tab { flex:1; padding:10px; border:none; background:none; color:var(--text2); font-family:'DM Sans',sans-serif;
             font-size:13px; font-weight:500; letter-spacing:0.05em; text-transform:uppercase;
             border-radius:8px; cursor:pointer; transition:all 0.3s; }
         .tab.active { background:var(--surface); color:var(--cyan2); box-shadow:0 2px 8px rgba(0,0,0,0.3); }
 
-        /* PANELS */
         .panel { display:none; animation:fadeIn 0.4s ease; }
         .panel.active { display:block; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-        /* FORM FIELDS */
         .field { margin-bottom:16px; }
         .field label { display:block; font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
             color:var(--text2); margin-bottom:8px; font-weight:500; }
@@ -84,17 +78,6 @@
         .field input::placeholder { color:var(--text3); }
         .field select option { background:var(--surface2); }
 
-        /* AVATAR PICKER */
-        .avatar-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:8px; }
-        .av-opt { position:relative; cursor:pointer; }
-        .av-opt input { position:absolute; opacity:0; width:0; height:0; }
-        .av-img { width:100%; aspect-ratio:1; border-radius:50%; background:var(--surface2);
-            border:2px solid var(--border); transition:all 0.3s; overflow:hidden;
-            display:flex; align-items:center; justify-content:center; font-size:22px; }
-        .av-opt input:checked ~ .av-img { border-color:var(--cyan2); box-shadow:0 0 0 3px var(--cyan-dim),0 0 12px var(--cyan-glow); }
-        .av-img:hover { border-color:rgba(91,168,192,0.5); }
-
-        /* GOOGLE BTN */
         .google-btn {
             width:100%; padding:13px 20px; border-radius:var(--radius-sm);
             border:1px solid var(--border); background:var(--surface2);
@@ -109,7 +92,6 @@
         .divider-line { flex:1; height:1px; background:var(--border); }
         .divider-text { font-size:11px; color:var(--text3); letter-spacing:0.1em; text-transform:uppercase; }
 
-        /* SUBMIT */
         .submit-btn {
             width:100%; padding:14px; border-radius:var(--radius-sm); border:none;
             background:linear-gradient(135deg,var(--cyan2),var(--cyan)); color:var(--bg);
@@ -117,11 +99,10 @@
             letter-spacing:0.08em; text-transform:uppercase; cursor:pointer;
             transition:all 0.3s; margin-top:8px; position:relative; overflow:hidden;
         }
-        .submit-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px var(--cyan-glow); }
+        .submit-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 8px 24px var(--cyan-glow); }
         .submit-btn:active { transform:translateY(0); }
-        .submit-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+        .submit-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
 
-        /* SPINNER */
         .spinner { width:18px; height:18px; border:2px solid rgba(12,9,6,0.3); border-top-color:var(--bg);
             border-radius:50%; animation:spin 0.7s linear infinite; display:inline-block; }
         @keyframes spin { to{transform:rotate(360deg)} }
@@ -137,24 +118,187 @@
 
         .field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 
-        /* theme toggle */
         .theme-toggle { position:fixed; top:20px; right:20px; z-index:10; width:36px; height:36px;
             border-radius:50%; border:1px solid var(--border); background:var(--surface);
             color:var(--text2); cursor:pointer; display:flex; align-items:center; justify-content:center;
             transition:all 0.3s; }
         .theme-toggle:hover { border-color:var(--cyan2); color:var(--cyan2); }
 
-        @media (max-width:480px) {
-            .auth-card { padding:36px 24px; }
-            .field-row { grid-template-columns:1fr; }
-            .avatar-grid { grid-template-columns:repeat(6,1fr); gap:6px; }
-        }
-
-        /* Loading overlay */
         #loading-overlay { position:fixed; inset:0; z-index:1000; background:var(--bg);
             display:flex; align-items:center; justify-content:center; }
         #loading-overlay.hidden { display:none; }
         .loading-cross { width:50px; height:70px; animation:spinY 10s linear infinite; }
+
+        /* ─── TERMS CHECKBOX ─────────────────────────────────────────────── */
+        .tnc-wrap {
+            display:flex; align-items:flex-start; gap:10px;
+            margin-bottom:18px; margin-top:4px;
+            padding:12px 14px;
+            background:var(--surface2);
+            border:1px solid var(--border);
+            border-radius:var(--radius-sm);
+            transition:border-color 0.3s;
+        }
+        .tnc-wrap:has(#tnc-checkbox:checked) { border-color:rgba(91,168,192,0.4); }
+        .tnc-checkbox-box { position:relative; flex-shrink:0; margin-top:1px; }
+        .tnc-checkbox-box input[type="checkbox"] {
+            appearance:none; -webkit-appearance:none;
+            width:18px; height:18px;
+            border:2px solid var(--text3);
+            border-radius:4px;
+            background:var(--surface3);
+            cursor:pointer;
+            transition:all 0.25s;
+            display:block;
+        }
+        .tnc-checkbox-box input[type="checkbox"]:checked {
+            background:var(--cyan2);
+            border-color:var(--cyan2);
+        }
+        .tnc-checkbox-box input[type="checkbox"]:checked::after {
+            content:'';
+            position:absolute; top:3px; left:6px;
+            width:5px; height:9px;
+            border:2px solid var(--bg);
+            border-top:none; border-left:none;
+            transform:rotate(45deg);
+        }
+        .tnc-checkbox-box input[type="checkbox"]:focus { box-shadow:0 0 0 3px var(--cyan-dim); outline:none; }
+        .tnc-label { font-size:12.5px; color:var(--text2); line-height:1.55; cursor:pointer; }
+        .tnc-label a { color:var(--cyan2); text-decoration:underline; cursor:pointer; background:none; border:none; padding:0; font-size:inherit; font-family:inherit; }
+        .tnc-label a:hover { color:var(--cyan); }
+
+        /* ─── T&C MODAL ──────────────────────────────────────────────────── */
+        .tnc-backdrop {
+            position:fixed; inset:0; z-index:500;
+            background:rgba(6,4,2,0.82);
+            backdrop-filter:blur(6px);
+            display:flex; align-items:center; justify-content:center;
+            padding:20px;
+            opacity:0; pointer-events:none;
+            transition:opacity 0.35s;
+        }
+        .tnc-backdrop.open { opacity:1; pointer-events:all; }
+
+        .tnc-modal {
+            width:100%; max-width:640px; max-height:88vh;
+            background:var(--surface);
+            border:1px solid rgba(91,168,192,0.18);
+            border-radius:20px;
+            display:flex; flex-direction:column;
+            box-shadow:0 40px 100px rgba(0,0,0,0.8);
+            transform:translateY(30px) scale(0.97);
+            transition:transform 0.4s var(--expo);
+            overflow:hidden;
+        }
+        .tnc-backdrop.open .tnc-modal { transform:translateY(0) scale(1); }
+
+        .tnc-modal-head {
+            display:flex; align-items:center; justify-content:space-between;
+            padding:20px 24px 18px;
+            border-bottom:1px solid var(--border);
+            flex-shrink:0;
+        }
+        .tnc-modal-title {
+            font-family:'Cormorant Garamond',serif;
+            font-size:22px; font-weight:400;
+            color:var(--text);
+        }
+        .tnc-modal-title span { color:var(--cyan2); }
+        .tnc-close {
+            width:32px; height:32px; border-radius:50%;
+            border:1px solid var(--border);
+            background:var(--surface2);
+            color:var(--text2);
+            cursor:pointer; display:flex; align-items:center; justify-content:center;
+            transition:all 0.2s; flex-shrink:0;
+        }
+        .tnc-close:hover { border-color:var(--cyan2); color:var(--cyan2); background:var(--surface3); }
+
+        .tnc-modal-body {
+            overflow-y:auto; padding:24px 28px;
+            flex:1;
+            scrollbar-width:thin;
+            scrollbar-color:var(--surface3) transparent;
+        }
+        .tnc-modal-body::-webkit-scrollbar { width:5px; }
+        .tnc-modal-body::-webkit-scrollbar-track { background:transparent; }
+        .tnc-modal-body::-webkit-scrollbar-thumb { background:var(--surface3); border-radius:3px; }
+
+        /* progress bar — fills as you scroll */
+        .tnc-progress-bar {
+            height:2px; background:var(--border); flex-shrink:0;
+        }
+        .tnc-progress-fill {
+            height:100%;
+            width:0%;
+            background:linear-gradient(to right,var(--cyan2),var(--cyan));
+            transition:width 0.1s linear;
+        }
+
+        /* T&C typography inside modal */
+        .tnc-h1 {
+            font-family:'Cormorant Garamond',serif;
+            font-size:16px; font-weight:600; color:var(--cyan2);
+            margin:20px 0 6px; letter-spacing:0.02em;
+        }
+        .tnc-h1:first-child { margin-top:0; }
+        .tnc-p {
+            font-size:13px; color:var(--text2); line-height:1.7;
+            margin-bottom:10px;
+        }
+        .tnc-ul {
+            margin:0 0 10px 0; padding:0;
+            list-style:none;
+        }
+        .tnc-ul li {
+            font-size:12.5px; color:var(--text2); line-height:1.65;
+            padding:3px 0 3px 18px; position:relative;
+        }
+        .tnc-ul li::before {
+            content:'✦'; position:absolute; left:0;
+            color:var(--cyan2); font-size:8px; top:6px;
+        }
+        .tnc-rule { border:none; border-top:1px solid var(--border); margin:8px 0 16px; }
+        .tnc-tag {
+            display:inline-block; font-size:10px; letter-spacing:0.12em;
+            text-transform:uppercase; color:var(--bg); background:var(--cyan2);
+            padding:2px 8px; border-radius:4px; margin-bottom:8px; font-weight:600;
+        }
+
+        .tnc-modal-foot {
+            display:flex; gap:10px; padding:16px 24px;
+            border-top:1px solid var(--border);
+            flex-shrink:0;
+            background:var(--surface);
+        }
+        .tnc-decline-btn {
+            flex:1; padding:11px; border-radius:var(--radius-sm);
+            border:1px solid var(--border); background:var(--surface2);
+            color:var(--text2); font-family:'DM Sans',sans-serif;
+            font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s;
+        }
+        .tnc-decline-btn:hover { border-color:var(--red); color:var(--red); }
+        .tnc-accept-btn {
+            flex:2; padding:11px; border-radius:var(--radius-sm);
+            border:none;
+            background:linear-gradient(135deg,var(--cyan2),var(--cyan));
+            color:var(--bg); font-family:'DM Sans',sans-serif;
+            font-size:13px; font-weight:600; letter-spacing:0.06em;
+            text-transform:uppercase; cursor:pointer; transition:all 0.2s;
+        }
+        .tnc-accept-btn:hover { box-shadow:0 6px 20px var(--cyan-glow); transform:translateY(-1px); }
+        /* scroll-lock hint */
+        .tnc-scroll-hint {
+            font-size:11px; color:var(--text3); text-align:center;
+            padding:0 24px 10px; flex-shrink:0;
+        }
+
+        @media (max-width:480px) {
+            .auth-card { padding:36px 24px; }
+            .field-row { grid-template-columns:1fr; }
+            .tnc-modal-body { padding:18px 18px; }
+        }
     </style>
 </head>
 <body>
@@ -177,10 +321,101 @@
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
 </button>
 
+<!-- ═══════════════════════════ T&C MODAL ═══════════════════════════════ -->
+<div class="tnc-backdrop" id="tnc-backdrop" role="dialog" aria-modal="true" aria-labelledby="tnc-modal-title">
+    <div class="tnc-modal">
+        <div class="tnc-modal-head">
+            <div class="tnc-modal-title" id="tnc-modal-title">✝ &nbsp;<span>Terms &amp; Conditions</span></div>
+            <button class="tnc-close" onclick="closeTnc()" aria-label="Close">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="tnc-progress-bar"><div class="tnc-progress-fill" id="tnc-progress"></div></div>
+
+        <div class="tnc-modal-body" id="tnc-body" onscroll="updateTncProgress()">
+
+            <p class="tnc-p" style="font-style:italic;color:var(--text3);font-size:12px;margin-bottom:16px;">Last Updated: May 2025 &nbsp;·&nbsp; Version 1.0</p>
+            <p class="tnc-p">Please read these Terms carefully. By creating an account you confirm that you have read, understood, and agree to everything below.</p>
+
+            <div class="tnc-h1">1. What This Is</div><hr class="tnc-rule">
+            <p class="tnc-p">Fides Sacrarium is a <strong>free, non-commercial, personal project</strong> — a digital companion space for Christian community, spiritual reflection, shared testimony, and faith connection. It is not a registered company, charity, or organisation. It is run by one individual as an act of faith and service.</p>
+            <p class="tnc-p">Contact: <strong>mihaelfausty@gmail.com</strong></p>
+
+            <div class="tnc-h1">2. Eligibility</div><hr class="tnc-rule">
+            <ul class="tnc-ul">
+                <li>You must be at least <strong>13 years old</strong>. If you are under 18, please have a parent or guardian's awareness before registering.</li>
+                <li>You must provide a valid email address when registering.</li>
+                <li>You are responsible for keeping your account credentials secure.</li>
+                <li>You must not create accounts on behalf of others without their knowledge.</li>
+            </ul>
+
+            <div class="tnc-h1">3. Community Standards</div><hr class="tnc-rule">
+            <p class="tnc-p">This is a sacred space. Everyone is a guest here. The following are not acceptable:</p>
+            <ul class="tnc-ul">
+                <li>Abusive, harassing, hateful, or threatening content toward any person.</li>
+                <li>Content that demeans or mocks the Christian faith or another person's sincere beliefs.</li>
+                <li>Impersonating a pastor, ministry leader, or another member.</li>
+                <li>Soliciting money or running any commercial or promotional scheme.</li>
+                <li>Sharing another person's private information without their consent.</li>
+                <li>Content promoting violence, illegal activity, or self-harm.</li>
+                <li>Using bots, scrapers, or automated tools on the platform.</li>
+            </ul>
+            <p class="tnc-p">The platform operator may remove content or accounts that violate these standards, at their sole discretion and without prior notice.</p>
+
+            <div class="tnc-h1">4. Content You Share</div><hr class="tnc-rule">
+            <p class="tnc-p">You own the stories, testimonies, and reflections you post. By sharing them here you give permission for them to be stored and displayed to other members of the community. You can delete your content at any time from your profile.</p>
+            <p class="tnc-p"><strong>A note on vulnerability:</strong> Testimonies can be deeply personal. Only share what you are genuinely comfortable making visible to others. Content posted here is not official Church teaching and does not represent the views of the platform operator.</p>
+
+            <div class="tnc-h1">5. Personal Data &amp; Privacy</div><hr class="tnc-rule">
+            <span class="tnc-tag">Data Consent</span>
+            <p class="tnc-p">Here is exactly what happens with your data — no legal fog:</p>
+            <ul class="tnc-ul">
+                <li><strong>What is collected:</strong> your email address, display name, ministry role, parish, avatar, and the content you post. Firebase (Google) also collects basic usage data automatically.</li>
+                <li><strong>Why:</strong> to run your account, show your profile to other members, and send you essential service emails. Nothing else.</li>
+                <li><strong>Who can see it:</strong> other logged-in members can see your display name, ministry role, and posts. Your email is never visible to other members.</li>
+                <li><strong>Third parties:</strong> Firebase (Google) handles authentication, the database, and hosting. No other third parties receive your data.</li>
+                <li><strong>No selling, no ads:</strong> your data is never sold, shared with advertisers, or used for any commercial purpose. This project has no revenue.</li>
+                <li><strong>Retention:</strong> if you delete your account, your personal data is removed within 30 days. Posts may remain anonymised unless you delete them first.</li>
+            </ul>
+            <p class="tnc-p"><strong>Your rights:</strong> You can access, correct, or delete your data at any time by emailing <strong>mihaelfausty@gmail.com</strong>. All requests are handled in good faith.</p>
+
+            <div class="tnc-h1">6. Email Communications</div><hr class="tnc-rule">
+            <p class="tnc-p">By registering, you consent to receiving transactional emails for your account (welcome, password reset, security alerts). These are sent only when necessary.</p>
+            <p class="tnc-p">If community updates or devotionals are ever sent, there will always be an unsubscribe option. You will never receive commercial email of any kind.</p>
+
+            <div class="tnc-h1">7. Faith Content &amp; Wellbeing</div><hr class="tnc-rule">
+            <p class="tnc-p">Content shared by members represents their personal faith experience. It is not official Church teaching, canonical advice, psychological guidance, or medical counsel. If you are going through a crisis — spiritual, emotional, mental, or physical — please reach out to a qualified person. This platform is a companion, not a substitute for real pastoral care or professional support.</p>
+
+            <div class="tnc-h1">8. No Warranties &amp; Liability</div><hr class="tnc-rule">
+            <p class="tnc-p">Fides Sacrarium is offered free of charge by a single individual with no commercial backing. Every effort is made to keep it safe and running well, but no guarantees can be made regarding uptime or data loss. Because the Service is free and non-commercial, no financial compensation can be offered for any service issues.</p>
+
+            <div class="tnc-h1">9. Termination</div><hr class="tnc-rule">
+            <p class="tnc-p">You can delete your account at any time via Settings. The platform operator may remove an account if these Terms are seriously violated or to protect the community.</p>
+
+            <div class="tnc-h1">10. Changes to These Terms</div><hr class="tnc-rule">
+            <p class="tnc-p">If these Terms change, you will be notified by email and/or an in-app notice at least <strong>14 days</strong> before the changes take effect. Continued use after that point means acceptance.</p>
+
+            <p class="tnc-p" style="margin-top:20px;padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);font-size:12px;">
+                Questions about these Terms or your data?<br>
+                Email <strong>mihaelfausty@gmail.com</strong> — all messages are read and answered personally.
+            </p>
+        </div>
+
+        <p class="tnc-scroll-hint" id="tnc-hint">↓ Scroll to read all terms before accepting</p>
+
+        <div class="tnc-modal-foot">
+            <button class="tnc-decline-btn" onclick="declineTnc()">Decline</button>
+            <button class="tnc-accept-btn" id="tnc-accept-btn" onclick="acceptTnc()">I Accept These Terms</button>
+        </div>
+    </div>
+</div>
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+
 <div class="page-wrap">
     <div class="auth-card">
 
-        <!-- Brand -->
         <div class="brand">
             <svg class="brand-cross" viewBox="0 0 100 140">
                 <defs><linearGradient id="cg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E6C98A"/><stop offset="50%" stop-color="#C4A060"/><stop offset="100%" stop-color="#8A5E1A"/></linearGradient></defs>
@@ -190,7 +425,6 @@
             <div class="brand-sub">Digital Companion</div>
         </div>
 
-        <!-- Tabs -->
         <div class="tabs">
             <button class="tab active" onclick="switchTab('login')">Sign In</button>
             <button class="tab" onclick="switchTab('register')">Register</button>
@@ -224,7 +458,7 @@
             <div class="error-msg" id="reg-error"></div>
             <div class="success-msg" id="reg-success">Account created! Setting up your profile…</div>
 
-            <button class="google-btn" onclick="signInGoogle()">
+            <button class="google-btn" onclick="signInGoogleRegister()">
                 <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                 Register with Google
             </button>
@@ -244,11 +478,25 @@
                 <input type="password" id="reg-pass2" placeholder="re-enter password" onkeydown="if(event.key==='Enter')doRegister()">
             </div>
 
-            <p style="font-size:11.5px;color:var(--text2);line-height:1.6;margin-bottom:4px;">
+            <!-- ── TERMS CHECKBOX ── -->
+            <div class="tnc-wrap">
+                <div class="tnc-checkbox-box">
+                    <input type="checkbox" id="tnc-checkbox" onchange="onTncCheck()">
+                </div>
+                <label class="tnc-label" for="tnc-checkbox">
+                    I have read and agree to the
+                    <a onclick="openTnc(event)">Terms &amp; Conditions</a>
+                    and
+                    <a onclick="openTnc(event)">Privacy Policy</a>,
+                    including the collection and processing of my personal data and the receipt of service-related emails.
+                </label>
+            </div>
+
+            <p style="font-size:11.5px;color:var(--text2);line-height:1.6;margin-bottom:14px;">
                 You'll set up your name, ministry and avatar right after — on your profile page.
             </p>
 
-            <button class="submit-btn" id="reg-btn" onclick="doRegister()">Create Account</button>
+            <button class="submit-btn" id="reg-btn" onclick="doRegister()" disabled>Create Account</button>
         </div>
 
     </div>
@@ -259,28 +507,22 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="config.js"></script>
 <script>
-    const AVATARS = { avatar1:'🕊️', avatar2:'⚔️', avatar3:'🌿', avatar4:'🕯️', avatar5:'🌹', avatar6:'✝️' };
+    console.log('%c✓ Fides auth.html — T&C build','color:#6db8cc;font-weight:bold;font-size:13px');
 
-    // Build marker — if you DON'T see this in the browser console, you are
-    // running an old cached copy of this file. Hard-refresh or redeploy.
-    console.log('%c✓ Fides auth.html — PROFILE-SAVE FIX build','color:#6db8cc;font-weight:bold;font-size:13px');
-
-    // While a sign-up (or a brand-new Google user) is being processed we must
-    // NOT let the auth-state listener redirect early — that race would carry
-    // the user to index.html before their profile is written to the database.
     let authBusy = false;
     let redirected = false;
+    // Track whether user accepted T&C in this session
+    let tncAccepted = false;
+
     function goToApp() {
         if (redirected) return;
         redirected = true;
         window.location.href = getRedirect();
     }
-
     function getRedirect() {
         return new URLSearchParams(window.location.search).get('redirect') || 'index.html';
     }
 
-    // Already logged in? Send returning users straight to the app.
     auth.onAuthStateChanged(user => {
         document.getElementById('loading-overlay').classList.add('hidden');
         if (user && !authBusy) goToApp();
@@ -304,6 +546,68 @@
         btn.innerHTML = loading ? '<span class="spinner"></span>' : (btnId === 'login-btn' ? 'Sign In' : 'Create Account');
     }
 
+    // ─── T&C MODAL LOGIC ────────────────────────────────────────────────
+    function openTnc(e) {
+        if (e) e.preventDefault();
+        document.getElementById('tnc-backdrop').classList.add('open');
+        document.body.style.overflow = 'hidden';
+        // Reset scroll
+        const body = document.getElementById('tnc-body');
+        body.scrollTop = 0;
+        updateTncProgress();
+    }
+
+    function closeTnc() {
+        document.getElementById('tnc-backdrop').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function updateTncProgress() {
+        const body = document.getElementById('tnc-body');
+        const progress = document.getElementById('tnc-progress');
+        const hint = document.getElementById('tnc-hint');
+        const pct = body.scrollHeight <= body.clientHeight ? 100
+            : Math.min(100, Math.round((body.scrollTop / (body.scrollHeight - body.clientHeight)) * 100));
+        progress.style.width = pct + '%';
+        if (pct >= 95) {
+            hint.style.opacity = '0';
+        } else {
+            hint.style.opacity = '1';
+        }
+    }
+
+    function acceptTnc() {
+        tncAccepted = true;
+        document.getElementById('tnc-checkbox').checked = true;
+        onTncCheck();
+        closeTnc();
+    }
+
+    function declineTnc() {
+        tncAccepted = false;
+        document.getElementById('tnc-checkbox').checked = false;
+        onTncCheck();
+        closeTnc();
+    }
+
+    function onTncCheck() {
+        const checked = document.getElementById('tnc-checkbox').checked;
+        const btn = document.getElementById('reg-btn');
+        btn.disabled = !checked;
+        tncAccepted = checked;
+    }
+
+    // Close on backdrop click
+    document.getElementById('tnc-backdrop').addEventListener('click', function(e) {
+        if (e.target === this) closeTnc();
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeTnc();
+    });
+
+    // ─── AUTH FUNCTIONS ──────────────────────────────────────────────────
     async function doLogin() {
         hideError('login-error');
         const email = document.getElementById('login-email').value.trim();
@@ -315,12 +619,22 @@
             goToApp();
         } catch(e) {
             setLoading('login-btn', false);
-            showError('login-error', e.code === 'auth/wrong-password' ? 'Incorrect password.' : e.code === 'auth/user-not-found' ? 'No account found with that email.' : e.message);
+            showError('login-error',
+                e.code === 'auth/wrong-password' ? 'Incorrect password.' :
+                e.code === 'auth/user-not-found' ? 'No account found with that email.' : e.message);
         }
     }
 
     async function doRegister() {
         hideError('reg-error');
+
+        // Hard-block if T&C not accepted (belt + braces — checkbox is already disabled)
+        if (!tncAccepted) {
+            openTnc();
+            showError('reg-error','You must accept the Terms & Conditions to create an account.');
+            return;
+        }
+
         const email = document.getElementById('reg-email').value.trim();
         const pass  = document.getElementById('reg-pass').value;
         const pass2 = document.getElementById('reg-pass2').value;
@@ -330,40 +644,82 @@
         if (pass !== pass2) { showError('reg-error','Passwords do not match.'); return; }
 
         setLoading('reg-btn', true);
-        authBusy = true; // hold off the auth-state redirect until the account exists
+        authBusy = true;
         try {
-            await auth.createUserWithEmailAndPassword(email, pass);
-            // No profile is written here. The pilgrim fills in their name,
-            // ministry, parish and avatar on index.html — the Edit Profile
-            // dialog opens there automatically for brand-new accounts.
+            const cred = await auth.createUserWithEmailAndPassword(email, pass);
+            // Store T&C acceptance timestamp in the DB for auditing
+            if (typeof db !== 'undefined') {
+                await db.ref(`users/${cred.user.uid}/tncAccepted`).set({
+                    version: '1.0',
+                    timestamp: Date.now(),
+                    method: 'email-registration'
+                });
+            }
             document.getElementById('reg-success').classList.add('show');
             setTimeout(goToApp, 700);
         } catch(e) {
             authBusy = false;
             setLoading('reg-btn', false);
-            showError('reg-error', e.code === 'auth/email-already-in-use' ? 'Email already registered.' : e.message);
+            showError('reg-error',
+                e.code === 'auth/email-already-in-use' ? 'Email already registered.' : e.message);
         }
     }
 
     async function signInGoogle() {
-        authBusy = true; // hold off the auth-state redirect until the account exists
+        authBusy = true;
         const provider = new firebase.auth.GoogleAuthProvider();
         try {
             await auth.signInWithPopup(provider);
-            // No profile work here — index.html opens the Edit Profile dialog
-            // automatically for any account that has not been set up yet.
             goToApp();
         } catch(e) {
             authBusy = false;
             showError('login-error', e.message);
+        }
+    }
+
+    // Google register — requires T&C first
+    function signInGoogleRegister() {
+        if (!tncAccepted) {
+            // Open modal; on accept, proceed
+            _pendingGoogleRegister = true;
+            openTnc();
+        } else {
+            _doGoogleRegister();
+        }
+    }
+
+    let _pendingGoogleRegister = false;
+
+    // Override acceptTnc to chain Google popup if pending
+    const _origAccept = acceptTnc;
+    acceptTnc = function() {
+        _origAccept();
+        if (_pendingGoogleRegister) {
+            _pendingGoogleRegister = false;
+            _doGoogleRegister();
+        }
+    };
+
+    async function _doGoogleRegister() {
+        authBusy = true;
+        const provider = new firebase.auth.GoogleAuthProvider();
+        try {
+            const cred = await auth.signInWithPopup(provider);
+            if (typeof db !== 'undefined') {
+                await db.ref(`users/${cred.user.uid}/tncAccepted`).set({
+                    version: '1.0',
+                    timestamp: Date.now(),
+                    method: 'google-registration'
+                });
+            }
+            goToApp();
+        } catch(e) {
+            authBusy = false;
             showError('reg-error', e.message);
         }
     }
 
-    // Profile setup (name, ministry, parish, avatar) is no longer collected
-    // here — it happens once on index.html via the Edit Profile dialog, which
-    // opens automatically for any account that hasn't been set up yet.
-
+    // ─── THEME ───────────────────────────────────────────────────────────
     function toggleGlobalTheme() {
         const current = document.body.getAttribute('data-theme') || 'dark';
         const next = current === 'dark' ? 'light' : 'dark';
@@ -371,7 +727,6 @@
         localStorage.setItem('fides_theme', next);
     }
 
-    // Apply theme immediately
     (function() {
         const saved = localStorage.getItem('fides_theme');
         const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
