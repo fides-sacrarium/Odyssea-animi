@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Threads — Faith Pod</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --bg:      #0e0e0d;
+  --s1:      #161614;
+  --s2:      #1c1c19;
+  --s3:      #242420;
+  --s4:      #2e2e29;
+  --tx:      #e8e2d4;
+  --tx2:     #a09888;
+  --tx3:     #6a6458;
+  --br:      rgba(200,185,140,0.12);
+
+  --teal:    #2eb89a;
+  --teal2:   #4dd6b8;
+  --teal3:   #90ead8;
+  --tdim:    rgba(46,184,154,0.10);
+  --tglow:   rgba(46,184,154,0.22);
+
+  --gold:    #c9a84c;
+  --gold2:   #e8c96a;
+  --gold3:   #f5e4a8;
+  --gdim:    rgba(201,168,76,0.12);
+  --gglow:   rgba(201,168,76,0.28);
+
+  --r: 14px;
+  --ease: cubic-bezier(0.16,1,0.3,1);
+
+  --verse-bg: rgba(46,184,154,0.13);
+  --verse-border: rgba(46,184,154,0.30);
+  --verse-text: #c4f0e8;
+  --verse-ref: #4dd6b8;
+}
+
+[data-theme="light"] {
+  --bg:#f0ede6; --s1:#ffffff; --s2:#f5f2ea; --s3:#ede8dc; --s4:#e0d9c8;
+  --tx:#18160e; --tx2:#4a3c2c; --tx3:#7a6a54;
+  --teal:#1a9a80; --teal2:#2ebda0; --teal3:#1a7a68;
+  --tdim:rgba(26,154,128,0.09); --tglow:rgba(26,154,128,0.18);
+  --br:rgba(100,90,60,0.14);
+
+  --verse-bg: rgba(26,154,128,0.10);
+  --verse-border: rgba(26,154,128,0.28);
+  --verse-text: #0e4a3c;
+  --verse-ref: #1a7a68;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;height:100%;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;-webkit-font-smoothing:antialiased;min-height:100%;overflow-x:hidden}
+
+/* Grain overlay */
+body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;opacity:0.028;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.45}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;z-index:8000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform 1s cubic-bezier(0.76,0,0.24,1),opacity 0.4s ease}
+#splash.gone{transform:translateY(-100%);opacity:0;pointer-events:none}
+.splash-logo{display:flex;align-items:center;gap:11px;margin-bottom:10px;opacity:0;animation:fadeUp 0.7s var(--ease) 0.2s forwards}
+.splash-logo-mark{width:36px;height:36px}
+.splash-appname{font-family:'DM Serif Display',serif;font-size:clamp(22px,5vw,32px);color:var(--tx)}
+.splash-appname span{color:var(--teal2);font-style:italic}
+.splash-sub{font-size:9px;letter-spacing:0.48em;text-transform:uppercase;color:var(--teal2);font-weight:600;opacity:0;animation:fadeUp 0.7s var(--ease) 0.45s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TOP BAR ── */
+#top-bar{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:60px;padding:0 14px;
+  display:flex;align-items:center;gap:10px;
+  background:rgba(14,14,13,0.90);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--br);
+  /* safe area for notched phones */
+  padding-left:max(14px, env(safe-area-inset-left));
+  padding-right:max(14px, env(safe-area-inset-right));
+}
+[data-theme="light"] #top-bar{background:rgba(240,237,230,0.92)}
+
+.tb-back{width:34px;height:34px;border-radius:50%;border:1px solid var(--br);background:none;color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s;flex-shrink:0;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.tb-back:hover{border-color:var(--teal2);color:var(--teal2)}
+
+.tb-logogroup{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.tb-logo-mark{width:28px;height:28px;flex-shrink:0}
+.tb-brand{display:flex;flex-direction:column}
+.tb-brand-name{font-family:'DM Serif Display',serif;font-size:15px;color:var(--tx);line-height:1}
+.tb-brand-name span{color:var(--teal2);font-style:italic}
+.tb-brand-sub{font-size:8.5px;letter-spacing:0.28em;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-top:1px}
+
+.tb-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.tb-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--br);background:none;color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s;position:relative;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.tb-btn:hover{border-color:var(--teal2);color:var(--teal2)}
+
+.vol-off{display:none}
+#music-btn.muted .vol-on{display:none}
+#music-btn.muted .vol-off{display:flex}
+#music-btn.playing{border-color:var(--teal);color:var(--teal)}
+#music-btn.playing::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--teal);opacity:0.35;animation:mPulse 2s ease-in-out infinite}
+@keyframes mPulse{0%,100%{transform:scale(1);opacity:0.35}50%{transform:scale(1.18);opacity:0}}
+
+/* ── MAIN ── */
+#main{
+  position:relative;z-index:2;
+  padding-top:70px;
+  padding-bottom:calc(100px + env(safe-area-inset-bottom, 0px));
+  opacity:0;animation:fadePage 0.6s ease 1.2s forwards;
+}
+@keyframes fadePage{to{opacity:1}}
+.wrap{width:100%;max-width:680px;margin:0 auto;padding:16px 14px 0;}
+
+/* ══════════════════════════════════════
+   VERSE BANNER
+══════════════════════════════════════ */
+.verse-banner{
+  margin-bottom:14px;padding:16px 18px 14px;
+  background:var(--verse-bg);border:1px solid var(--verse-border);
+  border-radius:18px;position:relative;overflow:hidden;text-align:center;
+}
+.verse-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--teal2),transparent);opacity:0.7}
+.verse-banner::after{content:'\201C';position:absolute;top:-8px;left:14px;font-family:'DM Serif Display',serif;font-size:72px;color:var(--teal2);opacity:0.12;line-height:1;pointer-events:none}
+.verse-text{font-family:'DM Serif Display',serif;font-style:italic;font-size:clamp(13px,2.2vw,15px);color:var(--verse-text);line-height:1.65;transition:opacity 0.55s ease;position:relative;z-index:1}
+.verse-ref{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--verse-ref);font-weight:700;margin-top:7px;display:block;position:relative;z-index:1}
+
+/* ══════════════════════════════════════
+   THREAD OF THE DAY
+══════════════════════════════════════ */
+.totd{
+  margin-bottom:14px;padding:18px 20px;
+  background:linear-gradient(145deg,rgba(201,168,76,0.10),rgba(201,168,76,0.04));
+  border:1px solid rgba(201,168,76,0.22);border-radius:18px;
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:border-color 0.3s,transform 0.35s var(--ease),box-shadow 0.35s;
+  -webkit-tap-highlight-color:transparent;
+}
+[data-theme="light"] .totd{background:linear-gradient(145deg,rgba(180,140,30,0.10),rgba(180,140,30,0.04));border-color:rgba(160,120,20,0.28)}
+.totd:hover{border-color:rgba(201,168,76,0.45);transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,0.10)}
+.totd::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold2),transparent);opacity:0.7}
+.totd-label{font-size:8px;letter-spacing:0.45em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.totd-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:totdPulse 2.5s ease-in-out infinite;flex-shrink:0}
+@keyframes totdPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.45;transform:scale(0.65)}}
+.totd-q{font-family:'DM Serif Display',serif;font-size:clamp(14px,2.4vw,18px);font-style:italic;color:var(--gold3);line-height:1.45}
+[data-theme="light"] .totd-q{color:#7a5810}
+.totd-cta{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:600;opacity:0.8}
+[data-theme="light"] .totd-cta{color:#8a6020}
+
+/* ══════════════════════════════════════
+   GUIDELINES
+══════════════════════════════════════ */
+.guide-banner{
+  background:var(--tdim);border:1px solid rgba(46,184,154,0.16);
+  border-radius:12px;padding:10px 13px;margin-bottom:14px;
+  font-size:11.5px;color:var(--tx2);line-height:1.6;
+  display:flex;gap:9px;align-items:flex-start;
+}
+.guide-ico{flex-shrink:0;color:var(--teal2);margin-top:1px}
+.guide-text strong{color:var(--teal2);font-weight:600}
+[data-theme="light"] .guide-text strong{color:var(--teal)}
+
+/* ══════════════════════════════════════
+   CATEGORY STRIP
+══════════════════════════════════════ */
+.cat-strip{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;margin-bottom:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cat-strip::-webkit-scrollbar{display:none}
+.cat-pill{
+  flex-shrink:0;padding:7px 15px;border-radius:24px;
+  border:1px solid var(--br);background:var(--s1);
+  color:var(--tx2);font-size:11px;font-weight:600;font-family:'Outfit',sans-serif;
+  letter-spacing:0.03em;cursor:pointer;transition:all 0.22s;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.cat-pill:hover,.cat-pill:active{border-color:var(--teal2);color:var(--teal2);background:var(--tdim)}
+.cat-pill.active{background:var(--tdim);border-color:var(--teal2);color:var(--teal2)}
+
+/* ══════════════════════════════════════
+   SECTION ROW
+══════════════════════════════════════ */
+.sec-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-eye{font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--teal2);font-weight:700;display:flex;align-items:center;gap:8px}
+.sec-eye::before{content:'';display:inline-block;width:18px;height:1px;background:var(--teal2);opacity:0.6}
+.sec-count{font-size:10px;color:var(--tx3);font-weight:600;letter-spacing:0.05em}
+
+/* ══════════════════════════════════════
+   THREAD CARD
+══════════════════════════════════════ */
+.thread-card{
+  background:var(--s1);border:1px solid var(--br);border-radius:18px;
+  padding:16px 16px 13px;margin-bottom:11px;
+  transition:border-color 0.3s,box-shadow 0.3s,transform 0.35s var(--ease);
+  position:relative;overflow:hidden;
+  opacity:0;transform:translateY(18px);
+  animation:cardIn 0.5s var(--ease) forwards;
+}
+@keyframes cardIn{to{opacity:1;transform:translateY(0)}}
+.thread-card:hover{border-color:rgba(46,184,154,0.22);box-shadow:0 8px 28px rgba(0,0,0,0.22)}
+.thread-card::before{content:'';position:absolute;top:0;left:0;width:3px;bottom:0;background:var(--card-accent,var(--teal));border-radius:18px 0 0 18px;opacity:0.65}
+
+/* head row */
+.tc-head{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.tc-av{width:36px;height:36px;border-radius:50%;background:var(--s3);border:1.5px solid var(--br);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px}
+.tc-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.tc-meta{flex:1;min-width:0}
+.tc-name{font-size:13px;font-weight:600;color:var(--tx);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-sub{font-size:10px;color:var(--tx3);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tc-badge{font-size:7.5px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:12px;border:1px solid;line-height:1.4;white-space:nowrap}
+.badge-prayer{color:#4878b0;border-color:rgba(72,120,176,0.35);background:rgba(72,120,176,0.10)}
+.badge-testimony{color:#c9a84c;border-color:rgba(201,168,76,0.35);background:rgba(201,168,76,0.10)}
+.badge-encourage{color:#2eb89a;border-color:rgba(46,184,154,0.30);background:rgba(46,184,154,0.09)}
+.badge-bible{color:#8868a8;border-color:rgba(136,104,168,0.35);background:rgba(136,104,168,0.10)}
+.badge-reflection{color:#588870;border-color:rgba(88,136,112,0.32);background:rgba(88,136,112,0.09)}
+.badge-others{color:var(--tx2);border-color:var(--br);background:var(--s2)}
+[data-theme="light"] .badge-prayer{color:#2a5090;background:rgba(72,120,176,0.12)}
+[data-theme="light"] .badge-testimony{color:#8a6010;background:rgba(180,140,30,0.12)}
+[data-theme="light"] .badge-bible{color:#5a3888;background:rgba(120,80,160,0.12)}
+
+.tc-title{font-family:'DM Serif Display',serif;font-size:clamp(15px,2.4vw,18px);line-height:1.3;color:var(--tx);margin-bottom:7px}
+.tc-body{font-size:12.5px;line-height:1.72;color:var(--tx2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.tc-body.expanded{-webkit-line-clamp:unset;overflow:visible}
+.tc-expand{font-size:11px;color:var(--teal2);cursor:pointer;margin-top:3px;display:none;font-weight:600;background:none;border:none;padding:0;font-family:'Outfit',sans-serif;-webkit-tap-highlight-color:transparent}
+.tc-expand.show{display:inline}
+.tc-expand:hover{text-decoration:underline}
+
+/* participants */
+.tc-participants{display:flex;align-items:center;gap:10px;margin-top:12px}
+.participant-avatars{display:flex;align-items:center;flex-shrink:0}
+.part-av{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--s3);border:2.5px solid var(--s1);
+  overflow:hidden;margin-right:-9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;flex-shrink:0;
+  box-shadow:0 1px 4px rgba(0,0,0,0.35);
+  position:relative;
+}
+.part-av:last-child{margin-right:0}
+.part-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.part-av.more-badge{
+  background:var(--s4);font-size:8px;font-weight:700;
+  color:var(--tx2);letter-spacing:-0.02em;
+}
+.participant-avatars-gap{width:9px;flex-shrink:0}/* compensates last negative margin */
+.part-text{font-size:11px;color:var(--tx3);font-weight:500;line-height:1.3}
+.part-text strong{color:var(--tx2);font-weight:600}
+
+.tc-img{width:100%;border-radius:12px;margin-top:11px;max-height:220px;object-fit:cover;border:1px solid var(--br)}
+
+/* reactions */
+.tc-reactions{display:flex;align-items:center;gap:5px;margin-top:11px;flex-wrap:wrap}
+.react-btn{
+  display:flex;align-items:center;gap:4px;padding:5px 11px;border-radius:24px;
+  border:1px solid var(--br);background:var(--s2);cursor:pointer;
+  font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;color:var(--tx2);
+  transition:all 0.22s;-webkit-tap-highlight-color:transparent;
+}
+.react-btn:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,0.2)}
+.react-btn.active{border-color:currentColor}
+.react-btn[data-type="prayer"]:hover,.react-btn[data-type="prayer"].active{color:#4878b0;border-color:rgba(72,120,176,0.5);background:rgba(72,120,176,0.09)}
+.react-btn[data-type="love"]:hover,.react-btn[data-type="love"].active{color:#dc5050;border-color:rgba(220,80,80,0.5);background:rgba(220,80,80,0.09)}
+.react-btn[data-type="cheer"]:hover,.react-btn[data-type="cheer"].active{color:#c9a84c;border-color:rgba(201,168,76,0.5);background:rgba(201,168,76,0.09)}
+.react-btn[data-type="amen"]:hover,.react-btn[data-type="amen"].active{color:#8868a8;border-color:rgba(136,104,168,0.5);background:rgba(136,104,168,0.09)}
+.react-count{font-size:10.5px;min-width:8px}
+
+/* footer */
+.tc-foot{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--br)}
+.tc-reply-btn{
+  display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;
+  border:1px solid var(--br);background:none;color:var(--tx2);
+  font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;
+  transition:all 0.22s;-webkit-tap-highlight-color:transparent;
+}
+.tc-reply-btn:hover{border-color:var(--teal2);color:var(--teal2);background:var(--tdim)}
+.tc-time{font-size:10px;color:var(--tx3);margin-left:auto}
+.tc-report{width:26px;height:26px;border:none;background:none;color:var(--tx3);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all 0.2s;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.tc-report:hover,.tc-report:active{color:#c06060}
+
+/* replies */
+.replies-wrap{max-height:0;overflow:hidden;transition:max-height 0.45s var(--ease)}
+.replies-wrap.open{max-height:2400px}
+.reply-indent{margin-top:12px;padding-top:12px;border-top:1px solid var(--br);padding-left:14px;position:relative}
+.reply-indent::before{content:'';position:absolute;left:0;top:12px;bottom:0;width:2px;background:var(--s4);border-radius:2px}
+.reply-item{margin-bottom:11px}
+.reply-item:last-child{margin-bottom:0}
+.reply-head{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.reply-av{width:25px;height:25px;border-radius:50%;background:var(--s3);border:1px solid var(--br);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px}
+.reply-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.reply-name{font-size:11.5px;font-weight:600;color:var(--tx)}
+.reply-time{font-size:9px;color:var(--tx3);margin-left:auto}
+.reply-body{font-size:12px;line-height:1.65;color:var(--tx2);padding-left:32px;word-break:break-word}
+.reply-react{display:flex;gap:10px;padding-left:32px;margin-top:5px}
+.reply-react-btn{font-size:11px;color:var(--tx3);cursor:pointer;transition:color 0.2s;background:none;border:none;font-family:'Outfit',sans-serif;padding:0;-webkit-tap-highlight-color:transparent}
+.reply-react-btn:hover{color:var(--teal2)}
+
+.reply-input-wrap{margin-top:10px;padding-top:10px;border-top:1px solid var(--br);display:flex;gap:8px;align-items:flex-start}
+.reply-input-av{width:27px;height:27px;border-radius:50%;background:var(--s3);border:1.5px solid var(--teal);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px}
+.reply-input-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.reply-input-inner{flex:1;display:flex;gap:7px;align-items:flex-end}
+.reply-textarea{flex:1;background:var(--s2);border:1px solid var(--br);border-radius:12px;padding:8px 12px;color:var(--tx);font-family:'Outfit',sans-serif;font-size:12px;outline:none;resize:none;min-height:36px;max-height:110px;line-height:1.5;transition:border-color 0.25s,box-shadow 0.25s;-webkit-appearance:none}
+.reply-textarea:focus{border-color:var(--teal2);box-shadow:0 0 0 3px var(--tdim)}
+.reply-textarea::placeholder{color:var(--tx3)}
+.reply-send{width:33px;height:33px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--teal3),var(--teal));color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.26s;-webkit-tap-highlight-color:transparent}
+.reply-send:hover{transform:translateY(-1px);box-shadow:0 4px 14px var(--tglow)}
+
+/* ══════════════════════════════════════
+   FAB
+══════════════════════════════════════ */
+#fab{
+  position:fixed;
+  bottom:calc(88px + env(safe-area-inset-bottom, 0px));
+  right:max(18px, env(safe-area-inset-right, 18px));
+  z-index:600;
+  width:54px;height:54px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,var(--teal3),var(--teal));
+  color:var(--bg);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 26px var(--tglow),0 2px 8px rgba(0,0,0,0.4);
+  transition:all 0.35s var(--ease);
+  opacity:0;animation:fabIn 0.55s var(--ease) 1.6s forwards;
+  -webkit-tap-highlight-color:transparent;
+}
+@keyframes fabIn{from{opacity:0;transform:scale(0.65) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+#fab:hover{transform:scale(1.1) translateY(-3px);box-shadow:0 12px 40px var(--tglow)}
+#fab.open{transform:rotate(45deg)}
+
+/* ══════════════════════════════════════
+   BOTTOM SHEET
+══════════════════════════════════════ */
+.sheet-overlay{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,0.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity 0.32s}
+.sheet-overlay.open{opacity:1;pointer-events:auto}
+.sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:701;
+  background:var(--s1);border-top:1px solid var(--br);
+  border-radius:24px 24px 0 0;
+  padding-bottom:max(22px, env(safe-area-inset-bottom, 22px));
+  transform:translateY(100%);transition:transform 0.42s var(--ease);
+  max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+.sheet.open{transform:translateY(0)}
+.sheet-handle{width:38px;height:4px;border-radius:4px;background:var(--s4);margin:12px auto 0}
+.sheet-head{padding:14px 20px 12px;border-bottom:1px solid var(--br)}
+.sheet-title{font-family:'DM Serif Display',serif;font-size:21px;color:var(--teal3);margin-bottom:2px}
+[data-theme="light"] .sheet-title{color:var(--teal)}
+.sheet-sub{font-size:11.5px;color:var(--tx2)}
+.sheet-body{padding:14px 20px 20px}
+.sf-field{margin-bottom:14px}
+.sf-label{display:block;font-size:9.5px;letter-spacing:0.17em;text-transform:uppercase;color:var(--tx2);margin-bottom:6px;font-weight:700}
+.sf-input,.sf-select,.sf-textarea{width:100%;padding:11px 14px;background:var(--s2);border:1px solid var(--br);border-radius:10px;color:var(--tx);font-family:'Outfit',sans-serif;font-size:16px;outline:none;transition:border-color 0.25s,box-shadow 0.25s;-webkit-appearance:none;appearance:none}
+/* font-size:16px prevents iOS zoom on focus */
+.sf-input:focus,.sf-select:focus,.sf-textarea:focus{border-color:var(--teal2);box-shadow:0 0 0 3px var(--tdim)}
+.sf-textarea{resize:none;min-height:110px;line-height:1.6}
+.sf-input::placeholder,.sf-textarea::placeholder{color:var(--tx3)}
+.sf-char{text-align:right;font-size:10px;color:var(--tx3);margin-top:4px}
+.sheet-guide{background:var(--s2);border-left:3px solid var(--teal);border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:14px;font-size:11.5px;color:var(--tx2);line-height:1.65}
+.sheet-guide strong{color:var(--teal2);font-weight:600}
+[data-theme="light"] .sheet-guide strong{color:var(--teal)}
+.sf-submit{width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--teal3),var(--teal));color:var(--bg);font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.26s;letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;-webkit-tap-highlight-color:transparent}
+.sf-submit:hover{transform:translateY(-1px);box-shadow:0 6px 22px var(--tglow)}
+.sf-submit:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+/* ══════════════════════════════════════
+   LOADING SKELETONS
+══════════════════════════════════════ */
+.skeleton{background:var(--s1);border:1px solid var(--br);border-radius:18px;margin-bottom:11px;overflow:hidden;position:relative;padding:18px}
+.skeleton::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.03) 50%,transparent 100%);animation:shimmer 1.6s infinite}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.sk-h{height:16px;border-radius:8px;background:var(--s3);margin-bottom:10px}
+.sk-p{height:11px;border-radius:6px;background:var(--s3);margin-bottom:7px}
+
+.empty-state{text-align:center;padding:44px 20px;color:var(--tx2)}
+.empty-icon{font-size:38px;margin-bottom:10px;opacity:0.45}
+.empty-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--tx);margin-bottom:5px}
+.empty-sub{font-size:12px;line-height:1.6;max-width:280px;margin:0 auto}
+
+/* ══════════════════════════════════════
+   BOTTOM NAV — pill style
+══════════════════════════════════════ */
+#bottom-nav{
+  position:fixed;
+  bottom:max(16px, calc(env(safe-area-inset-bottom, 0px) + 8px));
+  left:50%;transform:translateX(-50%);
+  z-index:700;display:flex;align-items:center;gap:2px;
+  background:rgba(22,22,20,0.88);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border:1px solid rgba(200,185,140,0.12);border-radius:40px;padding:5px 7px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.55),0 0 0 1px rgba(46,184,154,0.05);
+  opacity:0;animation:navSlideUp 0.65s var(--ease) 1.5s forwards;
+  white-space:nowrap;
+}
+[data-theme="light"] #bottom-nav{background:rgba(240,237,230,0.92);border-color:rgba(100,90,60,0.14);box-shadow:0 8px 32px rgba(0,0,0,0.14)}
+@keyframes navSlideUp{from{opacity:0;transform:translateX(-50%) translateY(22px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:64px;height:52px;border-radius:36px;border:none;background:none;cursor:pointer;color:var(--tx3);transition:all 0.28s var(--ease);position:relative;font-family:'Outfit',sans-serif;padding:0;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.nav-btn:hover,.nav-btn:active{color:var(--teal2)}
+.nav-btn.active{color:var(--teal2)}
+.nav-btn.active .nav-bg{position:absolute;inset:0;border-radius:36px;background:rgba(46,184,154,0.10);border:1px solid rgba(46,184,154,0.20)}
+.nav-icon-wrap{width:34px;height:26px;border-radius:18px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;transition:background 0.22s}
+.nav-btn.active .nav-icon-wrap{background:rgba(46,184,154,0.14)}
+.nav-btn svg{width:17px;height:17px;flex-shrink:0}
+.nav-label{font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;position:relative;z-index:1;line-height:1}
+.nav-divider{width:1px;height:22px;background:var(--br);margin:0 1px;flex-shrink:0}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+.toast{
+  position:fixed;
+  bottom:calc(100px + env(safe-area-inset-bottom, 0px));
+  left:50%;transform:translateX(-50%) translateY(18px);
+  z-index:800;background:var(--s2);border:1px solid var(--br);
+  border-radius:30px;padding:9px 20px;font-size:12px;font-weight:600;
+  color:var(--tx);box-shadow:0 8px 28px rgba(0,0,0,0.4);
+  opacity:0;transition:all 0.32s var(--ease);pointer-events:none;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ══════════════════════════════════════
+   REPORT MODAL
+══════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;z-index:750;background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.28s}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal-box{background:var(--s1);border:1px solid var(--br);border-radius:20px;width:100%;max-width:400px;padding:24px 20px;position:relative;transform:translateY(14px);transition:transform 0.32s var(--ease)}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--tx);margin-bottom:3px}
+.modal-sub{font-size:11.5px;color:var(--tx2);margin-bottom:16px;line-height:1.5}
+.report-opt{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;transition:background 0.18s}
+.report-opt:hover{background:var(--s2)}
+.report-opt input{accent-color:var(--teal)}
+.report-opt-label{font-size:12.5px;color:var(--tx);cursor:pointer}
+.modal-close{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:1px solid var(--br);background:none;color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.22s;-webkit-tap-highlight-color:transparent}
+.modal-close:hover{border-color:var(--teal2);color:var(--teal2)}
+.modal-btn{width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--teal3),var(--teal));color:var(--bg);font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-top:10px;transition:all 0.26s;letter-spacing:0.07em;text-transform:uppercase;-webkit-tap-highlight-color:transparent}
+.modal-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px var(--tglow)}
+
+/* ══════════════════════════════════════
+   ERROR STATE
+══════════════════════════════════════ */
+.error-state{text-align:center;padding:40px 20px;color:var(--tx2)}
+.error-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--tx);margin-bottom:6px}
+.error-sub{font-size:12px;line-height:1.6;max-width:280px;margin:0 auto 14px}
+.error-retry{padding:9px 22px;border-radius:20px;border:1px solid var(--teal2);background:var(--tdim);color:var(--teal2);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.22s}
+.error-retry:hover{background:var(--teal2);color:var(--bg)}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+/* Tablets (768px+) */
+@media(min-width:768px){
+  .wrap{padding:20px 24px 0}
+  .thread-card{padding:20px 20px 15px}
+  .tc-av{width:40px;height:40px}
+}
+/* Large (1024px+) */
+@media(min-width:1024px){
+  #main{padding-top:72px}
+  .wrap{padding:24px 32px 0;max-width:720px}
+}
+/* Small phones */
+@media(max-width:374px){
+  .nav-btn{width:52px;height:46px}
+  .nav-label{font-size:8px}
+  .tc-title{font-size:14px}
+  .tb-brand-sub{display:none}
+}
+/* Landscape phones */
+@media(max-height:500px) and (orientation:landscape){
+  #main{padding-top:56px}
+  #top-bar{height:52px}
+  .verse-banner{display:none}
+  .totd{margin-bottom:10px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-logo">
+    <svg class="splash-logo-mark" viewBox="0 0 52 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#90ead8"/>
+          <stop offset="50%" stop-color="#2eb89a"/>
+          <stop offset="100%" stop-color="#1a7060"/>
+        </linearGradient>
+        <filter id="sf"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#2eb89a" flood-opacity="0.5"/></filter>
+      </defs>
+      <path d="M26 3 L34 11 Q28 17 28 26 Q36 26 42 20 L50 28 L42 36 Q36 30 28 30 Q28 50 34 65 L26 70 L18 65 Q24 50 24 30 Q16 30 10 36 L2 28 L10 20 Q16 26 24 26 Q24 17 18 11 Z" fill="url(#sg)" filter="url(#sf)"/>
+    </svg>
+    <div>
+      <div class="splash-appname">Faith <span>Pod.</span></div>
+    </div>
+  </div>
+  <div class="splash-sub">Community Threads</div>
+</div>
+
+<audio id="bg-music" src="music.mp3" loop preload="none"></audio>
+
+<!-- TOP BAR -->
+<header id="top-bar">
+  <a href="index.html" class="tb-back" title="Back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+  </a>
+  <div class="tb-logogroup">
+    <svg class="tb-logo-mark" viewBox="0 0 52 72" fill="none">
+      <defs><linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#90ead8"/><stop offset="100%" stop-color="#2eb89a"/></linearGradient></defs>
+      <path d="M26 3 L34 11 Q28 17 28 26 Q36 26 42 20 L50 28 L42 36 Q36 30 28 30 Q28 50 34 65 L26 70 L18 65 Q24 50 24 30 Q16 30 10 36 L2 28 L10 20 Q16 26 24 26 Q24 17 18 11 Z" fill="url(#tg)"/>
+    </svg>
+    <div class="tb-brand">
+      <div class="tb-brand-name">Faith Pod</div>
+      <div class="tb-brand-sub">Community Feed</div>
+    </div>
+  </div>
+  <div class="tb-actions">
+    <button class="tb-btn" id="music-btn" onclick="toggleMusic()" title="Toggle music">
+      <svg class="vol-on" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <svg class="vol-off" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+    </button>
+    <button class="tb-btn" onclick="toggleGlobalTheme()" title="Toggle theme">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+    <!-- VERSE BANNER -->
+    <div class="verse-banner">
+      <div class="verse-text" id="verse-text">"For where two or three gather in my name, there am I with them."</div>
+      <span class="verse-ref" id="verse-ref">Matthew 18:20</span>
+    </div>
+
+    <!-- THREAD OF THE DAY -->
+    <div class="totd" id="totd-card" onclick="openSheetWithPrompt()">
+      <div class="totd-label"><span class="totd-dot"></span>Thread of the Day</div>
+      <div class="totd-q" id="totd-q">What is something heavy you've been carrying quietly?</div>
+      <div class="totd-cta" id="totd-cta">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span id="totd-cta-label">Share your heart</span>
+      </div>
+    </div>
+
+    <!-- GUIDELINES -->
+    <div class="guide-banner">
+      <div class="guide-ico">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <div class="guide-text"><strong>Community of Grace</strong> — Speak with kindness. Be a safe space for one another. No judgment, only love and truth.</div>
+    </div>
+
+    <!-- CATEGORY STRIP -->
+    <div class="cat-strip">
+      <button class="cat-pill active" onclick="filterCat('all',this)">All Threads</button>
+      <button class="cat-pill" onclick="filterCat('Prayer Request',this)">🙏 Prayer Requests</button>
+      <button class="cat-pill" onclick="filterCat('Testimony',this)">✨ Testimonies</button>
+      <button class="cat-pill" onclick="filterCat('Bible Related',this)">📖 Bible Related</button>
+      <button class="cat-pill" onclick="filterCat('Encouragement',this)">💛 Encouragement</button>
+      <button class="cat-pill" onclick="filterCat('Daily Reflection',this)">🌿 Reflections</button>
+      <button class="cat-pill" onclick="filterCat('Others',this)">… Others</button>
+    </div>
+
+    <!-- FEED HEADER -->
+    <div class="sec-row">
+      <div class="sec-eye">Community Feed</div>
+      <div class="sec-count" id="thread-count">Loading…</div>
+    </div>
+
+    <!-- FEED -->
+    <div id="thread-feed">
+      <div class="skeleton"><div class="sk-h" style="width:55%"></div><div class="sk-p" style="width:90%"></div><div class="sk-p" style="width:72%"></div><div class="sk-p" style="width:48%"></div></div>
+      <div class="skeleton"><div class="sk-h" style="width:65%"></div><div class="sk-p" style="width:85%"></div><div class="sk-p" style="width:60%"></div></div>
+      <div class="skeleton"><div class="sk-h" style="width:50%"></div><div class="sk-p" style="width:80%"></div><div class="sk-p" style="width:55%"></div></div>
+    </div>
+  </div>
+</main>
+
+<!-- FAB -->
+<button id="fab" onclick="openSheet()" title="Start a new thread">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<!-- BOTTOM NAV -->
+<nav id="bottom-nav">
+  <a href="index.html" class="nav-btn" title="Home">
+    <div class="nav-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="9,21 9,12 15,12 15,21"/></svg>
+    </div>
+    <span class="nav-label">Home</span>
+  </a>
+  <div class="nav-divider"></div>
+  <button class="nav-btn active" title="Threads">
+    <div class="nav-bg"></div>
+    <div class="nav-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <text x="4" y="18" font-family="Outfit,sans-serif" font-size="16" font-weight="600" fill="currentColor" stroke="none">@</text>
+      </svg>
+    </div>
+    <span class="nav-label">Threads</span>
+  </button>
+  <div class="nav-divider"></div>
+  <button class="nav-btn" onclick="openSheet()" title="New Thread">
+    <div class="nav-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </div>
+    <span class="nav-label">Share</span>
+  </button>
+  <div class="nav-divider"></div>
+  <a href="index.html" class="nav-btn" title="Ranks">
+    <div class="nav-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    </div>
+    <span class="nav-label">Ranks</span>
+  </a>
+</nav>
+
+<!-- NEW THREAD SHEET -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head">
+    <div class="sheet-title">What's on your heart?</div>
+    <div class="sheet-sub">Share openly — this is a safe, prayerful space.</div>
+  </div>
+  <div class="sheet-body">
+    <div class="sheet-guide">
+      <strong>Community Guideline:</strong> Speak with grace. No hate speech, slander, or content that tears others down. We are a family rooted in love and truth.
+    </div>
+    <div class="sf-field">
+      <label class="sf-label">Select a category</label>
+      <select class="sf-select" id="sf-cat">
+        <option value="">— Choose a category —</option>
+        <option value="Prayer Request">🙏 Prayer Request</option>
+        <option value="Testimony">✨ Testimony</option>
+        <option value="Bible Related">📖 Bible Related</option>
+        <option value="Encouragement">💛 Encouragement</option>
+        <option value="Daily Reflection">🌿 Daily Reflection</option>
+        <option value="Others">… Others</option>
+      </select>
+    </div>
+    <div class="sf-field">
+      <label class="sf-label">Title</label>
+      <input type="text" class="sf-input" id="sf-title" placeholder="Give your thread a title…" maxlength="100" autocomplete="off">
+    </div>
+    <div class="sf-field">
+      <label class="sf-label">Share what's on your heart 🤍</label>
+      <textarea class="sf-textarea" id="sf-body" placeholder="Type here…" maxlength="1200" oninput="updateCharCount()"></textarea>
+      <div class="sf-char"><span id="sf-char-count">0</span> / 1200</div>
+    </div>
+    <button class="sf-submit" id="sf-submit" onclick="postThread()">Share with the Community</button>
+  </div>
+</div>
+
+<!-- REPORT MODAL -->
+<div class="modal-overlay" id="report-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('report-modal')">✕</button>
+    <div class="modal-title">Report Thread</div>
+    <div class="modal-sub">Help keep this space safe and spiritually grounded.</div>
+    <label class="report-opt"><input type="radio" name="report-reason" value="Hate speech"><span class="report-opt-label">Hate speech or discrimination</span></label>
+    <label class="report-opt"><input type="radio" name="report-reason" value="Spam"><span class="report-opt-label">Spam or misleading content</span></label>
+    <label class="report-opt"><input type="radio" name="report-reason" value="Harmful"><span class="report-opt-label">Harmful or dangerous content</span></label>
+    <label class="report-opt"><input type="radio" name="report-reason" value="Off-topic"><span class="report-opt-label">Off-topic or irrelevant</span></label>
+    <label class="report-opt"><input type="radio" name="report-reason" value="Other"><span class="report-opt-label">Other</span></label>
+    <button class="modal-btn" onclick="submitReport()">Submit Report</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script src="score.js"></script>
+<script>
+/* ══════════════════════════════════════
+   ANIMATED BG
+══════════════════════════════════════ */
+(function(){
+  const cv=document.getElementById('bg-canvas'),ctx=cv.getContext('2d');
+  let W,H,P=[];const N=38;
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+  function mk(){return{x:Math.random()*W,y:Math.random()*H,r:.4+Math.random()*1.2,vx:(Math.random()-.5)*.11,vy:(Math.random()-.5)*.11,a:Math.random()*Math.PI*2,sa:.003+Math.random()*.004,op:.10+Math.random()*.17,col:Math.random()>.55?'46,184,154':'201,168,76'}}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<P.length;i++){for(let j=i+1;j<P.length;j++){const p=P[i],q=P[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);if(d<130){ctx.beginPath();ctx.strokeStyle=`rgba(46,184,154,${.032*(1-d/130)})`;ctx.lineWidth=.5;ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}}}
+    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=p.sa;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;const pl=.6+.4*Math.sin(p.a);ctx.beginPath();ctx.arc(p.x,p.y,p.r*(.8+.4*pl),0,Math.PI*2);ctx.fillStyle=`rgba(${p.col},${p.op*pl})`;ctx.fill()})
+  }
+  function loop(){draw();requestAnimationFrame(loop)}
+  resize();P=Array.from({length:N},mk);loop();window.addEventListener('resize',resize);
+})();
+
+/* ══════════════════════════════════════
+   THEME & SPLASH
+══════════════════════════════════════ */
+(function(){
+  const t=localStorage.getItem('fides_theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  document.body.setAttribute('data-theme',t);
+})();
+setTimeout(()=>document.getElementById('splash').classList.add('gone'),1300);
+function toggleGlobalTheme(){
+  const c=document.body.getAttribute('data-theme')||'dark';
+  const n=c==='dark'?'light':'dark';
+  document.body.setAttribute('data-theme',n);
+  localStorage.setItem('fides_theme',n);
+}
+
+/* ══════════════════════════════════════
+   ROTATING VERSES
+══════════════════════════════════════ */
+const VERSES=[
+  {text:'"For where two or three gather in my name, there am I with them."',ref:'Matthew 18:20'},
+  {text:'"Cast all your anxiety on him because he cares for you."',ref:'1 Peter 5:7'},
+  {text:'"The Lord is close to the brokenhearted and saves those who are crushed in spirit."',ref:'Psalm 34:18'},
+  {text:'"Be strong and courageous. Do not be afraid; do not be discouraged."',ref:'Joshua 1:9'},
+  {text:'"Come to me, all you who are weary and burdened, and I will give you rest."',ref:'Matthew 11:28'},
+  {text:'"I can do all this through him who gives me strength."',ref:'Philippians 4:13'},
+  {text:'"And we know that in all things God works for the good of those who love him."',ref:'Romans 8:28'},
+  {text:'"Be still, and know that I am God."',ref:'Psalm 46:10'},
+  {text:'"The Lord your God is with you, the Mighty Warrior who saves."',ref:'Zephaniah 3:17'},
+];
+let _vi=Math.floor(Math.random()*VERSES.length);
+(function(){
+  document.getElementById('verse-text').textContent=VERSES[_vi].text;
+  document.getElementById('verse-ref').textContent=VERSES[_vi].ref;
+  setInterval(()=>{
+    const vt=document.getElementById('verse-text'),vr=document.getElementById('verse-ref');
+    vt.style.opacity='0';vr.style.opacity='0';
+    setTimeout(()=>{
+      _vi=(_vi+1)%VERSES.length;
+      vt.textContent=VERSES[_vi].text;
+      vr.textContent=VERSES[_vi].ref;
+      vt.style.opacity='1';vr.style.opacity='1';
+    },550);
+  },9000);
+})();
+
+/* ══════════════════════════════════════
+   THREAD OF THE DAY
+   — Pinned daily by date seed
+   — Finds matching real thread in DB; clicking opens its replies inline
+══════════════════════════════════════ */
+const TOTD=[
+  "What is something heavy you've been carrying quietly?",
+  "How do you stay close to God when He feels distant?",
+  "What Bible verse has brought you peace recently?",
+  "What worship song feels like home to you lately?",
+  "What is God teaching you in this season of your life?",
+  "Where have you seen God's faithfulness this week?",
+  "What does trusting God actually look like when you feel lost?",
+  "Is there something you've been struggling to forgive?",
+  "How has prayer changed something in your life?",
+  "What does 'home' feel like to you spiritually?",
+];
+
+// Pick question by day-of-year so it stays fixed all day
+const _todayKey=(()=>{const d=new Date();return d.getFullYear()*1000+Math.floor((d-new Date(d.getFullYear(),0,0))/(1000*60*60*24))})();
+const _totdPrompt=TOTD[_todayKey%TOTD.length];
+document.getElementById('totd-q').textContent=_totdPrompt;
+
+let _totdThreadId=null; // will be set once threads load
+
+function updateTotdLink(){
+  if(!_allThreads.length)return;
+
+  // Find thread whose title exactly matches today's TOTD prompt
+  const match=_allThreads.find(t=>t.title&&t.title.trim()===_totdPrompt.trim());
+  // Fall back: most-replied thread posted today
+  const today=new Date();today.setHours(0,0,0,0);
+  const todayTs=today.getTime();
+  const todayThreads=_allThreads.filter(t=>t.ts>=todayTs);
+  const candidate=match
+    ||(todayThreads.length?todayThreads.sort((a,b)=>(b.replyCount||0)-(a.replyCount||0))[0]:null)
+    ||null;
+
+  _totdThreadId=candidate?candidate.id:null;
+
+  const ctaLabel=document.getElementById('totd-cta-label');
+  const ctaWrap=document.getElementById('totd-cta');
+  if(_totdThreadId&&candidate){
+    const rc=candidate.replyCount||0;
+    if(ctaLabel)ctaLabel.textContent=rc>0?`See ${rc} repl${rc===1?'y':'ies'} →`:'Join this conversation →';
+    if(ctaWrap){
+      // swap icon to arrow
+      ctaWrap.innerHTML=`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg><span id="totd-cta-label">${rc>0?`See ${rc} repl${rc===1?'y':'ies'}`:'Join this conversation'} →</span>`;
+    }
+  }else{
+    if(ctaLabel)ctaLabel.textContent='Share your heart';
+  }
+}
+
+function openSheetWithPrompt(){
+  // If a matching thread exists, scroll to & open it; otherwise open composer
+  if(_totdThreadId){
+    const el=document.getElementById('card-'+_totdThreadId);
+    if(el){
+      el.scrollIntoView({behavior:'smooth',block:'center'});
+      setTimeout(()=>{
+        // Open its replies
+        const wrap=document.getElementById('replies-'+_totdThreadId);
+        if(wrap&&!wrap.classList.contains('open')){
+          toggleReplies(_totdThreadId);
+        }
+        // Flash highlight
+        el.style.transition='box-shadow 0.3s,border-color 0.3s';
+        el.style.boxShadow='0 0 0 2px var(--gold2)';
+        el.style.borderColor='var(--gold2)';
+        setTimeout(()=>{el.style.boxShadow='';el.style.borderColor='';},1800);
+      },420);
+      return;
+    }
+  }
+  // No thread yet — open composer with today's prompt pre-filled
+  document.getElementById('sf-title').value=_totdPrompt;
+  openSheet();
+}
+
+/* ══════════════════════════════════════
+   MUSIC
+══════════════════════════════════════ */
+const _audioEl=document.getElementById('bg-music');
+let _musicPlaying=false;
+_audioEl.volume=0.22;
+function toggleMusic(){
+  const btn=document.getElementById('music-btn');
+  if(!_musicPlaying){
+    _audioEl.play().then(()=>{
+      _musicPlaying=true;
+      btn.classList.add('playing');btn.classList.remove('muted');
+      showToast('🎵 Worship music playing…');
+    }).catch(()=>showToast('Tap again to start music'));
+  }else{
+    _audioEl.pause();_musicPlaying=false;
+    btn.classList.remove('playing');btn.classList.add('muted');
+    showToast('Music paused');
+  }
+}
+
+/* ══════════════════════════════════════
+   AUTH
+══════════════════════════════════════ */
+const AVATAR_IMGS={
+  avatar1:'avatar1.png',avatar2:'avatar2.png',avatar3:'avatar3.png',
+  avatar4:'avatar4.png',avatar5:'avatar5.png',avatar6:'avatar6.png'
+};
+let _uid=null,_profile=null;
+
+auth.onAuthStateChanged(user=>{
+  if(!user){window.location.href='auth.html';return;}
+  _uid=user.uid;
+  db.ref('users/'+_uid+'/profile').once('value').then(s=>{
+    _profile=s.val()||{};
+    loadThreads();
+  }).catch(err=>{
+    console.error('Profile load error:',err);
+    loadThreads();
+  });
+});
+
+/* ══════════════════════════════════════
+   PROFANITY FILTER
+══════════════════════════════════════ */
+const _BAN=['fuck','shit','bitch','asshole','crap','bastard'];
+function hasProfanity(t){const l=(t||'').toLowerCase();return _BAN.some(w=>l.includes(w))}
+
+/* ══════════════════════════════════════
+   CATEGORY HELPERS
+══════════════════════════════════════ */
+const CAT_COLOR={
+  'Prayer Request':'#4878b0','Testimony':'#c9a84c',
+  'Bible Related':'#8868a8','Encouragement':'#2eb89a',
+  'Daily Reflection':'#588870','Others':'#6a6050'
+};
+const CAT_BADGE={
+  'Prayer Request':'badge-prayer','Testimony':'badge-testimony',
+  'Bible Related':'badge-bible','Encouragement':'badge-encourage',
+  'Daily Reflection':'badge-reflection','Others':'badge-others'
+};
+
+/* ══════════════════════════════════════
+   LOAD THREADS — FIXED
+   
+   KEY FIXES:
+   1. No limitToLast — load ALL threads
+   2. Manual sort by ts descending after load
+   3. Error boundary per card so one bad card never breaks the rest
+   4. replyAvatars handled as both array and Firebase object
+══════════════════════════════════════ */
+let _allThreads=[],_curCat='all',_feedListener=null;
+
+function loadThreads(){
+  const feed=document.getElementById('thread-feed');
+  
+  // Detach any previous listener
+  if(_feedListener){
+    db.ref('threads').off('value',_feedListener);
+    _feedListener=null;
+  }
+
+  _feedListener=db.ref('threads').orderByChild('ts').on('value',snap=>{
+    _allThreads=[];
+
+    if(!snap.exists()){
+      renderFeed();
+      return;
+    }
+
+    snap.forEach(child=>{
+      try{
+        const t=child.val();
+        if(t&&typeof t==='object'){
+          _allThreads.push({id:child.key,...t});
+        }
+      }catch(e){
+        console.warn('Skipping malformed thread:',child.key,e);
+      }
+    });
+
+    // Sort newest first (descending by ts)
+    _allThreads.sort((a,b)=>(b.ts||0)-(a.ts||0));
+
+    renderFeed();
+  }, err=>{
+    console.error('Threads load error:',err);
+    feed.innerHTML=`<div class="error-state">
+      <div class="error-title">Couldn't load threads</div>
+      <div class="error-sub">Check your connection and try again.</div>
+      <button class="error-retry" onclick="loadThreads()">Try Again</button>
+    </div>`;
+    document.getElementById('thread-count').textContent='Error';
+  });
+}
+
+function filterCat(cat,el){
+  _curCat=cat;
+  document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  renderFeed();
+}
+
+function renderFeed(){
+  const feed=document.getElementById('thread-feed');
+  const list=_curCat==='all'
+    ?_allThreads
+    :_allThreads.filter(t=>(t.category||'Others')===_curCat);
+
+  const cnt=document.getElementById('thread-count');
+  cnt.textContent=list.length+' thread'+(list.length!==1?'s':'');
+
+  if(!list.length){
+    feed.innerHTML=`<div class="empty-state">
+      <div class="empty-icon">✦</div>
+      <div class="empty-title">No threads yet</div>
+      <div class="empty-sub">Be the first to share — start a conversation in this space.</div>
+    </div>`;
+    return;
+  }
+
+  // Build each card with individual error protection
+  const parts=[];
+  list.forEach((t,i)=>{
+    try{
+      parts.push(buildCard(t,i));
+    }catch(e){
+      console.warn('Card render error for',t.id,e);
+      // Show a minimal fallback card so nothing is lost
+      parts.push(`<div class="thread-card" style="animation-delay:${(i*0.065).toFixed(2)}s">
+        <div style="font-size:12px;color:var(--tx3);padding:4px 0">Thread could not be displayed</div>
+      </div>`);
+    }
+  });
+
+  feed.innerHTML=parts.join('');
+  updateTotdLink();
+  // Hydrate participant avatars with real commenter pics (async, non-blocking)
+  setTimeout(()=>hydrateParticipants(list),80);
+}
+
+/* ══════════════════════════════════════
+   BUILD CARD
+   FIX: replyAvatars can be object (Firebase) or array — normalise both
+══════════════════════════════════════ */
+function buildCard(t,i){
+  const cat=t.category||'Others';
+  const color=CAT_COLOR[cat]||'var(--teal)';
+  const badge=CAT_BADGE[cat]||'badge-others';
+  const avSrc=AVATAR_IMGS[t.avatar||'avatar1']||'avatar1.png';
+  const reactions=t.reactions||{};
+  const replyCount=parseInt(t.replyCount)||0;
+  const delay=(i*0.065).toFixed(2);
+
+  // Normalise replyAvatars — Firebase may store arrays as objects {0:'av1',1:'av2'}
+  // We use these as quick initial render, then hydrate with real top commenters async
+  let rAvRaw=t.replyAvatars||[];
+  let rAvs=[];
+  if(Array.isArray(rAvRaw)){
+    rAvs=rAvRaw.filter(Boolean);
+  }else if(typeof rAvRaw==='object'){
+    rAvs=Object.values(rAvRaw).filter(Boolean);
+  }
+
+  // Initial participant avatars (author + stored replyAvatars, dedupe, max 3 shown + overflow badge)
+  const participantCount=1+replyCount;
+  const initPartAvs=[t.avatar||'avatar1',...rAvs].filter((v,idx,a)=>a.indexOf(v)===idx);
+  const SHOW_MAX=3;
+  const shownInitAvs=initPartAvs.slice(0,SHOW_MAX);
+  const overflowInit=participantCount>SHOW_MAX?participantCount-SHOW_MAX:0;
+
+  function buildPartAvsHtml(avatarKeys,overflow){
+    let html=avatarKeys.map(av=>{
+      const src=AVATAR_IMGS[av]||'avatar1.png';
+      return`<div class="part-av"><img src="${src}" alt="" loading="lazy" onerror="this.parentElement.textContent='✦'"></div>`;
+    }).join('');
+    if(overflow>0){
+      html+=`<div class="part-av more-badge">+${overflow>99?'99':overflow}</div>`;
+    }
+    return html;
+  }
+
+  function rBtn(type,emoji){
+    const typeData=reactions[type];
+    const count=typeData&&typeof typeData==='object'?Object.keys(typeData).length:0;
+    const active=(_uid&&typeData&&typeData[_uid])?'active':'';
+    return`<button class="react-btn ${active}" data-type="${type}" onclick="toggleReaction('${esc(t.id)}','${type}',this)">${emoji}<span class="react-count">${count||''}</span></button>`;
+  }
+
+  const bodyText=esc(t.body||'');
+  const titleText=esc(t.title||'Untitled');
+  const nameText=esc(t.displayName||'Pilgrim');
+  const showExpand=(t.body||'').length>220;
+
+  return`<div class="thread-card" id="card-${esc(t.id)}" style="animation-delay:${delay}s;--card-accent:${color}">
+    <div class="tc-head">
+      <div class="tc-av"><img src="${avSrc}" alt="" loading="lazy" onerror="this.parentElement.textContent='✦'"></div>
+      <div class="tc-meta">
+        <div class="tc-name">${nameText}</div>
+        <div class="tc-sub">
+          <span class="tc-badge ${badge}">${esc(cat)}</span>
+          <span>${timeAgo(t.ts)}</span>
+        </div>
+      </div>
+      <button class="tc-report" onclick="openReport('${esc(t.id)}')" title="Report">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </button>
+    </div>
+
+    <div class="tc-title">${titleText}</div>
+    <div class="tc-body" id="body-${esc(t.id)}">${bodyText}</div>
+    ${showExpand?`<button class="tc-expand show" onclick="expandBody('${esc(t.id)}')">Read more</button>`:''}
+    ${t.img?`<img class="tc-img" src="${esc(t.img)}" alt="" loading="lazy">`:''}
+
+    <div class="tc-participants" id="participants-${esc(t.id)}">
+      <div class="participant-avatars" id="part-avs-${esc(t.id)}">${buildPartAvsHtml(shownInitAvs,overflowInit)}</div>
+      <div class="participant-avatars-gap"></div>
+      <div class="part-text" id="part-txt-${esc(t.id)}"><strong>${participantCount}</strong> ${participantCount===1?'person':'people'} in this conversation</div>
+    </div>
+
+    <div class="tc-reactions">
+      ${rBtn('prayer','🙏')}
+      ${rBtn('love','❤️')}
+      ${rBtn('cheer','✨')}
+      ${rBtn('amen','📖')}
+    </div>
+
+    <div class="tc-foot">
+      <button class="tc-reply-btn" onclick="toggleReplies('${esc(t.id)}')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        ${replyCount} repl${replyCount===1?'y':'ies'}
+      </button>
+      <div class="tc-time">${timeAgo(t.ts)}</div>
+    </div>
+
+    <div class="replies-wrap" id="replies-${esc(t.id)}">
+      <div class="reply-indent" id="reply-list-${esc(t.id)}"></div>
+      <div class="reply-input-wrap">
+        <div class="reply-input-av" id="my-av-${esc(t.id)}"><span>✦</span></div>
+        <div class="reply-input-inner">
+          <textarea class="reply-textarea" id="reply-input-${esc(t.id)}" placeholder="Write a reply…" rows="1"></textarea>
+          <button class="reply-send" onclick="sendReply('${esc(t.id)}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function expandBody(id){
+  const el=document.getElementById('body-'+id);
+  if(el){
+    el.classList.add('expanded');
+    const b=el.nextElementSibling;
+    if(b&&b.classList.contains('tc-expand'))b.style.display='none';
+  }
+}
+
+/* ══════════════════════════════════════
+   HYDRATE PARTICIPANT AVATARS
+   — Fetches real top-3 unique commenters from DB after render
+   — Called after renderFeed so cards are in DOM
+══════════════════════════════════════ */
+function hydrateParticipants(threads){
+  threads.forEach(t=>{
+    const partAvEl=document.getElementById('part-avs-'+t.id);
+    const partTxtEl=document.getElementById('part-txt-'+t.id);
+    if(!partAvEl||!partTxtEl)return;
+
+    // Only bother if thread has replies
+    if((t.replyCount||0)===0)return;
+
+    db.ref('threads/'+t.id+'/replies').orderByChild('ts').once('value').then(snap=>{
+      if(!snap.exists())return;
+
+      // Collect unique commenter avatars (most recent first = end of list)
+      const seenUids=new Set();
+      const uniqueAvs=[];
+      // Collect all first
+      const all=[];
+      snap.forEach(c=>{try{const r=c.val();if(r)all.push(r);}catch(e){}});
+      // Most recent first
+      all.reverse();
+      all.forEach(r=>{
+        const uid=r.uid||r.displayName||r.avatar; // fallback dedupe key
+        if(!seenUids.has(uid)&&uniqueAvs.length<3){
+          seenUids.add(uid);
+          uniqueAvs.push(r.avatar||'avatar1');
+        }
+      });
+
+      // Author first if not already included
+      const authorAv=t.avatar||'avatar1';
+      const finalAvs=[authorAv,...uniqueAvs.filter(a=>a!==authorAv)].slice(0,3);
+      const totalCount=1+(t.replyCount||0);
+      const overflow=totalCount>3?totalCount-3:0;
+
+      // Build HTML
+      let html=finalAvs.map(av=>{
+        const src=AVATAR_IMGS[av]||'avatar1.png';
+        return`<div class="part-av"><img src="${src}" alt="" loading="lazy" onerror="this.parentElement.textContent='✦'"></div>`;
+      }).join('');
+      if(overflow>0){
+        html+=`<div class="part-av more-badge">+${overflow>99?'99':overflow}</div>`;
+      }
+
+      partAvEl.innerHTML=html;
+      partTxtEl.innerHTML=`<strong>${totalCount}</strong> ${totalCount===1?'person':'people'} in this conversation`;
+    }).catch(()=>{/* silently ignore, initial render stays */});
+  });
+}
+
+/* Safe HTML escape */
+function esc(s){
+  return String(s==null?'':s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function timeAgo(ts){
+  if(!ts)return'';
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60)return'just now';
+  if(s<3600)return Math.floor(s/60)+'m ago';
+  if(s<86400)return Math.floor(s/3600)+'h ago';
+  return Math.floor(s/86400)+'d ago';
+}
+
+/* ══════════════════════════════════════
+   REACTIONS
+══════════════════════════════════════ */
+function toggleReaction(threadId,type,btn){
+  if(!_uid){showToast('Please sign in to react');return;}
+  const path=`threads/${threadId}/reactions/${type}/${_uid}`;
+  if(btn.classList.contains('active')){
+    db.ref(path).remove();
+    btn.classList.remove('active');
+    const c=btn.querySelector('.react-count');
+    const n=parseInt(c.textContent||'0')-1;
+    c.textContent=n>0?n:'';
+  }else{
+    db.ref(path).set(true);
+    btn.classList.add('active');
+    const c=btn.querySelector('.react-count');
+    const n=parseInt(c.textContent||'0')+1;
+    c.textContent=n;
+    btn.style.transform='scale(1.3)';
+    setTimeout(()=>{btn.style.transform=''},320);
+  }
+}
+
+/* ══════════════════════════════════════
+   REPLIES
+══════════════════════════════════════ */
+function toggleReplies(threadId){
+  const wrap=document.getElementById('replies-'+threadId);
+  const list=document.getElementById('reply-list-'+threadId);
+  if(!wrap||!list)return;
+
+  if(wrap.classList.contains('open')){
+    wrap.classList.remove('open');
+    return;
+  }
+  wrap.classList.add('open');
+
+  // Set current user avatar in reply box
+  const myAv=document.getElementById('my-av-'+threadId);
+  if(myAv&&_profile&&_profile.avatar){
+    const src=AVATAR_IMGS[_profile.avatar]||'avatar1.png';
+    myAv.innerHTML=`<img src="${src}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent='✦'">`;
+  }
+
+  list.innerHTML='<div style="color:var(--tx3);font-size:11px;padding:8px 0">Loading replies…</div>';
+
+  db.ref('threads/'+threadId+'/replies').orderByChild('ts').once('value').then(snap=>{
+    const replies=[];
+    snap.forEach(c=>{
+      try{const r=c.val();if(r)replies.push({id:c.key,...r});}
+      catch(e){console.warn('Reply parse error',e)}
+    });
+
+    if(!replies.length){
+      list.innerHTML='<div style="color:var(--tx3);font-size:11.5px;padding:4px 0 8px;font-style:italic">No replies yet — be the first to respond with grace.</div>';
+      return;
+    }
+
+    list.innerHTML=replies.map(r=>{
+      const src=AVATAR_IMGS[r.avatar||'avatar1']||'avatar1.png';
+      return`<div class="reply-item">
+        <div class="reply-head">
+          <div class="reply-av"><img src="${src}" alt="" loading="lazy" onerror="this.parentElement.textContent='✦'"></div>
+          <span class="reply-name">${esc(r.displayName||'Pilgrim')}</span>
+          <span class="reply-time">${timeAgo(r.ts)}</span>
+        </div>
+        <div class="reply-body">${esc(r.body||'')}</div>
+        <div class="reply-react">
+          <button class="reply-react-btn">🙏 Pray</button>
+          <button class="reply-react-btn">❤️ Love</button>
+        </div>
+      </div>`;
+    }).join('');
+  }).catch(err=>{
+    list.innerHTML='<div style="color:var(--tx3);font-size:11px;padding:8px 0">Could not load replies.</div>';
+    console.error('Replies load error:',err);
+  });
+}
+
+async function sendReply(threadId){
+  if(!_uid){showToast('Please sign in to reply');return;}
+  const ta=document.getElementById('reply-input-'+threadId);
+  if(!ta)return;
+  const text=(ta.value||'').trim();
+  if(!text){showToast('Write something first 🙏');return;}
+  if(hasProfanity(text)){showToast('Please keep your words kind and uplifting 💛');return;}
+
+  const name=(_profile&&_profile.displayName)||'Pilgrim';
+  const avatar=(_profile&&_profile.avatar)||'avatar1';
+
+  try{
+    // Push reply
+    await db.ref('threads/'+threadId+'/replies').push({
+      uid:_uid,displayName:name,avatar,body:text,ts:Date.now()
+    });
+
+    // Increment reply count
+    await db.ref('threads/'+threadId+'/replyCount').transaction(n=>(n||0)+1);
+
+    // Update replyAvatars — store as object (Firebase-safe), not array
+    const raSnap=await db.ref('threads/'+threadId+'/replyAvatars').once('value');
+    const existing=raSnap.val();
+    let raArr=[];
+    if(Array.isArray(existing))raArr=[...existing];
+    else if(existing&&typeof existing==='object')raArr=Object.values(existing);
+    if(!raArr.includes(avatar)){
+      raArr=[...raArr,avatar].slice(-6);
+      // Store as indexed object so Firebase doesn't mangle it
+      const raObj={};raArr.forEach((v,i)=>raObj[i]=v);
+      await db.ref('threads/'+threadId+'/replyAvatars').set(raObj);
+    }
+
+    ta.value='';
+    // Reload replies
+    const wrap=document.getElementById('replies-'+threadId);
+    if(wrap)wrap.classList.remove('open');
+    setTimeout(()=>toggleReplies(threadId),120);
+    showToast('Reply shared ✦');
+  }catch(e){
+    console.error('Send reply error:',e);
+    showToast('Could not send reply: '+e.message);
+  }
+}
+
+/* ══════════════════════════════════════
+   POST THREAD
+══════════════════════════════════════ */
+function openSheet(){
+  document.getElementById('sheet').classList.add('open');
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.getElementById('fab').classList.add('open');
+}
+function closeSheet(){
+  document.getElementById('sheet').classList.remove('open');
+  document.getElementById('sheet-overlay').classList.remove('open');
+  document.getElementById('fab').classList.remove('open');
+}
+function updateCharCount(){
+  document.getElementById('sf-char-count').textContent=
+    document.getElementById('sf-body').value.length;
+}
+
+async function postThread(){
+  if(!_uid){showToast('Please sign in to post');return;}
+  const cat=document.getElementById('sf-cat').value;
+  const title=(document.getElementById('sf-title').value||'').trim();
+  const body=(document.getElementById('sf-body').value||'').trim();
+  if(!cat){showToast('Please select a category');return;}
+  if(!title){showToast('Please add a title');return;}
+  if(!body){showToast('Please share something');return;}
+  if(hasProfanity(title)||hasProfanity(body)){showToast('Please keep your words kind and uplifting 💛');return;}
+
+  const btn=document.getElementById('sf-submit');
+  btn.disabled=true;btn.textContent='Sharing…';
+
+  const name=(_profile&&_profile.displayName)||'Pilgrim';
+  const avatar=(_profile&&_profile.avatar)||'avatar1';
+
+  try{
+    await db.ref('threads').push({
+      uid:_uid,displayName:name,avatar,
+      category:cat,title,body,
+      ts:Date.now(),replyCount:0,
+      replyAvatars:{},   // ← object, not array (Firebase-safe)
+      reactions:{}
+    });
+
+    // Award points
+    try{
+      await db.ref('users/'+_uid+'/stats/score').transaction(s=>(s||0)+15);
+      await db.ref('users/'+_uid+'/history').push({
+        type:'bible',label:'Posted a community thread',points:15,ts:Date.now()
+      });
+    }catch(e){console.warn('Score update failed:',e)}
+
+    document.getElementById('sf-cat').value='';
+    document.getElementById('sf-title').value='';
+    document.getElementById('sf-body').value='';
+    document.getElementById('sf-char-count').textContent='0';
+    closeSheet();
+    showToast('Thread shared with the community ✦');
+  }catch(e){
+    console.error('Post error:',e);
+    showToast('Could not post: '+e.message);
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Share with the Community';
+  }
+}
+
+/* ══════════════════════════════════════
+   REPORT
+══════════════════════════════════════ */
+let _reportId=null;
+function openReport(id){
+  _reportId=id;
+  document.querySelectorAll('input[name="report-reason"]').forEach(r=>r.checked=false);
+  openModal('report-modal');
+}
+async function submitReport(){
+  const r=document.querySelector('input[name="report-reason"]:checked');
+  if(!r){showToast('Please select a reason');return;}
+  if(_reportId&&_uid){
+    await db.ref('reports').push({
+      threadId:_reportId,reportedBy:_uid,reason:r.value,ts:Date.now()
+    });
+  }
+  closeModal('report-modal');
+  showToast('Report submitted. Thank you for keeping this space safe. 🙏');
+  _reportId=null;
+}
+
+/* ══════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════ */
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+
+document.querySelectorAll('.modal-overlay').forEach(m=>
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')})
+);
+
+let _tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2700);
+}
+</script>
+</body>
+</html>
