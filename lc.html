@@ -1,757 +1,989 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liturgical Calendar | Chosen Generations</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #050403;
-            --bg2: #0A0807;
-            --surface: rgba(12, 10, 8, 0.85);
-            --text: #F0EAE0;
-            --text2: #6A5E52;
-            --border: rgba(201,169,110,0.12);
-            --radius: 20px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liturgical Calendar 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Cinzel:wght@400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+/* ═══ TOKENS ═══ */
+:root {
+  --bg:      #06050A;
+  --bg2:     #0C0B12;
+  --surface: rgba(255,255,255,0.035);
+  --border:  rgba(255,255,255,0.07);
+  --text:    #EDE8E0;
+  --muted:   #6A6380;
 
-            /* Liturgical Palette */
-            --purple: #9D7BB0;
-            --purple-glow: rgba(157,123,176,0.4);
-            --white-lit: #F9F6F0;
-            --white-glow: rgba(249,246,240,0.35);
-            --green: #6DA37A;
-            --green-glow: rgba(109,163,122,0.4);
-            --red: #B07B7B;
-            --red-glow: rgba(176,123,123,0.4);
-            --gold: #5BA8C0;
-            --gold-dim: rgba(91,168,192,0.15);
+  /* Season palette */
+  --advent-c:   #8B6FBE;  --advent-rgb:   139,111,190;
+  --christmas-c:#F4EDD8;  --christmas-rgb:244,237,216;
+  --ordtime1-c: #5C9E72;  --ordtime1-rgb: 92,158,114;
+  --lent-c:     #9B7EB8;  --lent-rgb:     155,126,184;
+  --holyweek-c: #C0443A;  --holyweek-rgb: 192,68,58;
+  --easter-c:   #D4AC68;  --easter-rgb:   212,172,104;
+  --pentecost-c:#CC4B2A;  --pentecost-rgb:204,75,42;
+  --ordtime2-c: #5C9E72;  --ordtime2-rgb: 92,158,114;
 
-            /* Dynamic */
-            --active-color: var(--white-lit);
-            --active-glow: var(--white-glow);
-            --active-rgb: 249,246,240;
+  --active-c:   #D4AC68;
+  --active-rgb: 212,172,104;
+  --active-glow: rgba(212,172,104,0.4);
 
-            /* Responsive Scaling Variables */
-            --scene-size: 520px;
-            --orb-size: 200px;
-        }
+  --radius: 18px;
+  --orb: 200px;
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        html, body {
-            height: 100%;
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            -webkit-font-smoothing: antialiased;
-            overflow: hidden; /* Prevent body scroll; handled by dashboard */
-        }
+  /* Layout */
+  --panel-pad: 52px;
+}
 
-        /* ─── AMBIENT BACKGROUND ─── */
-        .bg-ambient {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-        }
-        .bg-ambient::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 60% 50% at 35% 50%, rgba(var(--active-rgb), 0.04) 0%, transparent 70%),
-                radial-gradient(ellipse 40% 60% at 70% 50%, rgba(10,6,4,0.9) 0%, transparent 100%);
-            transition: background 1s ease;
-        }
-        .grid-lines {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            background-image:
-                linear-gradient(rgba(201,169,110,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(201,169,110,0.04) 1px, transparent 1px);
-            background-size: 48px 48px;
-            pointer-events: none;
-        }
-        .vignette {
-            position: fixed;
-            inset: 0;
-            z-index: 2;
-            background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 30%, rgba(5,4,3,0.85) 100%);
-            pointer-events: none;
-        }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* ─── LAYOUT ─── */
-        .dashboard {
-            position: relative;
-            z-index: 10;
-            display: grid;
-            grid-template-columns: 1.35fr 1fr;
-            height: 100%;
-            overflow: hidden;
-        }
+html, body {
+  height: 100%; width: 100%;
+  font-family: 'Lato', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
 
-        /* ─── LEFT PANEL ─── */
-        .visual-panel {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+/* ══ BACKGROUND ATMOSPHERICS ══ */
+.atmos {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+}
+.atmos-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(120px); opacity: 0.15;
+  transition: all 1.2s ease;
+}
+.atmos-orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(var(--active-rgb),1) 0%, transparent 70%);
+  top: -200px; left: -100px;
+}
+.atmos-orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(100,80,160,0.8) 0%, transparent 70%);
+  bottom: -100px; right: 200px;
+}
+.noise-overlay {
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
 
-        /* Header */
-        .site-header {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            padding: 28px 36px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 50;
-            border-bottom: 1px solid var(--border);
-        }
-        .back-btn {
-            color: var(--text2);
-            text-decoration: none;
-            font-size: 10px;
-            letter-spacing: 0.4em;
-            text-transform: uppercase;
-            transition: color 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .back-btn:hover { color: var(--cyan); }
-        .header-badge {
-            font-size: 10px;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--text2);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .pulse-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--active-color);
-            box-shadow: 0 0 8px var(--active-glow);
-            animation: pulse-dot 2s ease-in-out infinite;
-            transition: background 0.8s, box-shadow 0.8s;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.7); }
-        }
+/* ══ LAYOUT ══ */
+.shell {
+  position: relative; z-index: 10;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
 
-        /* Heading */
-        .panel-heading {
-            position: absolute;
-            top: 88px;
-            left: 0; right: 0;
-            text-align: center;
-            pointer-events: none;
-            z-index: 20;
-        }
-        .panel-heading .eyebrow {
-            font-size: 10px;
-            letter-spacing: 0.4em;
-            text-transform: uppercase;
-            color: var(--text2);
-            margin-bottom: 10px;
-            display: block;
-        }
-        .panel-heading h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(38px, 4vw, 52px);
-            font-weight: 300;
-            letter-spacing: -0.02em;
-            line-height: 1;
-            color: var(--text);
-        }
-        .panel-heading h1 em {
-            font-style: italic;
-            color: var(--active-color);
-            transition: color 0.8s;
-        }
+/* ══ LEFT / WHEEL PANEL ══ */
+.wheel-panel {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 100px 40px 40px;
+  overflow: hidden;
+}
 
-        /* ─── 3D SCENE ─── */
-        .scene-wrap {
-            position: relative;
-            width: var(--scene-size);
-            height: var(--scene-size);
-            margin: 60px auto 0;
-        }
-        .scene {
-            width: 100%;
-            height: 100%;
-            perspective: 1800px;
-        }
-        .pivot {
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            transform: rotateX(52deg) rotateZ(0deg);
-            position: relative;
-        }
+/* Header strip */
+.header {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 22px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  z-index: 50;
+  background: rgba(6,5,10,0.7);
+  backdrop-filter: blur(20px);
+}
+.back-btn {
+  color: var(--muted);
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+  font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
+  transition: color 0.3s; display: flex; align-items: center; gap: 8px;
+}
+.back-btn:hover { color: var(--text); }
+.live-badge {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--muted);
+}
+.pulse {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--active-c);
+  box-shadow: 0 0 8px var(--active-glow);
+  animation: pulse 2.5s ease-in-out infinite;
+  transition: background 0.8s, box-shadow 0.8s;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
 
-        /* SVG Rings */
-        .ring-layer {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .ring-base {
-            filter: blur(4px);
-            opacity: 0.25;
-            transform: translateZ(-24px);
-        }
-        .ring-main {
-            filter: drop-shadow(0 0 16px rgba(var(--active-rgb), 0.3));
-            transition: filter 0.8s;
-        }
+/* Title */
+.wheel-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px; letter-spacing: 0.5em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px; text-align: center;
+}
+.wheel-headline {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(36px, 3.5vw, 48px); font-weight: 400;
+  line-height: 1; text-align: center; margin-bottom: 32px;
+  color: var(--text);
+}
+.wheel-headline em {
+  font-style: italic;
+  color: var(--active-c);
+  transition: color 0.8s;
+}
 
-        .season-arc {
-            fill: none;
-            stroke-width: 52;
-            stroke-linecap: butt;
-            cursor: pointer;
-            transition: stroke-width 0.35s, opacity 0.35s, filter 0.35s;
-            opacity: 0.75;
-        }
-        .season-arc:hover, .season-arc.active {
-            stroke-width: 64;
-            opacity: 1;
-        }
-        .season-arc.active {
-            filter: brightness(1.25);
-        }
+/* ══ WHEEL ══ */
+.wheel-scene {
+  position: relative;
+  width: min(420px, 80vw);
+  height: min(420px, 80vw);
+  flex-shrink: 0;
+}
+.wheel-svg { width: 100%; height: 100%; }
+.season-track {
+  fill: none; stroke-width: 56; stroke-linecap: butt;
+  cursor: pointer;
+  transition: stroke-width .3s, opacity .3s, filter .3s;
+  opacity: 0.65;
+}
+.season-track:hover, .season-track.lit {
+  stroke-width: 70; opacity: 1;
+}
+.season-track.lit { filter: brightness(1.3); }
 
-        /* Today Marker */
-        .marker-wrap {
-            position: absolute;
-            width: 0; height: 0;
-            top: 0; left: 0;
-            transform-style: preserve-3d;
-            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.1s, top 0.1s;
-            z-index: 10;
-        }
-        .marker-icon {
-            position: absolute;
-            width: 36px;
-            height: 36px;
-            transform: translate(-50%, -50%) rotateX(-52deg) translateZ(8px);
-            filter: drop-shadow(0 0 12px var(--active-glow));
-            transition: filter 0.8s;
-        }
-        .marker-icon svg {
-            width: 100%; height: 100%;
-            color: var(--active-color);
-            transition: color 0.8s;
-        }
-        .marker-pulse {
-            position: absolute;
-            width: 60px; height: 60px;
-            border-radius: 50%;
-            background: transparent;
-            border: 1px solid var(--active-color);
-            transform: translate(-50%, -50%) rotateX(-52deg);
-            opacity: 0;
-            animation: marker-pulse 2.5s ease-out infinite;
-            transition: border-color 0.8s;
-        }
-        @keyframes marker-pulse {
-            0% { transform: translate(-50%, -50%) rotateX(-52deg) scale(0.5); opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) rotateX(-52deg) scale(2); opacity: 0; }
-        }
+/* Today marker */
+.today-marker {
+  position: absolute; pointer-events: none;
+  transition: left 1.2s cubic-bezier(.16,1,.3,1), top 1.2s cubic-bezier(.16,1,.3,1);
+}
+.today-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--active-c);
+  box-shadow: 0 0 0 4px rgba(var(--active-rgb),.2), 0 0 20px var(--active-glow), 0 0 40px rgba(var(--active-rgb),.3);
+  transform: translate(-50%,-50%);
+  animation: dot-bob 3s ease-in-out infinite;
+  transition: background 0.8s, box-shadow 0.8s;
+}
+@keyframes dot-bob { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.3)} }
+.today-ring {
+  position: absolute;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid var(--active-c);
+  opacity: 0;
+  transform: translate(-50%,-50%) scale(0.3);
+  animation: ring-out 2.5s ease-out infinite;
+}
+@keyframes ring-out { 0%{opacity:.8;transform:translate(-50%,-50%) scale(.4)} 100%{opacity:0;transform:translate(-50%,-50%) scale(2.2)} }
 
-        /* ─── CENTER ORB ─── */
-        .orb-container {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: var(--orb-size);
-            height: var(--orb-size);
-            transform: translate(-50%, -50%) rotateX(-52deg);
-            z-index: 20;
-        }
-        /* Changed inset to percentages to scale with the wrapper dynamically */
-        .hud-ring {
-            position: absolute;
-            border-radius: 50%;
-            transition: border-color 0.8s;
-        }
-        .hud-ring-1 {
-            inset: -8%;
-            border: 1px dashed rgba(var(--active-rgb), 0.2);
-            animation: spin-ccw 25s linear infinite;
-        }
-        .hud-ring-2 {
-            inset: -16%;
-            border: 1px solid rgba(var(--active-rgb), 0.12);
-            border-top-color: transparent;
-            animation: spin-cw 15s linear infinite;
-        }
-        .hud-ring-3 {
-            inset: -26%;
-            border: 1px dashed rgba(201,169,110,0.08);
-            animation: spin-ccw 40s linear infinite;
-        }
-        @keyframes spin-cw  { to { transform: rotate(360deg); } }
-        @keyframes spin-ccw { to { transform: rotate(-360deg); } }
+/* Center orb */
+.orb-wrap {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: var(--orb); height: var(--orb);
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+.orb-ring {
+  position: absolute; border-radius: 50%;
+  transition: border-color 0.8s;
+}
+.orb-ring-1 {
+  inset: -10%; border: 1px dashed rgba(var(--active-rgb),.15);
+  animation: spin-cw 28s linear infinite;
+}
+.orb-ring-2 {
+  inset: -18%; border: 1px solid rgba(var(--active-rgb),.08);
+  border-top-color: transparent;
+  animation: spin-ccw 18s linear infinite;
+}
+@keyframes spin-cw  { to { transform: rotate(360deg); } }
+@keyframes spin-ccw { to { transform: rotate(-360deg); } }
+.orb-inner {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, rgba(255,255,255,.07) 0%, rgba(6,5,10,.75) 55%, rgba(0,0,0,.92) 100%);
+  border: 1px solid rgba(var(--active-rgb),.12);
+  box-shadow: inset 0 0 50px rgba(0,0,0,.8), 0 0 50px rgba(var(--active-rgb),.1);
+  backdrop-filter: blur(24px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 20px;
+  transition: border-color 0.8s, box-shadow 0.8s;
+}
+.orb-sup {
+  font-family: 'Cinzel', serif;
+  font-size: 8px; letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 8px;
+}
+.orb-name {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(16px,2.2vw,22px); font-style: italic;
+  color: var(--active-c); line-height: 1.2;
+  transition: color 0.8s;
+}
+.orb-year {
+  font-family: 'Cinzel', serif;
+  font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--muted); margin-top: 6px;
+}
 
-        .glass-orb {
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.08) 0%, rgba(5,4,3,0.6) 60%, rgba(0,0,0,0.9) 100%);
-            border: 1px solid rgba(var(--active-rgb), 0.1);
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 0 50px rgba(var(--active-rgb), 0.12), 0 0 100px rgba(var(--active-rgb), 0.06);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            transition: border-color 0.8s, box-shadow 0.8s;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-        .orb-label {
-            font-size: 8px;
-            letter-spacing: 0.35em;
-            text-transform: uppercase;
-            color: var(--text2);
-            margin-bottom: 6px;
-        }
-        .orb-season {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(20px, 3vw, 26px);
-            font-style: italic;
-            color: var(--active-color);
-            transition: color 0.8s;
-            line-height: 1.1;
-            padding: 0 12px;
-        }
+/* ══ RIGHT / INFO PANEL ══ */
+.info-panel {
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: var(--panel-pad) 44px;
+  overflow-y: auto;
+  background: linear-gradient(160deg, rgba(12,11,18,0.98) 0%, rgba(6,5,10,1) 100%);
+  position: relative;
+}
+.info-panel::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(var(--active-rgb),.04) 0%, transparent 70%);
+  pointer-events: none; transition: background 0.8s;
+}
 
-        /* ─── RIGHT PANEL ─── */
-        .info-panel {
-            border-left: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 48px 44px;
-            background: linear-gradient(135deg, rgba(10,8,6,0.95) 0%, rgba(5,4,3,1) 100%);
-            position: relative;
-        }
-        .info-panel::before {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 280px; height: 280px;
-            background: radial-gradient(circle, rgba(var(--active-rgb), 0.04) 0%, transparent 70%);
-            transition: background 0.8s;
-            pointer-events: none;
-        }
+/* Nav */
+.day-nav {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+}
+.nav-btn {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: rgba(var(--active-rgb),.08);
+  border: 1px solid rgba(var(--active-rgb),.2);
+  color: var(--active-c);
+  cursor: pointer; font-size: 18px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .25s; flex-shrink: 0;
+}
+.nav-btn:hover { background: rgba(var(--active-rgb),.2); border-color: rgba(var(--active-rgb),.5); transform: scale(1.05); }
+.nav-btn:active { transform: scale(.96); }
+.nav-center {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.nav-label { font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--muted); }
+.nav-date  { font-family: 'EB Garamond', serif; font-size: 20px; color: var(--active-c); transition: color 0.8s; }
+.today-chip {
+  padding: 5px 14px; border-radius: 100px;
+  background: rgba(var(--active-rgb),.09);
+  border: 1px solid rgba(var(--active-rgb),.25);
+  color: var(--muted); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  cursor: pointer; transition: all .25s; white-space: nowrap;
+}
+.today-chip:hover { color: var(--active-c); background: rgba(var(--active-rgb),.18); border-color: rgba(var(--active-rgb),.5); }
 
-        /* Card */
-        .card {
-            position: relative;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-top: 3px solid var(--active-color);
-            border-radius: var(--radius);
-            padding: 40px;
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            transition: border-top-color 0.8s;
-            overflow: hidden;
-        }
-        .card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at top right, rgba(var(--active-rgb), 0.06) 0%, transparent 60%);
-            transition: background 0.8s;
-            pointer-events: none;
-        }
+/* Season ribbon */
+.season-ribbon {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 16px;
+}
+.ribbon-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--active-c); transition: background 0.8s; }
+.ribbon-text {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--muted);
+}
 
-        .card-eyebrow {
-            font-size: 10px;
-            letter-spacing: 0.35em;
-            text-transform: uppercase;
-            color: var(--text2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .card-eyebrow::before {
-            content: '';
-            width: 24px; height: 1px;
-            background: var(--cyan);
-            opacity: 0.5;
-        }
+/* Card */
+.feast-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--active-c);
+  border-radius: var(--radius);
+  padding: 32px 32px 28px;
+  position: relative; overflow: hidden;
+  transition: border-top-color 0.8s;
+  margin-bottom: 24px;
+}
+.feast-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at top right, rgba(var(--active-rgb),.06) 0%, transparent 60%);
+  pointer-events: none; transition: background 0.8s;
+}
+.feast-label {
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--muted); display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+}
+.feast-label::before { content: ''; width: 20px; height: 1px; background: var(--active-c); opacity: .5; }
+.feast-name {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(24px, 2.8vw, 34px); font-weight: 400;
+  line-height: 1.25; margin-bottom: 24px; color: var(--text);
+}
+.feast-rank {
+  display: inline-block;
+  padding: 2px 10px; border-radius: 4px; margin-bottom: 24px;
+  background: rgba(var(--active-rgb),.12);
+  color: var(--active-c); font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
+  transition: background 0.8s, color 0.8s;
+}
+.divider { width: 100%; height: 1px; background: var(--border); margin-bottom: 22px; }
 
-        .card-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(28px, 3vw, 38px);
-            font-weight: 400;
-            line-height: 1.15;
-            margin-bottom: 32px;
-            color: var(--text);
-        }
+/* Grid */
+.meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.meta-item {}
+.meta-key {
+  font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+}
+.meta-val {
+  font-family: 'EB Garamond', serif; font-size: 16px; font-style: italic;
+  color: var(--active-c); line-height: 1.6;
+  transition: color 0.8s;
+}
 
-        .divider {
-            width: 100%; height: 1px;
-            background: var(--border);
-            margin-bottom: 28px;
-        }
+/* Badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 4px;
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; font-style: normal;
+  font-family: 'Lato', sans-serif; font-weight: 700;
+}
+.badge-incense { background: rgba(212,172,104,.15); color: #D4AC68; }
+.badge-no-incense { background: rgba(92,158,114,.15); color: #7DC494; }
+.badge-abstinence { background: rgba(204,75,42,.15); color: #E87050; }
 
-        .meta-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 28px;
-        }
-        .meta-label {
-            font-size: 9px;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--text2);
-            margin-bottom: 8px;
-        }
-        .meta-val {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 17px;
-            font-style: italic;
-            color: var(--active-color);
-            transition: color 0.8s;
-            line-height: 1.5;
-        }
+/* Legend */
+.legend { margin-top: 4px; }
+.legend-label {
+  font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px;
+}
+.legend-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.l-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 100px;
+  border: 1px solid var(--border); background: rgba(255,255,255,.02);
+  font-size: 10px; color: var(--muted);
+  cursor: pointer; transition: all .25s;
+}
+.l-pill:hover { color: var(--text); background: rgba(255,255,255,.05); }
+.l-pill.lit { color: var(--text); border-color: rgba(var(--active-rgb),.3); background: rgba(var(--active-rgb),.06); }
+.l-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
-        /* Season Legend */
-        .season-legend {
-            margin-top: 36px;
-            padding-top: 28px;
-            border-top: 1px solid var(--border);
-        }
-        .legend-title {
-            font-size: 9px;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--text2);
-            margin-bottom: 14px;
-        }
-        .legend-items {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .legend-pill {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            padding: 5px 12px;
-            border-radius: 100px;
-            border: 1px solid var(--border);
-            background: rgba(255,255,255,0.02);
-            font-size: 11px;
-            color: var(--text2);
-            cursor: pointer;
-            transition: border-color 0.3s, color 0.3s, background 0.3s;
-        }
-        .legend-pill:hover {
-            color: var(--text);
-            background: rgba(255,255,255,0.05);
-        }
-        .legend-pill.active {
-            color: var(--text);
-            border-color: rgba(var(--active-rgb), 0.35);
-            background: rgba(var(--active-rgb), 0.07);
-        }
-        .legend-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        /* ─── RESPONSIVE UPGRADES ─── */
-
-        /* Tablets & Standard Laptops */
-        @media (max-width: 1100px) {
-            :root {
-                --scene-size: 400px;
-                --orb-size: 160px;
-            }
-            .dashboard {
-                display: flex;
-                flex-direction: column;
-                overflow-y: auto;
-                height: 100%;
-            }
-            .site-header {
-                position: fixed; /* Stick navigation for mobile scroll */
-                background: rgba(10, 8, 6, 0.65);
-                backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px);
-            }
-            .visual-panel {
-                min-height: 100vh; /* Fill first viewport */
-                padding: 120px 20px 60px; 
-                justify-content: flex-start;
-            }
-            .panel-heading {
-                position: relative; /* Prevent overlap on flex shrink */
-                top: 0;
-                margin-bottom: 30px;
-            }
-            .info-panel {
-                border-left: none;
-                border-top: 1px solid var(--border);
-                padding: 60px 40px;
-            }
-        }
-
-        /* Mobile Phones */
-        @media (max-width: 600px) {
-            :root {
-                --scene-size: 300px;
-                --orb-size: 120px;
-            }
-            .site-header { padding: 20px; }
-            .visual-panel {
-                min-height: auto;
-                padding-top: 100px;
-            }
-            .scene-wrap { margin-top: 20px; }
-            .info-panel { padding: 40px 20px; }
-            .card { padding: 24px; }
-            .meta-grid { 
-                grid-template-columns: 1fr; /* Stack meta info vertically */
-                gap: 20px; 
-            }
-        }
-    </style>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+/* ══ RESPONSIVE ══ */
+@media (max-width: 1050px) {
+  :root { --orb: 160px; }
+  .shell { grid-template-columns: 1fr; grid-template-rows: auto auto; height: auto; overflow: visible; }
+  html, body { height: auto; overflow: visible; }
+  .wheel-panel { padding: 90px 20px 40px; }
+  .info-panel { border-left: none; border-top: 1px solid var(--border); padding: 40px 24px; }
+  .wheel-scene { width: min(360px, 85vw); height: min(360px, 85vw); }
+}
+@media (max-width: 600px) {
+  :root { --orb: 120px; }
+  .wheel-scene { width: min(280px, 88vw); height: min(280px, 88vw); }
+  .meta-grid { grid-template-columns: 1fr; gap: 14px; }
+  .feast-card { padding: 20px 18px; }
+  .feast-name { font-size: 22px; }
+  .info-panel { padding: 32px 16px; }
+  .header { padding: 16px 14px; }
+}
+</style>
 </head>
 <body>
 
-<div class="bg-ambient" id="bg-ambient"></div>
-<div class="grid-lines"></div>
-<div class="vignette"></div>
+<div class="atmos">
+  <div class="atmos-orb atmos-orb-1" id="a1"></div>
+  <div class="atmos-orb atmos-orb-2"></div>
+</div>
+<div class="noise-overlay"></div>
 
-<div class="dashboard">
-    <div class="visual-panel">
-        <div class="site-header">
-            <a href="index.html" class="back-btn">← Escape</a>
-            <div class="header-badge">
-                <div class="pulse-dot" id="pulse-dot"></div>
-                <span>Live · <span id="header-date">Apr 17, 2026</span></span>
-            </div>
-        </div>
+<div class="shell">
 
-        <div class="panel-heading">
-            <span class="eyebrow">The Christian Cycle</span>
-            <h1>Liturgical <em id="heading-season">Calendar</em></h1>
-        </div>
-
-        <div class="scene-wrap">
-            <div class="scene">
-                <div class="pivot" id="pivot">
-                    <svg class="ring-layer ring-base" viewBox="0 0 500 500" id="ring-bottom" xmlns="http://www.w3.org/2000/svg"></svg>
-                    <svg class="ring-layer ring-main" viewBox="0 0 500 500" id="ring-top" xmlns="http://www.w3.org/2000/svg"></svg>
-
-                    <div class="marker-wrap" id="marker">
-                        <div class="marker-pulse"></div>
-                        <div class="marker-icon">
-                            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <ellipse cx="24" cy="24" rx="16" ry="10" />
-                                <path d="M 40,24 L 48,18 M 40,24 L 48,30" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="orb-container">
-                <div class="hud-ring hud-ring-3"></div>
-                <div class="hud-ring hud-ring-2"></div>
-                <div class="hud-ring hud-ring-1"></div>
-                <div class="glass-orb">
-                    <div class="orb-label">Current Season</div>
-                    <div class="orb-season" id="orb-season">Easter</div>
-                </div>
-            </div>
-        </div>
+  <!-- ══ LEFT ══ -->
+  <div class="wheel-panel">
+    <div class="header">
+      <a href="index.html" class="back-btn">← Home</a>
+      <div class="live-badge">
+        <div class="pulse" id="pulse-dot"></div>
+        <span id="header-date">Loading…</span>
+      </div>
     </div>
 
-    <div class="info-panel">
-        <div class="card">
-            <div class="card-eyebrow" id="card-eyebrow">Today · Apr 17, 2026</div>
-            <h2 class="card-title" id="card-title">Friday of the Second Week of Easter</h2>
-            <div class="divider"></div>
-            <div class="meta-grid">
-                <div class="meta-item">
-                    <div class="meta-label">Liturgical Color</div>
-                    <div class="meta-val" id="card-color">White / Gold</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Sacred Lectionary</div>
-                    <div class="meta-val" id="card-readings">Acts 4:1–12<br>Ps 118<br>Jn 21:1–14</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Week Number</div>
-                    <div class="meta-val" id="card-week">Week II</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Liturgical Year</div>
-                    <div class="meta-val">Year C · 2026</div>
-                </div>
-            </div>
-        </div>
+    <div class="wheel-title">The Christian Year</div>
+    <div class="wheel-headline">Liturgical <em id="hl-season">Calendar</em></div>
 
-        <div class="season-legend">
-            <div class="legend-title">Seasons of the Year</div>
-            <div class="legend-items" id="legend-items"></div>
+    <div class="wheel-scene" id="wheel-scene">
+      <svg class="wheel-svg" viewBox="0 0 500 500" id="wheel-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+
+      <div class="orb-wrap">
+        <div class="orb-ring orb-ring-2"></div>
+        <div class="orb-ring orb-ring-1"></div>
+        <div class="orb-inner">
+          <div class="orb-sup">Season</div>
+          <div class="orb-name" id="orb-name">Easter</div>
+          <div class="orb-year">Year A · 2026</div>
         </div>
+      </div>
+
+      <!-- Today marker (absolutely positioned) -->
+      <div class="today-marker" id="today-marker">
+        <div class="today-ring"></div>
+        <div class="today-dot"></div>
+      </div>
     </div>
+  </div>
+
+  <!-- ══ RIGHT ══ -->
+  <div class="info-panel">
+
+    <div class="day-nav">
+      <button class="nav-btn" id="prev-btn">‹</button>
+      <div class="nav-center">
+        <div class="nav-label">Selected Date</div>
+        <div class="nav-date" id="nav-date">May 28</div>
+      </div>
+      <button class="nav-btn" id="next-btn">›</button>
+      <button class="today-chip" id="today-btn">Today</button>
+    </div>
+
+    <div class="season-ribbon">
+      <div class="ribbon-dot" id="ribbon-dot"></div>
+      <div class="ribbon-text" id="ribbon-text">Loading…</div>
+    </div>
+
+    <div class="feast-card" id="feast-card">
+      <div class="feast-label" id="feast-label">Today · Thu, May 28</div>
+      <div class="feast-name" id="feast-name">Loading…</div>
+      <div class="feast-rank" id="feast-rank">Feast</div>
+      <div class="divider"></div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-key">Liturgical Color</div>
+          <div class="meta-val" id="m-color">White</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-key">Observance</div>
+          <div class="meta-val" id="m-obs"></div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-key">Lectionary Year</div>
+          <div class="meta-val" id="m-year">Year A (Matthew)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-key">Week</div>
+          <div class="meta-val" id="m-week">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-label">Seasons of the Year</div>
+      <div class="legend-pills" id="legend-pills"></div>
+    </div>
+
+  </div>
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════
-   DATA
-══════════════════════════════════════════════════ */
-const seasons = [
-    { id: 'advent',    name: 'Advent',           colorVar: '--purple',    glowVar: '--purple-glow', colorHex: '#9D7BB0', rgbStr: '157,123,176', start: 0,   end: 25,  info: { color: 'Purple / Violet', week: 'Week I–IV', readings: 'Is 40:1–11\nLk 3:1–6\nRv 22:20' } },
-    { id: 'christmas', name: 'Christmas',        colorVar: '--white-lit', glowVar: '--white-glow', colorHex: '#F9F6F0', rgbStr: '249,246,240', start: 25,  end: 46,  info: { color: 'White / Gold', week: 'Octave', readings: 'Is 9:2–7\nTt 2:11–14\nLk 2:1–14' } },
-    { id: 'epiphany',  name: 'Ordinary Time I',  colorVar: '--green',     glowVar: '--green-glow', colorHex: '#6DA37A', rgbStr: '109,163,122', start: 46,  end: 80,  info: { color: 'Green', week: 'Weeks I–VI', readings: 'Is 60:1–6\nEph 3:2–3\nMt 2:1–12' } },
-    { id: 'lent',      name: 'Lent',             colorVar: '--purple',    glowVar: '--purple-glow', colorHex: '#9D7BB0', rgbStr: '157,123,176', start: 80,  end: 118, info: { color: 'Purple / Violet', week: 'Weeks I–V', readings: 'Jl 2:12–18\n2Co 5:20\nMt 6:1–6' } },
-    { id: 'holyweek',  name: 'Holy Week',        colorVar: '--red',       glowVar: '--red-glow',   colorHex: '#B07B7B', rgbStr: '176,123,123', start: 118, end: 126, info: { color: 'Red / Scarlet', week: 'Passion Week', readings: 'Is 50:4–7\nPh 2:6–11\nMk 14–15' } },
-    { id: 'easter',    name: 'Easter',           colorVar: '--white-lit', glowVar: '--white-glow', colorHex: '#F9F6F0', rgbStr: '249,246,240', start: 126, end: 173, info: { color: 'White / Gold', week: 'Week II', readings: 'Acts 4:1–12\nPs 118\nJn 21:1–14' } },
-    { id: 'pentecost', name: 'Pentecost',        colorVar: '--red',       glowVar: '--red-glow',   colorHex: '#B07B7B', rgbStr: '176,123,123', start: 173, end: 178, info: { color: 'Red / Fire', week: 'Pentecost Sunday', readings: 'Acts 2:1–11\n1Co 12:3\nJn 20:19–23' } },
-    { id: 'ordtime',   name: 'Ordinary Time II', colorVar: '--green',     glowVar: '--green-glow', colorHex: '#6DA37A', rgbStr: '109,163,122', start: 178, end: 360, info: { color: 'Green', week: 'Weeks IX–XXXIV', readings: 'Rm 5:12–15\n1Co 15:21\nMt 13:1–23' } }
+/* ═══════════════════════════════════════════
+   ACCURATE 2026 CALENDAR ENGINE
+   Sources: USCCB, Universalis, Archdiocese calendars
+═══════════════════════════════════════════ */
+
+// ── Key dates 2026 ──
+const Y = 2026;
+const EASTER     = new Date(Y, 3,  5);  // Apr 5
+const ASH_WED    = new Date(Y, 1, 18);  // Feb 18
+const PALM_SUN   = new Date(Y, 2, 29);  // Mar 29 (7 days before Easter)
+const HOLY_THU   = new Date(Y, 3,  2);  // Apr 2
+const GOOD_FRI   = new Date(Y, 3,  3);  // Apr 3
+const HOLY_SAT   = new Date(Y, 3,  4);  // Apr 4
+const ASCENSION  = new Date(Y, 4, 14);  // May 14
+const PENTECOST  = new Date(Y, 4, 24);  // May 24
+const TRINITY    = new Date(Y, 4, 31);  // May 31
+const CORPUS     = new Date(Y, 5, 11);  // Jun 11 (Thu after Trinity)
+const SACREDHRT  = new Date(Y, 5, 12);  // Jun 12
+const ADVENT1    = new Date(Y, 10, 29); // Nov 29
+const CHRISTMAS  = new Date(Y, 11, 25); // Dec 25
+
+// Ordinary Time I begins after Baptism of the Lord (Jan 11)
+const BAPT_LORD  = new Date(Y, 0, 11);
+
+// ── Seasons (accurate boundaries) ──
+const SEASONS = [
+  {
+    id: 'advent2025', name: 'Advent',
+    c: '#8B6FBE', rgb: '139,111,190', cv: '--advent-c',
+    start: new Date(2025, 10, 30), end: new Date(2025, 11, 24),
+    color: 'Purple / Violet', year: 'Year A (Matthew)'
+  },
+  {
+    id: 'christmas', name: 'Christmas',
+    c: '#F4EDD8', rgb: '244,237,216', cv: '--christmas-c',
+    start: new Date(2025, 11, 25), end: new Date(Y, 0, 10),
+    color: 'White / Gold', year: 'Year A (Matthew)'
+  },
+  {
+    id: 'ordtime1', name: 'Ordinary Time I',
+    c: '#5C9E72', rgb: '92,158,114', cv: '--ordtime1-c',
+    start: new Date(Y, 0, 11), end: new Date(Y, 1, 17),
+    color: 'Green', year: 'Year A (Matthew)'
+  },
+  {
+    id: 'lent', name: 'Lent',
+    c: '#9B7EB8', rgb: '155,126,184', cv: '--lent-c',
+    start: new Date(Y, 1, 18), end: new Date(Y, 2, 28),
+    color: 'Purple / Violet', year: 'Year A (Matthew)'
+  },
+  {
+    id: 'holyweek', name: 'Holy Week',
+    c: '#C0443A', rgb: '192,68,58', cv: '--holyweek-c',
+    start: new Date(Y, 2, 29), end: new Date(Y, 3, 4),
+    color: 'Red / Scarlet', year: 'Year A (Matthew)'
+  },
+  {
+    id: 'easter', name: 'Easter',
+    c: '#D4AC68', rgb: '212,172,104', cv: '--easter-c',
+    start: new Date(Y, 3, 5), end: new Date(Y, 4, 23),
+    color: 'White / Gold', year: 'Year A (Matthew)'
+  },
+  {
+    id: 'pentecost', name: 'Pentecost & Trinity',
+    c: '#CC4B2A', rgb: '204,75,42', cv: '--pentecost-c',
+    start: new Date(Y, 4, 24), end: new Date(Y, 4, 30),
+    color: 'Red', year: 'Year A (Matthew)'
+  },
+  {
+    id: 'ordtime2', name: 'Ordinary Time II',
+    c: '#5C9E72', rgb: '92,158,114', cv: '--ordtime2-c',
+    start: new Date(Y, 4, 31), end: new Date(Y, 10, 28),
+    color: 'Green', year: 'Year A (Matthew)'
+  },
+  {
+    id: 'advent2026', name: 'Advent',
+    c: '#8B6FBE', rgb: '139,111,190', cv: '--advent-c',
+    start: new Date(Y, 10, 29), end: new Date(Y, 11, 24),
+    color: 'Purple / Violet', year: 'Year B (Mark)'
+  },
+  {
+    id: 'christmas2026', name: 'Christmas',
+    c: '#F4EDD8', rgb: '244,237,216', cv: '--christmas-c',
+    start: new Date(Y, 11, 25), end: new Date(Y, 11, 31),
+    color: 'White / Gold', year: 'Year B (Mark)'
+  }
 ];
 
-const todaySeason = seasons.find(s => s.id === 'easter');
-const todayAngleDeg = 145; // position on ring
-
-/* ═══════════════════════════════════════════════
-   GEOMETRY
-══════════════════════════════════════════════════ */
-const CX = 250, CY = 250, R = 185;
-
-function toRad(deg) { return (deg - 90) * Math.PI / 180; }
-
-function polarToXY(angleDeg) {
-    const a = toRad(angleDeg);
-    return { x: CX + R * Math.cos(a), y: CY + R * Math.sin(a) };
+function dateSame(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+function dateMs(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
+function getSeason(date) {
+  const t = dateMs(date);
+  return SEASONS.find(s => t >= dateMs(s.start) && t <= dateMs(s.end)) || SEASONS[7];
 }
 
-function arcPath(startDeg, endDeg) {
-    const s = polarToXY(startDeg + 0.4);
-    const e = polarToXY(endDeg   - 0.4);
-    const large = (endDeg - startDeg) > 180 ? 1 : 0;
-    return `M ${s.x},${s.y} A ${R},${R} 0 ${large} 1 ${e.x},${e.y}`;
+// ── Ordinal ──
+function ord(n) {
+  const s = ['th','st','nd','rd'], v = n % 100;
+  return n + (s[(v-20)%10] || s[v] || s[0]);
 }
 
-/* ═══════════════════════════════════════════════
-   RENDER & RESPONSIVENESS
-══════════════════════════════════════════════════ */
-function buildRings() {
-    const top    = document.getElementById('ring-top');
-    const bottom = document.getElementById('ring-bottom');
-
-    seasons.forEach(s => {
-        const d = arcPath(s.start, s.end);
-
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', d);
-        path.setAttribute('stroke', `var(${s.colorVar})`);
-        path.setAttribute('class', 'season-arc');
-        path.setAttribute('id', `arc-${s.id}`);
-
-        path.addEventListener('mouseenter', () => setActiveSeason(s));
-        path.addEventListener('mouseleave', () => setActiveSeason(todaySeason));
-
-        top.appendChild(path);
-
-        const clone = path.cloneNode(true);
-        clone.removeAttribute('id');
-        clone.style.cursor = 'default';
-        bottom.appendChild(clone);
-    });
+// ── Week number within season ──
+function weekInSeason(date, seasonStart) {
+  const diff = Math.floor((dateMs(date) - dateMs(seasonStart)) / 864e5);
+  return Math.floor(diff / 7) + 1;
 }
 
+// Roman numerals for weeks
+const ROMAN = ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV',
+  'XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII',
+  'XXIX','XXX','XXXI','XXXII','XXXIII','XXXIV'];
+
+const DAYS  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONS  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONSF = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// ── Feast day database ──
+// rank: 'solemnity' | 'feast' | 'memorial' | 'optional' | 'feria'
+function getFeasts(date) {
+  const m = date.getMonth(); // 0-indexed
+  const d = date.getDate();
+  const dow = date.getDay();
+  const season = getSeason(date);
+
+  // ── Fixed solemnities & feasts ──
+  if (m===0 && d===1)  return { name: 'Solemnity of Mary, Mother of God', rank: 'Solemnity', color: 'White / Gold', incense: true };
+  if (m===0 && d===6)  return { name: 'Epiphany of the Lord', rank: 'Solemnity', color: 'White / Gold', incense: true };
+  if (dateSame(date, BAPT_LORD)) return { name: 'Baptism of the Lord', rank: 'Feast of the Lord', color: 'White', incense: true };
+  if (m===1 && d===2)  return { name: 'The Presentation of the Lord', rank: 'Feast of the Lord', color: 'White', incense: false };
+  if (m===2 && d===19) return { name: 'Solemnity of Saint Joseph, Spouse of the Blessed Virgin Mary', rank: 'Solemnity', color: 'White', incense: true };
+  if (m===2 && d===25) return { name: 'Annunciation of the Lord', rank: 'Solemnity', color: 'White', incense: true };
+  if (m===3 && d===23) return { name: 'Saint George, Martyr', rank: 'Optional Memorial', color: 'Red', incense: false };
+  if (m===4 && d===1)  return { name: 'Saint Joseph the Worker', rank: 'Optional Memorial', color: 'White', incense: false };
+  if (m===4 && d===3)  return { name: 'Saints Philip and James, Apostles', rank: 'Feast', color: 'Red', incense: false };
+  if (m===4 && d===31) return { name: 'The Visitation of the Blessed Virgin Mary', rank: 'Feast', color: 'White', incense: false };
+
+  if (dateSame(date, TRINITY)) return { name: 'Solemnity of the Most Holy Trinity', rank: 'Solemnity', color: 'White / Gold', incense: true };
+  if (dateSame(date, CORPUS))  return { name: 'Solemnity of the Most Holy Body and Blood of Christ (Corpus Christi)', rank: 'Solemnity', color: 'White / Gold', incense: true };
+  if (dateSame(date, SACREDHRT)) return { name: 'Solemnity of the Most Sacred Heart of Jesus', rank: 'Solemnity', color: 'White / Gold', incense: true };
+  // Immaculate Heart: Sat after Sacred Heart = Jun 13
+  if (m===5 && d===13) return { name: 'The Immaculate Heart of Mary', rank: 'Memorial', color: 'White', incense: false };
+
+  if (m===5 && d===11) return { name: 'Saint Barnabas, Apostle', rank: 'Memorial', color: 'Red', incense: false };
+  if (m===5 && d===24) return { name: 'The Nativity of Saint John the Baptist', rank: 'Solemnity', color: 'White / Gold', incense: true };
+  if (m===5 && d===29) return { name: 'Saints Peter and Paul, Apostles', rank: 'Solemnity', color: 'Red', incense: true };
+  if (m===6 && d===3)  return { name: 'Saint Thomas, Apostle', rank: 'Feast', color: 'Red', incense: false };
+  if (m===6 && d===11) return { name: 'Saint Benedict, Patron of Europe', rank: 'Feast', color: 'White', incense: false };
+  if (m===6 && d===22) return { name: 'Saints John Fisher and Thomas More, Martyrs', rank: 'Optional Memorial', color: 'Red', incense: false };
+  if (m===6 && d===25) return { name: 'Saint James, Apostle', rank: 'Feast', color: 'Red', incense: false };
+  if (m===7 && d===6)  return { name: 'The Transfiguration of the Lord', rank: 'Feast of the Lord', color: 'White / Gold', incense: false };
+  if (m===7 && d===10) return { name: 'Saint Lawrence, Deacon and Martyr', rank: 'Feast', color: 'Red', incense: false };
+  if (m===7 && d===15) return { name: 'Assumption of the Blessed Virgin Mary', rank: 'Solemnity', color: 'White / Gold', incense: true };
+  if (m===7 && d===22) return { name: 'Saint Mary Magdalene', rank: 'Feast', color: 'White', incense: false };
+  if (m===7 && d===24) return { name: 'Saint Bartholomew, Apostle', rank: 'Feast', color: 'Red', incense: false };
+  if (m===8 && d===8)  return { name: 'The Nativity of the Blessed Virgin Mary', rank: 'Feast', color: 'White', incense: false };
+  if (m===8 && d===14) return { name: 'The Exaltation of the Holy Cross', rank: 'Feast of the Lord', color: 'Red', incense: false };
+  if (m===8 && d===15) return { name: 'Our Lady of Sorrows', rank: 'Memorial', color: 'White', incense: false };
+  if (m===8 && d===21) return { name: 'Saint Matthew, Apostle and Evangelist', rank: 'Feast', color: 'Red', incense: false };
+  if (m===8 && d===29) return { name: 'The Passion of Saint John the Baptist', rank: 'Memorial', color: 'Red', incense: false };
+  if (m===9 && d===1)  return { name: 'Saint Thérèse of the Child Jesus, Doctor', rank: 'Memorial', color: 'White', incense: false };
+  if (m===9 && d===4)  return { name: 'Saint Francis of Assisi', rank: 'Memorial', color: 'White', incense: false };
+  if (m===9 && d===7)  return { name: 'Our Lady of the Rosary', rank: 'Memorial', color: 'White', incense: false };
+  if (m===9 && d===18) return { name: 'Saint Luke, Evangelist', rank: 'Feast', color: 'Red', incense: false };
+  if (m===9 && d===28) return { name: 'Saints Simon and Jude, Apostles', rank: 'Feast', color: 'Red', incense: false };
+  if (m===10 && d===1) return { name: 'All Saints\' Day', rank: 'Solemnity', color: 'White / Gold', incense: true };
+  if (m===10 && d===2) return { name: 'The Commemoration of All the Faithful Departed (All Souls)', rank: 'Commemoration', color: 'Black / Violet', incense: true };
+  // Christ the King: last Sunday of Ordinary Time = Nov 22
+  if (m===10 && d===22 && dow===0) return { name: 'Solemnity of Our Lord Jesus Christ, King of the Universe', rank: 'Solemnity', color: 'White / Gold', incense: true };
+  if (m===11 && d===8) return { name: 'Solemnity of the Immaculate Conception', rank: 'Solemnity', color: 'White / Gold', incense: true };
+
+  // ── Moveable feasts ──
+  // Ash Wednesday
+  if (dateSame(date, ASH_WED)) return { name: 'Ash Wednesday', rank: 'Obligatory Day of Prayer & Fasting', color: 'Violet', incense: false };
+
+  // Palm Sunday
+  if (dateSame(date, PALM_SUN)) return { name: 'Palm Sunday of the Lord\'s Passion', rank: 'Solemnity', color: 'Red', incense: true };
+
+  // Holy Week
+  if (dateSame(date, HOLY_THU)) return { name: 'Holy Thursday — Mass of the Lord\'s Supper', rank: 'Solemn Liturgy', color: 'White / Gold', incense: true };
+  if (dateSame(date, GOOD_FRI)) return { name: 'Good Friday — Passion of the Lord', rank: 'Solemn Liturgy', color: 'Red', incense: false };
+  if (dateSame(date, HOLY_SAT)) return { name: 'Holy Saturday — Easter Vigil', rank: 'Solemn Liturgy', color: 'White / Gold', incense: true };
+
+  // Easter Sunday
+  if (dateSame(date, EASTER)) return { name: 'Easter Sunday — Resurrection of the Lord', rank: 'Solemnity of Solemnities', color: 'White / Gold', incense: true };
+
+  // Easter octave (Mon–Sat)
+  const easterMs = dateMs(EASTER);
+  const diffEaster = Math.floor((dateMs(date) - easterMs) / 864e5);
+  if (diffEaster >= 1 && diffEaster <= 7) {
+    const octaveNames = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Divine Mercy Sunday'];
+    if (diffEaster === 7) return { name: 'Divine Mercy Sunday (Second Sunday of Easter)', rank: 'Feast of the Lord', color: 'White / Gold', incense: true };
+    return { name: `${octaveNames[diffEaster-1]} of the Easter Octave`, rank: 'Solemnity (Octave Day)', color: 'White / Gold', incense: false };
+  }
+
+  // Ascension
+  if (dateSame(date, ASCENSION)) return { name: 'Solemnity of the Ascension of the Lord', rank: 'Solemnity', color: 'White / Gold', incense: true };
+
+  // Pentecost
+  if (dateSame(date, PENTECOST)) return { name: 'Solemnity of Pentecost', rank: 'Solemnity', color: 'Red / Fire', incense: true };
+
+  // May 28 (today) = Feast of Christ the Eternal High Priest
+  if (m===4 && d===28 && date.getDay()===4) {
+    // First Thursday after Pentecost
+    const diffPent = Math.floor((dateMs(date) - dateMs(PENTECOST)) / 864e5);
+    if (diffPent >= 1 && diffPent <= 7)
+      return { name: 'Our Lord Jesus Christ, Eternal High Priest', rank: 'Feast', color: 'White', incense: false };
+  }
+
+  // ── Seasonal feriae ──
+  const s = season;
+
+  if (s.id === 'advent2025' || s.id === 'advent2026') {
+    const advStart = s.id === 'advent2025' ? new Date(2025,10,30) : ADVENT1;
+    const wk = weekInSeason(date, advStart);
+    if (dow === 0) return { name: `${ord(wk)} Sunday of Advent`, rank: 'Sunday', color: 'Purple / Violet', incense: true };
+    // O Antiphons Dec 17–24
+    if (m===11 && d>=17) return { name: `${d < 24 ? DAYS[dow] + ', ' + d + ' December' : 'Christmas Eve'} — Late Advent`, rank: 'Feria', color: 'Purple / Violet', incense: false };
+    return { name: `${DAYS[dow]} of the ${ROMAN[wk]} Week of Advent`, rank: 'Feria', color: 'Purple / Violet', incense: false };
+  }
+
+  if (s.id === 'christmas' || s.id === 'christmas2026') {
+    if (m===11 && d===25) return { name: 'Solemnity of the Nativity of the Lord (Christmas)', rank: 'Solemnity', color: 'White / Gold', incense: true };
+    if (m===11 && d===26) return { name: 'Saint Stephen, First Martyr', rank: 'Feast', color: 'Red', incense: false };
+    if (m===11 && d===27) return { name: 'Saint John, Apostle and Evangelist', rank: 'Feast', color: 'White', incense: false };
+    if (m===11 && d===28) return { name: 'The Holy Innocents, Martyrs', rank: 'Feast', color: 'Red / White', incense: false };
+    if (dow === 0) return { name: 'Feast of the Holy Family', rank: 'Feast of the Lord', color: 'White / Gold', incense: true };
+    return { name: `${DAYS[dow]} of the Christmas Octave`, rank: 'Feria (Octave)', color: 'White / Gold', incense: false };
+  }
+
+  if (s.id === 'ordtime1') {
+    const wk = weekInSeason(date, BAPT_LORD);
+    if (dow === 0) return { name: `${ROMAN[wk]} Sunday of Ordinary Time`, rank: 'Sunday', color: 'Green', incense: true };
+    return { name: `${DAYS[dow]} of the ${ROMAN[wk]} Week of Ordinary Time`, rank: 'Feria', color: 'Green', incense: false };
+  }
+
+  if (s.id === 'lent') {
+    const wk = weekInSeason(date, ASH_WED);
+    const weekNames = ['','First','Second','Third','Fourth','Fifth'];
+    if (dow === 0) return { name: `${weekNames[wk] || ord(wk)} Sunday of Lent`, rank: 'Sunday', color: 'Purple / Violet', incense: true };
+    return { name: `${DAYS[dow]} of the ${weekNames[wk] || ROMAN[wk]} Week of Lent`, rank: 'Feria', color: 'Purple / Violet', incense: false };
+  }
+
+  if (s.id === 'holyweek') {
+    if (dow === 1) return { name: 'Monday of Holy Week', rank: 'Feria', color: 'Violet', incense: false };
+    if (dow === 2) return { name: 'Tuesday of Holy Week', rank: 'Feria', color: 'Violet', incense: false };
+    if (dow === 3) return { name: 'Wednesday of Holy Week (Spy Wednesday)', rank: 'Feria', color: 'Violet', incense: false };
+  }
+
+  if (s.id === 'easter') {
+    const wk = weekInSeason(date, EASTER);
+    const weekNames = ['','','Second','Third','Fourth','Fifth','Sixth','Seventh'];
+    if (dow === 0) return { name: `${weekNames[wk] || ord(wk)} Sunday of Easter`, rank: 'Sunday', color: 'White / Gold', incense: true };
+    // Check for feast within Easter Octave already handled above
+    return { name: `${DAYS[dow]} of the ${weekNames[wk] || ROMAN[wk]} Week of Easter`, rank: 'Feria', color: 'White / Gold', incense: false };
+  }
+
+  if (s.id === 'pentecost') {
+    if (dow === 1) return { name: 'Monday of Pentecost Week', rank: 'Feria', color: 'Red', incense: false };
+    if (dow === 2) return { name: 'Tuesday of Pentecost Week', rank: 'Feria', color: 'Red', incense: false };
+    if (dow === 3) return { name: 'Wednesday of Pentecost Week', rank: 'Feria', color: 'Green', incense: false };
+    if (dow === 4) return { name: 'Our Lord Jesus Christ, Eternal High Priest', rank: 'Feast', color: 'White', incense: false };
+    if (dow === 5) return { name: 'Friday of Pentecost Week', rank: 'Feria', color: 'Green', incense: false };
+    if (dow === 6) return { name: 'Saturday of Pentecost Week', rank: 'Feria', color: 'Green', incense: false };
+  }
+
+  if (s.id === 'ordtime2') {
+    const wk = weekInSeason(date, TRINITY) + 1; // Trinity Sunday is week 1 of OT II
+    if (dow === 0) return { name: `${ROMAN[wk] || ord(wk)} Sunday of Ordinary Time`, rank: 'Sunday', color: 'Green', incense: true };
+    return { name: `${DAYS[dow]} of the ${ROMAN[wk] || ord(wk)} Week of Ordinary Time`, rank: 'Feria', color: 'Green', incense: false };
+  }
+
+  return { name: 'Liturgical Day', rank: 'Feria', color: 'Green', incense: false };
+}
+
+function needsAbstinence(date) {
+  // Fridays of Lent, Good Friday, Ash Wednesday
+  if (dateSame(date, ASH_WED) || dateSame(date, GOOD_FRI)) return true;
+  const s = getSeason(date);
+  if ((s.id === 'lent' || s.id === 'holyweek') && date.getDay() === 5) return true;
+  return false;
+}
+
+// ══ Date helpers ══
+function getTodaySG() {
+  const now = new Date();
+  const sg = new Date(now.getTime() + now.getTimezoneOffset()*60000 + 8*3600000);
+  return new Date(sg.getFullYear(), sg.getMonth(), sg.getDate());
+}
+
+function fmtShort(d) { return MONS[d.getMonth()] + ' ' + d.getDate(); }
+function fmtMed(d)   { return MDAYS[d.getDay()] + ', ' + fmtShort(d); }
+function fmtFull(d)  { return MONSF[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(); }
+
+const TODAY = getTodaySG();
+let SEL = new Date(TODAY);
+
+// ══ RING GEOMETRY ══
+const CX=250, CY=250, R=188;
+function toRad(a) { return (a-90)*Math.PI/180; }
+function polar(a) { const r=toRad(a); return {x: CX+R*Math.cos(r), y: CY+R*Math.sin(r)}; }
+function arc(s,e) {
+  const p1=polar(s+0.5), p2=polar(e-0.5), lg=(e-s)>180?1:0;
+  return `M${p1.x},${p1.y} A${R},${R} 0 ${lg} 1 ${p2.x},${p2.y}`;
+}
+
+function dateToAngle(date) {
+  const start = new Date(Y, 0, 1);
+  const diff = (dateMs(date) - start.getTime()) / 864e5;
+  return (diff / 365) * 360;
+}
+
+// Map seasons to arc angles (approximate for the ring — 2026 only)
+// We'll use day-of-year fractions of the 2026 calendar year
+function seasonArc(s) {
+  const yr_start = new Date(Y, 0, 1).getTime();
+  const yr_end   = new Date(Y, 11, 31).getTime();
+  const span = yr_end - yr_start;
+  const sStart = Math.max(dateMs(s.start), yr_start);
+  const sEnd   = Math.min(dateMs(s.end),   yr_end);
+  if (sEnd < sStart) return null;
+  return {
+    start: ((sStart - yr_start) / span) * 360,
+    end:   ((sEnd   - yr_start) / span) * 360
+  };
+}
+
+// ══ BUILD RING ══
+function buildRing() {
+  const svg = document.getElementById('wheel-svg');
+  // Tick marks for months
+  for (let mo=0; mo<12; mo++) {
+    const d = new Date(Y, mo, 1);
+    const ang = (((d - new Date(Y,0,1)) / (365*864e5))) * 360;
+    const p1 = polar(ang), p2 = polar(ang);
+    const r1 = R - 36, r2 = R + 36;
+    const a = toRad(ang);
+    const tick = document.createElementNS('http://www.w3.org/2000/svg','line');
+    tick.setAttribute('x1', CX + r1*Math.cos(a));
+    tick.setAttribute('y1', CY + r1*Math.sin(a));
+    tick.setAttribute('x2', CX + r2*Math.cos(a));
+    tick.setAttribute('y2', CY + r2*Math.sin(a));
+    tick.setAttribute('stroke','rgba(255,255,255,0.1)');
+    tick.setAttribute('stroke-width','1');
+    svg.appendChild(tick);
+  }
+
+  // Season arcs
+  SEASONS.forEach(s => {
+    const a = seasonArc(s);
+    if (!a || a.end <= a.start) return;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', arc(a.start, a.end));
+    path.setAttribute('stroke', s.c);
+    path.setAttribute('class','season-track');
+    path.setAttribute('id','arc-'+s.id);
+    path.addEventListener('mouseenter', () => applyTheme(s));
+    path.addEventListener('mouseleave',  () => applyTheme(getSeason(SEL)));
+    svg.appendChild(path);
+  });
+}
+
+// ══ LEGEND ══
 function buildLegend() {
-    const wrap = document.getElementById('legend-items');
-    seasons.forEach(s => {
-        const pill = document.createElement('div');
-        pill.className = 'legend-pill' + (s.id === todaySeason.id ? ' active' : '');
-        pill.id = `pill-${s.id}`;
-        pill.innerHTML = `
-            <span class="legend-dot" style="background: ${s.colorHex}"></span>
-            <span>${s.name}</span>`;
-        pill.addEventListener('mouseenter', () => setActiveSeason(s));
-        pill.addEventListener('mouseleave', () => setActiveSeason(todaySeason));
-        wrap.appendChild(pill);
-    });
+  const wrap = document.getElementById('legend-pills');
+  const shown = new Set();
+  SEASONS.forEach(s => {
+    if (shown.has(s.name)) return;
+    shown.add(s.name);
+    const pill = document.createElement('div');
+    pill.className = 'l-pill';
+    pill.id = 'pill-'+s.id;
+    pill.innerHTML = `<span class="l-dot" style="background:${s.c}"></span><span>${s.name}</span>`;
+    pill.addEventListener('mouseenter', () => applyTheme(s));
+    pill.addEventListener('mouseleave',  () => applyTheme(getSeason(SEL)));
+    wrap.appendChild(pill);
+  });
 }
 
+// ══ THEME ENGINE ══
+function applyTheme(s) {
+  const root = document.documentElement;
+  root.style.setProperty('--active-c',   s.c);
+  root.style.setProperty('--active-rgb', s.rgb);
+  root.style.setProperty('--active-glow',`rgba(${s.rgb},0.4)`);
+
+  document.getElementById('orb-name').textContent     = s.name;
+  document.getElementById('hl-season').textContent    = s.name;
+
+  // Arc highlights
+  document.querySelectorAll('.season-track').forEach(el => el.classList.remove('lit'));
+  const el = document.getElementById('arc-'+s.id);
+  if (el) el.classList.add('lit');
+
+  // Pill highlights
+  document.querySelectorAll('.l-pill').forEach(el => el.classList.remove('lit'));
+  const pill = document.getElementById('pill-'+s.id);
+  if (pill) pill.classList.add('lit');
+
+  // Ribbon dot
+  document.getElementById('ribbon-dot').style.background = s.c;
+  document.getElementById('ribbon-text').textContent = s.name.toUpperCase() + ' · ' + s.color;
+
+  // Atmosphere
+  document.getElementById('a1').style.background =
+    `radial-gradient(circle, rgba(${s.rgb},1) 0%, transparent 70%)`;
+  document.getElementById('pulse-dot').style.background = s.c;
+  document.getElementById('pulse-dot').style.boxShadow  = `0 0 8px rgba(${s.rgb},0.6)`;
+}
+
+// ══ MARKER ══
 function placeMarker() {
-    const pos = polarToXY(todayAngleDeg);
-    // Dynamically query actual screen size to retain accurate 3D geometry
-    const wrap = document.querySelector('.scene-wrap');
-    const scale = wrap.offsetWidth / 500; 
-    
-    const marker = document.getElementById('marker');
-    marker.style.left  = (pos.x * scale) + 'px';
-    marker.style.top   = (pos.y * scale) + 'px';
+  const scene = document.getElementById('wheel-scene');
+  const sz = scene.offsetWidth;
+  const scale = sz / 500;
+  const ang = dateToAngle(SEL);
+  const pos = polar(ang);
+  const marker = document.getElementById('today-marker');
+  marker.style.left = (pos.x * scale) + 'px';
+  marker.style.top  = (pos.y * scale) + 'px';
 }
 
-/* ═══════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════════ */
-function setActiveSeason(s) {
-    const root = document.documentElement;
-    root.style.setProperty('--active-color',  `var(${s.colorVar})`);
-    root.style.setProperty('--active-glow',   `var(${s.glowVar})`);
-    root.style.setProperty('--active-rgb',    s.rgbStr);
+// ══ CARD UPDATE ══
+function updateCard() {
+  const feast = getFeasts(SEL);
+  const season = getSeason(SEL);
+  const isToday = dateSame(SEL, TODAY);
 
-    document.getElementById('orb-season').textContent    = s.name;
-    document.getElementById('heading-season').textContent = s.name;
-    document.getElementById('card-color').textContent    = s.info.color;
-    document.getElementById('card-week').textContent     = s.info.week;
-    document.getElementById('card-readings').innerHTML   = s.info.readings.replace(/\n/g, '<br>');
+  document.getElementById('nav-date').textContent = fmtShort(SEL);
+  document.getElementById('feast-label').textContent = (isToday ? 'Today · ' : '') + fmtMed(SEL) + ', ' + SEL.getFullYear();
+  document.getElementById('feast-name').textContent = feast.name;
+  document.getElementById('feast-rank').textContent = feast.rank;
+  document.getElementById('m-color').textContent = feast.color;
 
-    // Arc highlights
-    document.querySelectorAll('.season-arc').forEach(el => el.classList.remove('active'));
-    const arc = document.getElementById(`arc-${s.id}`);
-    if (arc) arc.classList.add('active');
+  // Observance badges
+  const obsEl = document.getElementById('m-obs');
+  let obs = '';
+  if (feast.incense) obs += '<span class="badge badge-incense">✦ Incense</span> ';
+  if (needsAbstinence(SEL)) obs += '<span class="badge badge-abstinence">✦ Fast &amp; Abstain</span>';
+  if (!feast.incense && !needsAbstinence(SEL)) obs = '<span style="color:var(--muted);font-family:EB Garamond,serif;font-style:italic;font-size:15px">Ordinary observance</span>';
+  obsEl.innerHTML = obs;
 
-    // Legend pills
-    document.querySelectorAll('.legend-pill').forEach(el => el.classList.remove('active'));
-    const pill = document.getElementById(`pill-${s.id}`);
-    if (pill) pill.classList.add('active');
+  document.getElementById('m-year').textContent = season.year;
+
+  // Week
+  let wkStr = '—';
+  if (season.id === 'ordtime1' || season.id === 'ordtime2') {
+    const w = season.id === 'ordtime1' ? weekInSeason(SEL, BAPT_LORD) : weekInSeason(SEL, TRINITY) + 1;
+    wkStr = 'Week ' + ROMAN[Math.min(w, ROMAN.length-1)];
+  } else if (season.id === 'lent') {
+    wkStr = 'Week ' + ROMAN[weekInSeason(SEL, ASH_WED)];
+  } else if (season.id === 'easter') {
+    const w = weekInSeason(SEL, EASTER);
+    wkStr = ['','Octave','II','III','IV','V','VI','VII'][Math.min(w,7)];
+    if (w === 1) wkStr = 'Easter Octave'; else wkStr = 'Week ' + wkStr;
+  } else if (season.id === 'advent2025' || season.id === 'advent2026') {
+    const as = season.id === 'advent2025' ? new Date(2025,10,30) : ADVENT1;
+    wkStr = 'Week ' + ROMAN[weekInSeason(SEL, as)];
+  } else if (season.id === 'holyweek') {
+    wkStr = 'Holy Week';
+  } else if (season.id === 'christmas' || season.id === 'christmas2026') {
+    wkStr = 'Octave of Christmas';
+  } else if (season.id === 'pentecost') {
+    wkStr = 'Pentecost Week';
+  }
+  document.getElementById('m-week').textContent = wkStr;
+
+  applyTheme(season);
+  placeMarker();
 }
 
-/* ═══════════════════════════════════════════════
-   INIT & EVENT LISTENERS
-══════════════════════════════════════════════════ */
+// ══ NAVIGATION ══
+function changeDay(n) {
+  SEL = new Date(SEL.getTime() + n * 864e5);
+  updateCard();
+}
+
+// ══ INIT ══
 function init() {
-    buildRings();
-    buildLegend();
-    placeMarker();
-    setActiveSeason(todaySeason);
+  buildRing();
+  buildLegend();
+  updateCard();
 
-    // Set today's card title
-    document.getElementById('card-title').textContent = 'Friday of the Second Week of Easter';
+  const hd = TODAY.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('header-date').textContent = hd;
 
-    // Recalculate 3D elements dynamically whenever resizing window or flipping phone
-    window.addEventListener('resize', placeMarker);
+  document.getElementById('prev-btn').onclick = () => changeDay(-1);
+  document.getElementById('next-btn').onclick = () => changeDay(1);
+  document.getElementById('today-btn').onclick = () => { SEL = new Date(TODAY); updateCard(); };
+
+  window.addEventListener('resize', placeMarker);
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  changeDay(-1);
+    if (e.key === 'ArrowRight') changeDay(1);
+  });
 }
 
 init();
