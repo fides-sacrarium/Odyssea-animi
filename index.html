@@ -534,6 +534,61 @@ body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;o
   .hero-name{font-size:26px}
   .av-grid{grid-template-columns:repeat(6,1fr);gap:6px}
 }
+/* ── ORDER OF ST. MICHAEL BUTTON ──
+.osm-btn-wrap{text-align:center;margin-top:16px}
+.osm-cta{display:inline-flex;text-decoration:none}
+.osm-cta-inner{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 24px 12px 18px;border-radius:40px;
+  border:1px solid rgba(192,57,43,0.4);
+  background:linear-gradient(135deg,rgba(192,57,43,0.12),rgba(192,57,43,0.04));
+  color:#f1948a;transition:all 0.35s var(--ease);
+  position:relative;overflow:hidden;
+}
+.osm-cta-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(231,76,60,0.5),transparent)}
+.osm-cta:hover .osm-cta-inner{border-color:rgba(231,76,60,0.7);background:linear-gradient(135deg,rgba(192,57,43,0.24),rgba(192,57,43,0.09));box-shadow:0 8px 28px rgba(192,57,43,0.28);transform:translateY(-2px)}
+.osm-shield-ico{flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(192,57,43,0.4));transition:filter 0.3s}
+.osm-cta:hover .osm-shield-ico{filter:drop-shadow(0 2px 14px rgba(231,76,60,0.7))}
+.osm-cta-text{text-align:left}
+.osm-cta-label{font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#f1948a;line-height:1.2}
+[data-theme="light"] .osm-cta-label{color:#c0392b}
+.osm-cta-sub{font-size:10px;color:var(--tx2);margin-top:2px;letter-spacing:0.04em}
+.osm-cta-arrow{flex-shrink:0;color:#f1948a;opacity:0.7;transition:transform 0.3s var(--ease),opacity 0.3s}
+.osm-cta:hover .osm-cta-arrow{transform:translate(3px,-3px);opacity:1} */
+</style>
+<style id="osm-patch-css">
+/* ── ORDER OF ST. MICHAEL BUTTON ── */
+.osm-btn-wrap{text-align:center;margin-top:18px;opacity:0;animation:fadeUp 0.9s var(--ease) 3.05s both}
+.osm-cta{display:inline-flex;text-decoration:none}
+.osm-cta-inner{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 24px 11px 17px;border-radius:40px;
+  border:1px solid rgba(192,57,43,0.38);
+  background:linear-gradient(135deg,rgba(192,57,43,0.10),rgba(192,57,43,0.03));
+  color:#f1948a;transition:all 0.35s var(--ease);
+  position:relative;overflow:hidden;
+}
+.osm-cta-inner::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,rgba(231,76,60,0.45),transparent);
+}
+.osm-cta:hover .osm-cta-inner{
+  border-color:rgba(231,76,60,0.68);
+  background:linear-gradient(135deg,rgba(192,57,43,0.20),rgba(192,57,43,0.07));
+  box-shadow:0 8px 28px rgba(192,57,43,0.22);
+  transform:translateY(-2px);
+}
+.osm-shield-ico{flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(192,57,43,0.38));transition:filter 0.3s}
+.osm-cta:hover .osm-shield-ico{filter:drop-shadow(0 2px 14px rgba(231,76,60,0.65))}
+.osm-cta-text{text-align:left}
+.osm-cta-label{
+  font-family:'Cinzel',serif;font-size:10px;font-weight:600;
+  letter-spacing:0.18em;text-transform:uppercase;color:#f1948a;line-height:1.2;
+}
+[data-theme="light"] .osm-cta-label{color:#c0392b}
+.osm-cta-sub{font-size:10px;color:var(--tx2);margin-top:2px;letter-spacing:0.03em}
+.osm-cta-arrow{flex-shrink:0;color:#f1948a;opacity:0.65;transition:transform 0.3s var(--ease),opacity 0.3s}
+.osm-cta:hover .osm-cta-arrow{transform:translate(3px,-3px);opacity:1}
 </style>
 </head>
 <body>
@@ -783,6 +838,39 @@ body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;o
         </div>
       </a>
     </div>
+<!-- ORDER OF ST. MICHAEL -->
+   <div class="osm-btn-wrap">
+  <a href="osm.html" class="osm-cta">
+    <div class="osm-cta-inner">
+ 
+      <!-- Shield of St. Michael -->
+      <svg class="osm-shield-ico" width="17" height="20" viewBox="0 0 54 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="osmIdx" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f1948a"/>
+            <stop offset="45%" stop-color="#c0392b"/>
+            <stop offset="100%" stop-color="#7b241c"/>
+          </linearGradient>
+        </defs>
+        <path d="M27 2 L50 10 L50 33 Q50 50 27 60 Q4 50 4 33 L4 10 Z" fill="url(#osmIdx)"/>
+        <path d="M27 7 L46 14 L46 32 Q46 47 27 56 Q8 47 8 32 L8 14 Z" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+        <line x1="27" y1="19" x2="27" y2="44" stroke="rgba(255,255,255,0.9)" stroke-width="4" stroke-linecap="round"/>
+        <line x1="16" y1="29" x2="38" y2="29" stroke="rgba(255,255,255,0.9)" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+ 
+      <div class="osm-cta-text">
+        <div class="osm-cta-label">Order of St. Michael</div>
+        <div class="osm-cta-sub">Offer intentions — all prayers lifted to God</div>
+      </div>
+ 
+      <svg class="osm-cta-arrow" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/>
+      </svg>
+ 
+    </div>
+  </a>
+</div>
+ 
 
     <!-- RIVER -->
     <section class="river-section">
