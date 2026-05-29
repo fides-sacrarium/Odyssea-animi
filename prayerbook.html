@@ -38,7 +38,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
 .bar-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cyan2);font-weight:600;font-style:italic;letter-spacing:0.08em}
 .icon-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s var(--ease);outline:none}
 .icon-btn:hover{color:var(--text);border-color:var(--cyan);background:var(--cyan-dim)}
-.icon-btn svg{width:16px;height:16px; flex-shrink: 0;}
+.icon-btn svg{width:16px;height:16px;flex-shrink:0}
 .sun-icon,.moon-icon{position:absolute;transition:all .35s var(--ease)}
 [data-theme="dark"] .sun-icon{opacity:0;transform:rotate(-90deg) scale(0.5)}
 [data-theme="dark"] .moon-icon{opacity:1;transform:rotate(0) scale(1)}
@@ -82,7 +82,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
 .card-icon{width:50px;height:50px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;background:var(--cc-dim);border:1px solid var(--cc-border);transition:all .4s var(--ease);position:relative;z-index:1}
 .menu-card:hover .card-icon{transform:scale(1.08) translateY(-2px);box-shadow:0 12px 30px var(--cc-glow)}
 .card-icon svg{width:25px;height:25px}
-.card-title{font-family:'Cinzel',serif;font-size:11.5px;font-weight:600;letter-spacing:.1em;color:var(--text);margin-bottom:9px;position:relative;z-index:1; line-height:1.4;}
+.card-title{font-family:'Cinzel',serif;font-size:11.5px;font-weight:600;letter-spacing:.1em;color:var(--text);margin-bottom:9px;position:relative;z-index:1;line-height:1.4}
 .card-desc{font-size:11.5px;color:var(--text2);line-height:1.75;font-weight:300;position:relative;z-index:1}
 
 .cc-rosary{--cc-main:#60A5FA;--cc-dim:rgba(59,130,246,0.08);--cc-glow:rgba(59,130,246,0.35);--cc-border:rgba(59,130,246,0.2)}
@@ -95,7 +95,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
 .cc-prec{--cc-main:#D946EF;--cc-dim:rgba(217,70,239,0.08);--cc-glow:rgba(217,70,239,0.35);--cc-border:rgba(217,70,239,0.2)}
 .cc-nov{--cc-main:#FBBF24;--cc-dim:rgba(251,191,36,0.08);--cc-glow:rgba(251,191,36,0.35);--cc-border:rgba(251,191,36,0.2)}
 
-/* INTERACTIVE VIEW */
+/* ═══════════════ PRAYER VIEW ═══════════════ */
 #prayerView{
   position:absolute;inset:0;z-index:10;
   display:flex;flex-direction:row;
@@ -104,38 +104,102 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
 }
 #prayerView.active{opacity:1;pointer-events:auto}
 
-/* LEFT pane */
+/* ── Left pane (circular bead visualizer) ── */
 .pane-left{
-  width:240px;flex-shrink:0;
-  background:var(--surface);
+  width:280px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--surface) 0%,var(--surface2) 100%);
   border-right:1px solid var(--border);
   display:flex;align-items:center;justify-content:center;
   position:relative;overflow:hidden;
 }
 .pane-left::before{
   content:'';position:absolute;
-  width:180px;height:180px;border-radius:50%;
-  background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);
-  opacity:.3;pointer-events:none;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,var(--accent-glow) 0%,transparent 75%);
+  opacity:.25;pointer-events:none;top:40%;left:50%;transform:translate(-50%,-50%);
+  filter:blur(18px);
 }
 #rosaryWrap{position:relative;z-index:2;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-#rosarySVG{overflow:visible;display:block}
+#rosarySVG{overflow:visible;display:block;width:100%;height:100%}
 
-.r-bead{cursor:pointer;transition:all .3s var(--ease)}
-.r-bead .bead-body{transition:all .35s var(--ease)}
-.r-bead:hover .bead-body{filter:brightness(1.4)}
-.r-bead.active .bead-body{filter:brightness(1.6) drop-shadow(0 0 7px var(--accent-main))}
-.r-bead.completed .bead-body{opacity:.22}
-.r-bead.active .bead-glow{opacity:1 !important}
+.r-bead{cursor:pointer;transition:all .25s var(--ease);filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))}
+.r-bead .bead-body{transition:all .28s var(--ease); transform-origin: center;}
+.r-bead:hover .bead-body{filter:brightness(1.3)}
+.r-bead.active .bead-body{filter:brightness(1.5) drop-shadow(0 4px 12px var(--accent-main))}
+.r-bead.completed .bead-body{opacity:.2;filter:brightness(0.4)}
+.r-bead.active .bead-glow{opacity:0.4 !important;animation:glow-pulse 1.2s ease-in-out infinite}
+
+@keyframes glow-pulse{0%{r:12px;opacity:0.4}50%{r:18px;opacity:0.1}100%{r:12px;opacity:0.4}}
 
 .r-tip{
-  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
   background:var(--surface2);border:1px solid var(--border);
-  padding:4px 11px;border-radius:18px;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--text2);white-space:nowrap;pointer-events:none;z-index:10;transition:opacity .2s;
+  padding:8px 16px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent-main);white-space:nowrap;pointer-events:none;z-index:10;transition:opacity .2s;
+  backdrop-filter:blur(8px);box-shadow:0 4px 12px rgba(0,0,0,0.4);
 }
 
-/* RIGHT pane */
+/* ── Mobile vertical bead strip (Gothic Refinement) ── */
+#vertBeadWrap{
+  width:100%;height:100%;
+  display:none;
+  flex-direction:row;
+  align-items:center;
+  gap:0;
+  overflow-x:auto;
+  padding:8px 16px;
+  scrollbar-width:none;
+  background:linear-gradient(to right,var(--surface) 0%,transparent 10%,transparent 90%,var(--surface) 100%);
+}
+#vertBeadWrap::-webkit-scrollbar{display:none}
+
+.vb-track{
+  display:flex;flex-direction:row;align-items:center;
+  gap:0;min-width:max-content;
+  padding:8px 0;
+}
+.vb-connector{width:14px;height:2px;background:var(--accent-main);opacity:0.25;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.5)}
+.vb-bead{
+  width:24px;height:24px;
+  flex-shrink:0;cursor:pointer;transition:all .25s var(--ease);
+  display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+.vb-bead.size-large{width:28px;height:28px}
+.vb-bead.size-cross{width:32px;height:32px}
+.vb-bead.size-medal{width:30px;height:30px}
+
+.vb-bead .vb-inner{
+  width:16px;height:16px;border-radius:50%;
+  background:var(--accent-main);opacity:0.6;
+  transition:all .25s var(--ease);
+  box-shadow:inset -2px -2px 4px rgba(0,0,0,0.4), inset 1px 1px 2px rgba(255,255,255,0.2);
+}
+.vb-bead.size-large .vb-inner{
+  width:18px;height:18px;
+  border-radius:3px;transform:rotate(45deg);
+}
+.vb-bead.size-medal .vb-inner{
+  width:22px;height:22px;border-radius:0;
+  clip-path:polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+.vb-bead.size-cross .vb-inner{
+  width:24px;height:24px;border-radius:0;
+  clip-path:polygon(40% 0%, 60% 0%, 60% 35%, 100% 35%, 100% 55%, 60% 55%, 60% 100%, 40% 100%, 40% 55%, 0% 55%, 0% 35%, 40% 35%);
+}
+
+.vb-bead.active .vb-inner{
+  opacity:1;
+  box-shadow:0 0 16px var(--accent-glow), inset -2px -2px 4px rgba(0,0,0,0.3);
+  transform:scale(1.25);
+}
+.vb-bead.size-large.active .vb-inner{transform:rotate(45deg) scale(1.25)}
+.vb-bead.completed .vb-inner{opacity:0.2;filter:brightness(0.3);transform:scale(0.85)}
+.vb-bead.size-large.completed .vb-inner{transform:rotate(45deg) scale(0.85)}
+.vb-bead:hover .vb-inner{opacity:0.9;transform:scale(1.1)}
+.vb-bead.size-large:hover .vb-inner{transform:rotate(45deg) scale(1.1)}
+
+/* ── Right pane ── */
 .pane-right{flex:1;display:flex;flex-direction:column;background:var(--bg);min-width:0;overflow:hidden}
 
 .pr-header{
@@ -143,23 +207,24 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
   display:flex;justify-content:space-between;align-items:center;
   background:var(--surface);border-bottom:1px solid var(--border);gap:12px;
 }
-.pr-type{font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.22em;color:var(--accent-main);white-space:nowrap; text-transform: uppercase;}
-.pr-controls-wrap {display:flex; gap:12px; align-items:center;}
+.pr-type{font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.22em;color:var(--accent-main);white-space:nowrap;text-transform:uppercase}
+.pr-controls-wrap{display:flex;gap:8px;align-items:center;flex-wrap:nowrap}
 
-.day-select, .lang-toggle{
+.day-select,.lang-toggle{
   padding:6px 14px;background:var(--surface2);border:1px solid var(--border);
   border-radius:18px;color:var(--text);font-family:'DM Sans',sans-serif;
   font-size:11.5px;font-weight:500;outline:none;cursor:pointer;transition:all .3s var(--ease);
+  white-space:nowrap;
 }
-.day-select {
-  padding-right: 28px; appearance:none;-webkit-appearance:none;
+.day-select{
+  padding-right:28px;appearance:none;-webkit-appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239A8E82' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 9px center;
 }
-.day-select:hover, .lang-toggle:hover{border-color:var(--accent-main)}
+.day-select:hover,.lang-toggle:hover{border-color:var(--accent-main)}
+.lang-toggle.active{background:var(--accent-main);color:#000;border-color:transparent}
 
 .pr-body{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
-
 .pr-inner{
   flex:1;min-height:0;overflow:hidden;
   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);
@@ -170,16 +235,31 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
   border-right:1px solid var(--border);
   display:flex;align-items:center;justify-content:center;
   padding:20px;overflow:hidden;background:var(--surface);
-  min-height:0;
+  min-height:0;flex-direction:column;gap:12px;
 }
 .pr-img-pane.hidden{display:none}
 .pr-img-pane img{
   width:100%;height:100%;
-  object-fit:contain;
-  border-radius:9px;
-  display:none;
+  object-fit:contain;border-radius:9px;display:none;
+  max-height:calc(100% - 60px);
 }
 .pr-img-pane.has-img img{display:block}
+
+/* Bible verse badge */
+.verse-badge{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(11px,1.4vh,13.5px);
+  font-style:italic;color:var(--accent-main);
+  text-align:center;line-height:1.5;
+  padding:8px 12px;
+  background:rgba(0,0,0,0.15);
+  border:1px solid var(--border);
+  border-radius:8px;
+  display:none;
+  width:100%;
+}
+[data-theme="light"] .verse-badge{background:rgba(0,0,0,0.04)}
+.verse-badge.visible{display:block}
 
 .pr-text-pane{
   display:flex;flex-direction:column;justify-content:flex-start;
@@ -193,19 +273,19 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
 
 .pt-title{
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(20px,2.6vh,34px);
-  font-weight:600;font-style:italic;color:var(--text);line-height:1.15;
+  font-size:clamp(18px,2.4vh,32px);
+  font-weight:600;font-style:italic;color:var(--text);line-height:1.2;
   margin-bottom:14px;padding-bottom:14px;
   border-bottom:1px solid var(--border);position:relative;
 }
 .pt-title::after{content:'';position:absolute;bottom:-1px;left:0;width:40px;height:1px;background:var(--accent-main)}
 .pt-body{
-  font-size:clamp(12.5px,1.55vh,16px);line-height:1.9;color:var(--text2);
+  font-size:clamp(13px,1.65vh,16.5px);line-height:1.95;color:var(--text2);
   white-space:pre-wrap;font-weight:300;
   word-wrap:break-word;overflow-wrap:break-word;
 }
 
-/* Footer & Buttons */
+/* Footer */
 .pr-footer{
   flex:0 0 auto;height:64px;padding:0 28px;
   display:flex;align-items:center;justify-content:space-between;gap:16px;
@@ -213,63 +293,80 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
 }
 .bead-counter{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.14em;color:var(--text3);white-space:nowrap}
 
-.prev-btn, .next-btn {
+.prev-btn,.next-btn{
   height:42px;padding:0 24px;
-  border-radius:21px; font-family:'Cinzel',serif;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  border-radius:21px;font-family:'Cinzel',serif;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
   cursor:pointer;transition:all .35s var(--ease);display:flex;align-items:center;gap:8px;outline:none;
 }
-.prev-btn {
-  background:transparent;color:var(--text2);border:1px solid var(--border);
-}
-.prev-btn:hover { border-color:var(--text); color:var(--text); }
-.next-btn {
-  background:var(--accent-main);color:#000;border:none;box-shadow:0 8px 22px var(--accent-glow);
-}
-.next-btn:hover { transform:translateY(-2px);filter:brightness(1.1);box-shadow:0 12px 30px var(--accent-glow); }
-.next-btn:active { transform:translateY(0); }
+.prev-btn{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.prev-btn:hover{border-color:var(--text);color:var(--text)}
+.next-btn{background:var(--accent-main);color:#000;border:none;box-shadow:0 8px 22px var(--accent-glow)}
+.next-btn:hover{transform:translateY(-2px);filter:brightness(1.1);box-shadow:0 12px 30px var(--accent-glow)}
+.next-btn:active{transform:translateY(0)}
+.prev-btn svg,.next-btn svg{width:13px!important;height:13px!important;flex-shrink:0!important;transition:transform .3s var(--ease)}
+.prev-btn:hover svg{transform:translateX(-3px)}
+.next-btn:hover svg{transform:translateX(3px)}
 
-/* STRICT SVG OVERRIDES to prevent layout breaks on mobile */
-.prev-btn svg, .next-btn svg { width:13px !important; height:13px !important; flex-shrink:0 !important; transition:transform .3s var(--ease); }
-.prev-btn:hover svg { transform:translateX(-3px); }
-.next-btn:hover svg { transform:translateX(3px); }
-
-/* RESPONSIVE */
+/* ═══════════════ RESPONSIVE ═══════════════ */
 @media(min-width:769px) and (max-width:1024px){
   .pane-left{width:210px}
   .pr-text-pane{padding:20px 22px}
 }
+
+/* TABLET + PHONE: switch to vertical bead strip */
 @media(max-width:768px){
   #topBar{height:48px;padding:0 12px}
   .bar-title{font-size:17px}
+
   #prayerView{flex-direction:column}
-  
-  .pane-left{width:100%;height:260px;flex-shrink:0;border-right:none;border-bottom:1px solid var(--border);}
+
+  /* pane-left becomes horizontal bead strip */
+  .pane-left{
+    width:100%;height:84px;flex-shrink:0;
+    border-right:none;border-bottom:1px solid var(--border);
+    overflow:hidden;padding:0;
+    background:linear-gradient(to right,var(--surface) 0%,var(--surface) 5%,transparent 15%,transparent 85%,var(--surface) 95%,var(--surface) 100%);
+  }
+  .pane-left::before{display:none}
+  .pane-left::after{display:none}
+  #rosaryWrap{display:none!important} /* hide circular SVG */
+  #vertBeadWrap{display:flex!important}
+
   .pane-right{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
-  
-  .pr-header{height:42px;padding:0 10px;flex-shrink:0}
-  .pr-type{font-size:9px;letter-spacing:.16em}
-  .day-select, .lang-toggle{font-size:10px;padding:5px 12px}
-  
+
+  .pr-header{height:44px;padding:0 12px;flex-shrink:0}
+  .pr-type{font-size:9.5px;letter-spacing:.14em}
+  .day-select,.lang-toggle{font-size:10.5px;padding:5px 10px}
+  .pr-controls-wrap{gap:6px}
+
   .pr-body{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
-  .pr-inner{flex:1;min-height:0;overflow:hidden;display:flex!important;flex-direction:column;grid-template-columns:unset!important;}
+  .pr-inner{flex:1;min-height:0;overflow:hidden;display:flex!important;flex-direction:column;grid-template-columns:unset!important}
   .pr-inner.no-img .pr-img-pane{display:none!important}
-  
+
   .pr-img-pane{
     border-right:none;border-bottom:1px solid var(--border);
-    height:190px;flex-shrink:0;padding:12px;display:flex;
+    height:200px;flex-shrink:0;padding:12px;
   }
-  .pr-img-pane.hidden{display:none}
-  .pr-img-pane img{max-height:100%;height:100%;width:100%;object-fit:contain;border-radius:7px;}
-  
-  .pr-text-pane{flex:1;padding:16px 20px 10px;overflow-y:auto;text-align:center;min-height:0;}
-  .pt-title{font-size:clamp(16px,4.2vw,20px);text-align:center;margin-bottom:8px;padding-bottom:8px}
-  .pt-title::after{left:50%;transform:translateX(-50%)}
-  .pt-body{text-align:center;font-size:clamp(11.5px,3vw,13.5px);line-height:1.75}
-  
-  .pr-footer{height:54px;padding:0 8px; gap:8px;}
-  .prev-btn, .next-btn {flex:1; justify-content:center; padding:0; font-size:9.5px; height:38px;}
+  .pr-img-pane img{max-height:calc(100% - 42px);height:calc(100% - 42px);width:100%;object-fit:contain;border-radius:7px}
+  .verse-badge{font-size:11px;padding:6px 10px}
+
+  .pr-text-pane{
+    flex:1;padding:18px 20px 12px;overflow-y:auto;min-height:0;
+  }
+  .pt-title{
+    font-size:clamp(17px,4.5vw,22px);
+    margin-bottom:10px;padding-bottom:10px;
+  }
+  .pt-body{
+    font-size:clamp(13.5px,3.6vw,16px);
+    line-height:1.85;
+  }
+
+  .pr-footer{height:56px;padding:0 10px;gap:8px}
+  .prev-btn,.next-btn{flex:1;justify-content:center;padding:0;font-size:9.5px;height:40px}
   .bead-counter{display:none}
 }
+
 @media(max-width:980px){
   .menu-grid{grid-template-columns:repeat(2,1fr)}
   .menu-card:nth-child(3n){border-right:1px solid var(--border)}
@@ -285,8 +382,8 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
   .menu-card{padding:22px 18px}
 }
 @media(max-width:380px){
-  .pane-left{height:200px}
-  .pr-img-pane{height:140px}
+  .pane-left{height:70px}
+  .pr-img-pane{height:160px}
 }
 </style>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -313,7 +410,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
   </header>
 
   <div id="content">
-    
+
     <div id="mainMenu" class="menu-layer">
       <div class="menu-hero">
         <div class="hero-eyebrow">Chosen Generations</div>
@@ -373,8 +470,8 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
               <path d="M 11 13 L 2 9" stroke="#93C5FD" stroke-width="1.3" stroke-linecap="round"/>
             </svg>
           </div>
-          <div class="card-title">Precatio Impossibilis<br><span style="font-size:9.5px; opacity:0.75; font-weight:400; font-family:'DM Sans', sans-serif; text-transform:none; letter-spacing:0">(Mihael's Prayer)</span></div>
-          <div class="card-desc" style="margin-top:6px;">A powerful chaplet of spiritual warfare and intercession.</div>
+          <div class="card-title">Precatio Impossibilis<br><span style="font-size:9.5px;opacity:0.75;font-weight:400;font-family:'DM Sans',sans-serif;text-transform:none;letter-spacing:0">(Mihael's Prayer)</span></div>
+          <div class="card-desc" style="margin-top:6px">A powerful chaplet of spiritual warfare and intercession.</div>
         </div>
         <div class="menu-card cc-nov" onclick="showNovenas()">
           <div class="card-num">09</div>
@@ -432,6 +529,9 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
         <div id="rosaryWrap">
           <svg id="rosarySVG" xmlns="http://www.w3.org/2000/svg"></svg>
         </div>
+        <div id="vertBeadWrap">
+          <div class="vb-track" id="vbTrack"></div>
+        </div>
         <div class="r-tip" id="rTip" style="opacity:0"></div>
       </div>
       <div class="pane-right">
@@ -443,6 +543,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
           <div class="pr-inner" id="prGrid">
             <div class="pr-img-pane hidden" id="imgPane">
               <img id="prImg" src="" alt="">
+              <div class="verse-badge" id="verseBadge"></div>
             </div>
             <div class="pr-text-pane fade-text" id="textPane">
               <div class="pt-title" id="ptTitle">Select a bead to begin</div>
@@ -465,7 +566,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;o
 </div>
 
 <script>
-// ─── UI CONTROLS ─────────────────────────────────────
+// ─── UI CONTROLS ──────────────────────────────────────────
 function toggleTheme(){
   const t=document.body.getAttribute('data-theme');
   document.body.setAttribute('data-theme',t==='dark'?'light':'dark');
@@ -479,27 +580,24 @@ function showNovenas(){
 function goBack(){
   const pv=document.getElementById('prayerView');
   const nm=document.getElementById('novenaMenu');
-
-  // Note: score is awarded when a prayer is *started* (see loadPrayer),
-  // so navigating back simply returns to the menu.
   if(pv.classList.contains('active')){
     pv.classList.remove('active');
-    setTimeout(()=> {
-      if(prayerType && prayerType.startsWith('novena_')) {
+    setTimeout(()=>{
+      if(prayerType&&prayerType.startsWith('novena_')){
         nm.classList.remove('hidden');
       } else {
         document.getElementById('mainMenu').classList.remove('hidden');
       }
-    }, 300);
-  } else if (!nm.classList.contains('hidden')) {
+    },300);
+  } else if(!nm.classList.contains('hidden')){
     nm.classList.add('hidden');
     setTimeout(()=>document.getElementById('mainMenu').classList.remove('hidden'),300);
   } else {
-    window.location.href = 'index.html';
+    window.location.href='index.html';
   }
 }
 
-// ─── STATE ───────────────────────────────────────────
+// ─── STATE ────────────────────────────────────────────────
 let DATA={};
 let prayerType=null;
 let dayIdx=new Date().getDay();
@@ -509,8 +607,9 @@ let accent={};
 let currentLang='en';
 
 const SVG_NS='http://www.w3.org/2000/svg';
+const isMobile=()=>window.innerWidth<=768;
 
-// ─── LOAD DATA ───────────────────────────────────────
+// ─── LOAD DATA ────────────────────────────────────────────
 async function loadData(){
   try{
     const r=await fetch('prayers.json');
@@ -521,15 +620,28 @@ async function loadData(){
   }
 }
 
-function core(key){return DATA.core?.[key]||''}
+function core(key){ return DATA.core?.[key]||''; }
+function coreL(key){ return (currentLang==='la' && DATA.core?.[key+' LA']) ? DATA.core[key+' LA'] : core(key); }
+
+// Resolve a text value that may be a string or {en, la} object
+function resolveText(val){
+  if(!val) return '';
+  if(typeof val==='string') return val;
+  if(currentLang==='la' && val.la) return val.la;
+  return val.en || '';
+}
 
 function toggleLang(){
-  currentLang = currentLang === 'en' ? 'la' : 'en';
-  document.getElementById('langToggleBtn').textContent = currentLang === 'en' ? 'Switch to Latin' : 'Switch to English';
+  currentLang = currentLang==='en' ? 'la' : 'en';
+  const btn=document.getElementById('langToggleBtn');
+  if(btn){
+    btn.textContent = currentLang==='en' ? 'Latin' : 'English';
+    btn.classList.toggle('active', currentLang==='la');
+  }
   activateBead(curIdx);
 }
 
-// ─── LOAD PRAYER ─────────────────────────────────────
+// ─── LOAD PRAYER ──────────────────────────────────────────
 async function loadPrayer(type){
   if(!DATA.prayers) await loadData();
   prayerType=type;
@@ -546,10 +658,11 @@ async function loadPrayer(type){
   nb.style.boxShadow=`0 8px 22px ${accent.glow}`;
 
   document.getElementById('prType').textContent=pd.title||'';
-  
-  const controls = document.getElementById('prControls');
+
+  const controls=document.getElementById('prControls');
   controls.innerHTML='';
-  
+  currentLang='en';
+
   if(type==='rosary'){
     const sel=document.createElement('select');
     sel.className='day-select';
@@ -562,39 +675,37 @@ async function loadPrayer(type){
     sel.onchange=e=>{dayIdx=parseInt(e.target.value);buildBeads();};
     controls.appendChild(sel);
   }
-  
-  if(type==='precatio' || type==='anima'){
-    currentLang = 'en';
-    const btn=document.createElement('button');
-    btn.id = 'langToggleBtn';
-    btn.className='lang-toggle';
-    btn.textContent='Switch to Latin';
-    btn.onclick = toggleLang;
-    controls.appendChild(btn);
-  }
+
+  // Latin toggle for ALL prayers
+  const btn=document.createElement('button');
+  btn.id='langToggleBtn';
+  btn.className='lang-toggle';
+  btn.textContent='Latin';
+  btn.onclick=toggleLang;
+  controls.appendChild(btn);
 
   document.getElementById('mainMenu').classList.add('hidden');
   document.getElementById('novenaMenu').classList.add('hidden');
   document.getElementById('prayerView').classList.add('active');
 
   buildBeads();
-  awardPrayerStart(type, pd);
+  awardPrayerStart(type,pd);
 }
 
-// ─── BEAD BUILDING ───────────────────────────────────
-function pushV(renderGroup, type, label, title, textObj, image){
-  beads.push({renderGroup, type, label, title, text: textObj, image:image||null, visualRefIdx:-1, svgX:0, svgY:0, el:null});
-  return beads.length - 1;
+// ─── BEAD BUILDING ────────────────────────────────────────
+function pushV(renderGroup, type, label, title, textObj, image, verse){
+  beads.push({renderGroup,type,label,title,text:textObj,image:image||null,verse:verse||null,visualRefIdx:-1,svgX:0,svgY:0,el:null});
+  return beads.length-1;
 }
-function pushRef(refIdx, type, label, title, textObj, image){
-  beads.push({renderGroup:'none', type, label, title, text: textObj, image:image||null, visualRefIdx:refIdx, svgX:0, svgY:0, el:null});
-  return beads.length - 1;
+function pushRef(refIdx, type, label, title, textObj, image, verse){
+  beads.push({renderGroup:'none',type,label,title,text:textObj,image:image||null,verse:verse||null,visualRefIdx:refIdx,svgX:0,svgY:0,el:null});
+  return beads.length-1;
 }
 
 function buildBeads(){
   beads=[];
   const pd=DATA.prayers[prayerType];
-  if(!pd)return;
+  if(!pd) return;
 
   if(prayerType==='rosary') buildRosary(pd);
   else if(prayerType==='dmc') buildDMC(pd);
@@ -607,394 +718,476 @@ function buildBeads(){
   else if(prayerType.startsWith('novena_')) buildNovena(pd);
 
   renderSVG();
+  renderVertBeads();
   activateBead(0);
 }
 
 function buildRosary(pd){
-  const msType = pd.schedule[dayIdx];
-  const mysteries = pd.mysteries[msType];
+  const msType=pd.schedule[dayIdx];
+  const mysteries=pd.mysteries[msType];
 
-  let idCross = pushV('tail', 'cross', 'Sign & Creed', 'Sign of Cross & Creed', core('Sign of Cross')+'\n\n'+core('Apostles Creed'), 'images/cross.jpg');
-  pushV('tail', 'large', 'Our Father', 'Our Father', core('Our Father'), 'images/our_father.jpg');
-  pushV('tail', 'small', 'HM \u2013 Faith', 'Hail Mary for Faith', core('Hail Mary'), 'images/hail_mary.jpg');
-  pushV('tail', 'small', 'HM \u2013 Hope', 'Hail Mary for Hope', core('Hail Mary'), 'images/hail_mary.jpg');
-  pushV('tail', 'small', 'HM \u2013 Charity', 'Hail Mary for Charity', core('Hail Mary'), 'images/hail_mary.jpg');
-  pushV('tail', 'large', 'Glory Be', 'Glory Be', core('Glory Be'), 'images/glory_be.jpg');
-  let idMedal = pushV('medal', 'medal', '1st Mystery', mysteries[0].title, mysteries[0].meditation + '\n\nOur Father:\n' + core('Our Father'), mysteries[0].img || 'images/hail_holy_queen.jpg');
+  const signEn=core('Sign of Cross');
+  const signLa=core('Sign of Cross LA');
+  const signT={en:signEn,la:signLa};
+  const creedT={en:core('Apostles Creed'),la:core('Apostles Creed LA')};
+  const signAndCreed={en:signEn+'\n\n'+core('Apostles Creed'),la:signLa+'\n\n'+core('Apostles Creed LA')};
+  const ourFatherT={en:core('Our Father'),la:core('Our Father LA')};
+  const hailMaryT={en:core('Hail Mary'),la:core('Hail Mary LA')};
+  const gloryBeT={en:core('Glory Be'),la:core('Glory Be LA')};
+  const fatimaT={en:core('Fatima Prayer'),la:core('Fatima Prayer LA')};
+  const gloryAndFatima={en:core('Glory Be')+'\n\n'+core('Fatima Prayer'),la:core('Glory Be LA')+'\n\n'+core('Fatima Prayer LA')};
+  const hhqT={en:core('Hail Holy Queen'),la:core('Hail Holy Queen LA')};
+  const memorareT={en:core('Memorare'),la:core('Memorare LA')};
+  const closingT={en:core('Rosary Closing'),la:core('Rosary Closing LA')};
+  const queenTitleT={en:'Queen of the Most Holy Rosary',la:'Regina Sanctissimi Rosarii'};
+  const queenTextT={en:'Queen of the Most Holy Rosary, pray for us.\n\nO God, whose only begotten Son, by His life, death, and resurrection, has purchased for us the rewards of eternal life, grant we beseech Thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ Our Lord. Amen.',la:'Regina Sanctissimi Rosarii, ora pro nobis.\n\nDeus, cuius Unigenitus per vitam, mortem et resurrectionem suam nobis salutis aeternae praemia comparavit, concede, quaesumus, ut haec mysteria sacratissimo beatae Mariae Virginis Rosario recolentes et imitemur quod continent, et quod promittunt assequamur. Per eundem Christum Dominum nostrum. Amen.'};
 
-  for(let i=0; i<5; i++){
-    for(let j=0; j<10; j++) pushV('ring', 'small', `HM ${j+1}`, `Hail Mary (${j+1} of 10)`, core('Hail Mary'), mysteries[i].img || 'images/hail_mary.jpg');
-    if(i < 4) {
-      let idLarge = pushV('ring', 'large', `Glory Be`, `Glory Be (End Decade ${i+1})`, core('Glory Be')+'\n\n'+core('Fatima Prayer'), mysteries[i].img || 'images/glory_be.jpg');
-      pushRef(idLarge, 'large', `Mystery ${i+2}`, mysteries[i+1].title, mysteries[i+1].meditation + '\n\nOur Father:\n' + core('Our Father'), mysteries[i+1].img || 'images/our_father.jpg');
+  let idCross=pushV('tail','cross','Sign & Creed','Sign of Cross & Creed',signAndCreed,'images/cross.jpg');
+  pushV('tail','large','Our Father','Our Father',ourFatherT,'images/our_father.jpg');
+  pushV('tail','small','HM – Faith','Hail Mary for Faith',hailMaryT,'images/hail_mary.jpg');
+  pushV('tail','small','HM – Hope','Hail Mary for Hope',hailMaryT,'images/hail_mary.jpg');
+  pushV('tail','small','HM – Charity','Hail Mary for Charity',hailMaryT,'images/hail_mary.jpg');
+  pushV('tail','large','Glory Be','Glory Be',gloryBeT,'images/glory_be.jpg');
+
+  let idMedal=pushV('medal','medal','1st Mystery',mysteries[0].title,
+    {en:mysteries[0].meditation+'\n\nOur Father:\n'+core('Our Father'),la:mysteries[0].meditation+'\n\nPater Noster:\n'+core('Our Father LA')},
+    mysteries[0].img||'images/hail_holy_queen.jpg',mysteries[0].verse||null);
+
+  for(let i=0;i<5;i++){
+    for(let j=0;j<10;j++) pushV('ring','small',`HM ${j+1}`,`Hail Mary (${j+1} of 10)`,hailMaryT,mysteries[i].img||'images/hail_mary.jpg');
+    if(i<4){
+      let glBead=pushV('ring','large','Glory Be',`Glory Be (End Decade ${i+1})`,gloryAndFatima,mysteries[i].img||'images/glory_be.jpg');
+      pushRef(glBead,'large','Queen',`Queen of the Most Holy Rosary`,{en:'Queen of the Most Holy Rosary, pray for us.',la:'Regina Sanctissimi Rosarii, ora pro nobis.'},'images/hail_holy_queen.jpg');
+      pushRef(glBead,'large',`Mystery ${i+2}`,mysteries[i+1].title,
+        {en:mysteries[i+1].meditation+'\n\nOur Father:\n'+core('Our Father'),la:mysteries[i+1].meditation+'\n\nPater Noster:\n'+core('Our Father LA')},
+        mysteries[i+1].img||'images/our_father.jpg',mysteries[i+1].verse||null);
     } else {
-      pushRef(idMedal, 'medal', 'Glory Be', 'Glory Be (End Decade 5)', core('Glory Be')+'\n\n'+core('Fatima Prayer'), mysteries[4].img || 'images/glory_be.jpg');
-      pushRef(idMedal, 'medal', 'Salve Regina', 'Hail Holy Queen', core('Hail Holy Queen'), 'images/hail_holy_queen.jpg');
-      pushRef(idCross, 'cross', 'Closing', 'Concluding Prayer', core('Rosary Closing'), 'images/cross.jpg');
+      let glBead=pushV('ring','large','Glory Be','Glory Be (End Decade 5)',gloryAndFatima,mysteries[4].img||'images/glory_be.jpg');
+      pushRef(glBead,'large','Queen',`Queen of the Most Holy Rosary`,{en:'Queen of the Most Holy Rosary, pray for us.',la:'Regina Sanctissimi Rosarii, ora pro nobis.'},'images/hail_holy_queen.jpg');
+      pushRef(idMedal,'medal','Salve Regina','Hail Holy Queen',hhqT,'images/hail_holy_queen.jpg');
+      pushRef(idMedal,'medal','Memorare','The Memorare',memorareT,'images/hail_holy_queen.jpg');
+      pushRef(idMedal,'medal','Full Closing',queenTitleT,queenTextT,'images/hail_holy_queen.jpg');
+      pushRef(idCross,'cross','Closing','Concluding Prayer',closingT,'images/cross.jpg');
     }
   }
 }
 
 function buildDMC(pd){
   const img='images/divine_mercy.jpg';
-  let idCross = pushV('tail', 'cross', 'Sign of Cross', 'Sign of Cross', core('Sign of Cross'), 'images/cross.jpg');
-  pushRef(idCross, 'cross', 'St. Michael', "St. Michael's Prayer", "St. Michael the Archangel, defend us in battle, be our protection against the wickedness and snares of the devil. May God rebuke him we humbly pray; and do thou, O Prince of the Heavenly host, by the power of God, cast into hell Satan and all the evil spirits who prowl about the world seeking the ruin of souls. Amen.", 'images/st_michael.jpg');
-  pushRef(idCross, 'cross', 'You Expired', 'You Expired, Jesus', "You expired, Jesus, but the source of life gushed forth for souls,\nand the ocean of mercy opened up for the whole world.\nO Fount of Life, unfathomable Divine Mercy,\nenvelop the whole world and empty yourself out upon us.", img);
-  pushRef(idCross, 'cross', 'Blood & Water', 'O Blood and Water (x3)', "Repeat three times:\nO Blood and Water, which gushed forth from the Heart of Jesus as a fountain of Mercy for us, I trust in you!", img);
-  
-  let idL1 = pushV('tail', 'large', 'Our Father', 'Our Father', core('Our Father'), 'images/our_father.jpg');
-  pushV('tail', 'small', 'Hail Mary', 'Hail Mary', core('Hail Mary'), 'images/hail_mary.jpg');
-  pushV('tail', 'small', 'Creed', "Apostles' Creed", core('Apostles Creed'), 'images/cross.jpg');
-  
-  let idMed = pushV('medal', 'medal', 'Begin', 'Begin the Chaplet', "On each large bead: pray the Eternal Father prayer.\nOn each of the 10 small beads: pray \u201cFor the sake of His sorrowful Passion\u2026\u201d\n\nRepeat for five decades.", img);
-  
-  const etFather='Eternal Father, I offer you the Body and Blood, Soul and Divinity of Your Dearly Beloved Son, Our Lord, Jesus Christ, in atonement for our sins and those of the whole world.';
-  const forSake='For the sake of His sorrowful Passion, have mercy on us and on the whole world.';
-  
+  const crossImg='images/cross.jpg';
+  const stmImg='images/st_michael.jpg';
+  const ofT={en:core('Our Father'),la:core('Our Father LA')};
+  const hmT={en:core('Hail Mary'),la:core('Hail Mary LA')};
+  const creedT={en:core('Apostles Creed'),la:core('Apostles Creed LA')};
+  const etF={en:'Eternal Father, I offer you the Body and Blood, Soul and Divinity of Your Dearly Beloved Son, Our Lord, Jesus Christ, in atonement for our sins and those of the whole world.',la:'Pater Aeterne, offero Tibi Corpus et Sanguinem, Animam et Divinitatem Dilectissimi Filii Tui, Domini Nostri Iesu Christi, in propitiationem pro peccatis nostris et totius mundi.'};
+  const forSake={en:'For the sake of His sorrowful Passion, have mercy on us and on the whole world.',la:'Per dolorosam Passionem Eius, miserere nobis et totius mundi.'};
+
+  let idCross=pushV('tail','cross','Sign of Cross','Sign of Cross',{en:core('Sign of Cross'),la:core('Sign of Cross LA')},crossImg);
+  pushRef(idCross,'cross','St. Michael',"St. Michael's Prayer",{en:"St. Michael the Archangel, defend us in battle, be our protection against the wickedness and snares of the devil. May God rebuke him we humbly pray; and do thou, O Prince of the Heavenly host, by the power of God, cast into hell Satan and all the evil spirits who prowl about the world seeking the ruin of souls. Amen.",la:"Sancte Michael Archangele, defende nos in proelio, contra nequitiam et insidias diaboli esto praesidium. Imperet illi Deus, supplices deprecamur: tuque, Princeps militiae caelestis, Satanam aliosque spiritus malignos, qui ad perditionem animarum pervagantur in mundo, divina virtute, in infernum detrude. Amen."},stmImg);
+  pushRef(idCross,'cross','You Expired','You Expired, Jesus',{en:"You expired, Jesus, but the source of life gushed forth for souls, and the ocean of mercy opened up for the whole world.\nO Fount of Life, unfathomable Divine Mercy, envelop the whole world and empty yourself out upon us.",la:"Exspirasti, Iesu, sed fons vitae pro animabus scaturivit, et oceanus misericordiae pro toto mundo apertus est.\nO Fons Vitae, insondabilis Misericordia Divina, comple totum mundum et in nos te effunde."},img);
+  pushRef(idCross,'cross','Blood & Water','O Blood and Water (×3)',{en:"Repeat three times:\nO Blood and Water, which gushed forth from the Heart of Jesus as a fountain of Mercy for us, I trust in you!",la:"Ter repetere:\nO Sanguis et Aqua, qui de Corde Iesu ut fons Misericordiae pro nobis emanasti, in Te confido!"},img);
+
+  pushV('tail','large','Our Father','Our Father',ofT,'images/our_father.jpg');
+  pushV('tail','small','Hail Mary','Hail Mary',hmT,'images/hail_mary.jpg');
+  pushV('tail','small','Creed',"Apostles' Creed",creedT,crossImg);
+
+  let idMed=pushV('medal','medal','Begin','Begin the Chaplet',{en:"On each large bead: pray the Eternal Father prayer.\nOn each of the 10 small beads: pray 'For the sake of His sorrowful Passion…'\n\nRepeat for five decades.",la:"In quolibet globo magno: ora orationem Patris Aeterni.\nIn quolibet decem globis parvis: ora 'Per dolorosam Passionem Eius…'\n\nQuinque decades repete."},img);
+
   for(let i=0;i<5;i++){
-    pushV('ring', 'large', `Decade ${i+1}`, `Eternal Father \u2014 Decade ${i+1}`, etFather, img);
-    for(let j=0;j<10;j++) pushV('ring', 'small', `For Sake ${j+1}`, `For the Sake (${j+1}/10)`, forSake, img);
+    pushV('ring','large',`Decade ${i+1}`,`Eternal Father — Decade ${i+1}`,etF,img);
+    for(let j=0;j<10;j++) pushV('ring','small',`For Sake ${j+1}`,`For the Sake (${j+1}/10)`,forSake,img);
   }
-  
-  pushRef(idMed,'medal','Holy God', 'Holy God (Three Times)', "Holy God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world.\n\nHoly God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world.\n\nHoly God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world.", img);
-  pushRef(idMed,'medal','Closing', 'Closing Prayers', pd.closingText, img);
+
+  const holyGod={en:"Holy God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world.\n\nHoly God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world.\n\nHoly God, Holy Mighty One, Holy Immortal One, have mercy on us and on the whole world.",la:"Sanctus Deus, Sanctus Fortis, Sanctus Immortalis, miserere nobis et totius mundi.\n\nSanctus Deus, Sanctus Fortis, Sanctus Immortalis, miserere nobis et totius mundi.\n\nSanctus Deus, Sanctus Fortis, Sanctus Immortalis, miserere nobis et totius mundi."};
+  pushRef(idMed,'medal','Holy God','Holy God (Three Times)',holyGod,img);
+  pushRef(idMed,'medal','Closing','Closing Prayers',pd.closingText,img);
 }
 
 function buildSTM(pd){
   const img='images/st_michael.jpg';
-  pushV('tail', 'medal', 'Opening', 'Opening Prayer', pd.opening, img);
-  pushV('tail', 'large', 'Begin', 'Begin the Chaplet', pd.intro, img);
+  const hmT={en:core('Hail Mary'),la:core('Hail Mary LA')};
+  const ofT={en:core('Our Father'),la:core('Our Father LA')};
+  pushV('tail','medal','Opening','Opening Prayer',pd.opening,img);
+  pushV('tail','large','Begin','Begin the Chaplet',pd.intro,img);
   pd.choirs.forEach((ch,i)=>{
-    pushV('ring', 'large', `Choir ${i+1}`, `Salutation ${i+1}`, ch+'\n\nOur Father:\n'+core('Our Father'), 'images/choirs_angels.jpg');
-    for(let j=0;j<3;j++) pushV('ring', 'small', `HM ${j+1}`, `Hail Mary (${j+1}/3)`, core('Hail Mary'), 'images/choirs_angels.jpg');
+    pushV('ring','large',`Choir ${i+1}`,{en:`Salutation ${i+1} — Choir of ${['Seraphim','Cherubim','Thrones','Dominations','Virtues','Powers','Principalities','Archangels','Angels'][i]}`,la:`Salutatio ${i+1}`},ch,'images/choirs_angels.jpg');
+    for(let j=0;j<3;j++) pushV('ring','small',`HM ${j+1}`,`Hail Mary (${j+1}/3)`,hmT,'images/choirs_angels.jpg');
   });
-  pushV('tail', 'large', 'St. Michael', 'For St. Michael', core('Our Father'), img);
-  pushV('tail', 'large', 'St. Gabriel', 'For St. Gabriel', core('Our Father'), 'images/st_gabriel.jpg');
-  pushV('tail', 'large', 'St. Raphael', 'For St. Raphael', core('Our Father'), 'images/st_raphael.jpg');
-  pushV('tail', 'large', 'Guardian', 'For Guardian Angel', core('Our Father'), 'images/guardian_angel.jpg');
-  pushV('tail', 'medal', 'To Michael', 'Prayer to St. Michael', pd.toMichael, img);
-  pushV('tail', 'cross', 'Closing', 'Concluding Prayer', pd.closing, 'images/cross.jpg');
+  pushV('tail','large','St. Michael','For St. Michael',ofT,img);
+  pushV('tail','large','St. Gabriel','For St. Gabriel',ofT,'images/st_gabriel.jpg');
+  pushV('tail','large','St. Raphael','For St. Raphael',ofT,'images/st_raphael.jpg');
+  pushV('tail','large','Guardian','For Guardian Angel',ofT,'images/guardian_angel.jpg');
+  pushV('tail','medal','To Michael','Prayer to St. Michael',pd.toMichael,img);
+  pushV('tail','cross','Closing','Concluding Prayer',pd.closing,'images/cross.jpg');
 }
 
 function buildWOTC(pd){
-  pushV('tail', 'cross', 'Start', 'Sign of Cross', core('Sign of Cross'), 'images/cross.jpg');
+  const signT={en:core('Sign of Cross'),la:core('Sign of Cross LA')};
+  const ofT={en:core('Our Father'),la:core('Our Father LA')};
+  const hmT={en:core('Hail Mary'),la:core('Hail Mary LA')};
+  const gbT={en:core('Glory Be'),la:core('Glory Be LA')};
+  pushV('tail','cross','Start','Sign of Cross',signT,'images/cross.jpg');
   pd.stations.forEach((st,i)=>{
     const img=`images/station_${i+1}.jpg`;
-    pushV('ring', 'large', `Station ${i+1}`, `Station ${i+1}: ${st.title}`, `We adore You, O Christ, and we praise You.\nBecause, by Your holy cross, You have redeemed the world.\n\n${st.meditation}`, img);
-    pushV('ring', 'small', 'Prayers', 'Prayers', core('Our Father')+'\n\n'+core('Hail Mary')+'\n\n'+core('Glory Be'), img);
+    const weAdoreEn='We adore You, O Christ, and we praise You.\nBecause, by Your holy cross, You have redeemed the world.\n\n';
+    const weAdoreLa='Adoramus Te, Christe, et benedicimus Tibi.\nQuia per Sanctam Crucem Tuam redemisti mundum.\n\n';
+    pushV('ring','large',`Station ${i+1}`,{en:`Station ${i+1}: ${st.title}`,la:`Statio ${i+1}: ${st.title}`},{en:weAdoreEn+(st.meditation.en||st.meditation),la:weAdoreLa+(st.meditation.la||st.meditation)},img);
+    const stPrayers={en:core('Our Father')+'\n\n'+core('Hail Mary')+'\n\n'+core('Glory Be'),la:core('Our Father LA')+'\n\n'+core('Hail Mary LA')+'\n\n'+core('Glory Be LA')};
+    pushV('ring','small','Prayers','Prayers',stPrayers,img);
   });
-  pushV('tail', 'cross', 'End', 'Concluding Prayer', pd.closing, 'images/cross.jpg');
+  pushV('tail','cross','End','Concluding Prayer',pd.closing,'images/cross.jpg');
 }
 
 function buildLitany(pd){
-  pushV('tail', 'cross', 'Start', 'Sign of Cross', core('Sign of Cross'), 'images/cross.jpg');
-  pd.sections.forEach((s,i)=>pushV('ring', 'large', `Part ${i+1}`, s.title, s.text, 'images/all_saints.jpg'));
-  pushV('tail', 'cross', 'End', 'Concluding Prayer', pd.closing, 'images/cross.jpg');
+  const signT={en:core('Sign of Cross'),la:core('Sign of Cross LA')};
+  pushV('tail','cross','Start','Sign of Cross',signT,'images/cross.jpg');
+  pd.sections.forEach((s,i)=>pushV('ring','large',`Part ${i+1}`,s.title,s.text,'images/all_saints.jpg'));
+  pushV('tail','cross','End','Concluding Prayer',pd.closing,'images/cross.jpg');
 }
 
 function buildAnima(pd){
-  let tTitle = {en: 'Sign of Cross', la: 'Signum Crucis'};
-  let tText = {en: core('Sign of Cross'), la: "In nomine Patris, et Filii, et Spiritus Sancti. Amen."};
-  pushV('tail', 'cross', 'Start', tTitle, tText, 'images/cross.jpg');
-  pd.sections.forEach((s,i)=>pushV('ring', 'large', `Part ${i+1}`, s.title, s.text, 'images/eucharist_anima.jpg'));
+  const signT={en:'Sign of Cross',la:'Signum Crucis'};
+  const signText={en:core('Sign of Cross'),la:core('Sign of Cross LA')};
+  pushV('tail','cross','Start',signT,signText,'images/cross.jpg');
+  pd.sections.forEach((s,i)=>pushV('ring','large',`Part ${i+1}`,s.title,s.text,'images/eucharist_anima.jpg'));
 }
 
 function buildSTP(pd){
-  pushV('tail', 'cross', 'Start', 'Sign of Cross', core('Sign of Cross'), 'images/cross.jpg');
-  pd.sections.forEach((s,i)=>pushV('ring', 'large', `Part ${i+1}`, s.title, s.text, 'images/cross.jpg'));
-  pushV('tail', 'cross', 'End', 'Concluding Prayer', pd.closing, 'images/cross.jpg');
+  const signT={en:core('Sign of Cross'),la:core('Sign of Cross LA')};
+  pushV('tail','cross','Start','Sign of Cross',signT,'images/cross.jpg');
+  pd.sections.forEach((s,i)=>pushV('ring','large',`Part ${i+1}`,s.title,s.text,'images/cross.jpg'));
+  pushV('tail','cross','End','Concluding Prayer',pd.closing,'images/cross.jpg');
 }
 
-function buildPrecatio(pd) {
-  let idCross = pushV('tail', 'cross', 'Sign of Cross', pd.seq.cross, pd.texts.sign, 'images/cross.jpg');
-  pushV('tail', 'large', 'Our Father', pd.seq.ourFather, pd.texts.ourFather, 'images/our_father.jpg');
-  pushV('tail', 'small', '1st Rej.', pd.seq.crux1, pd.texts.crux, 'images/cross.jpg');
-  pushV('tail', 'small', '2nd Rej.', pd.seq.crux2, pd.texts.crux, 'images/cross.jpg');
-  pushV('tail', 'small', '3rd Rej.', pd.seq.crux3, pd.texts.crux, 'images/cross.jpg');
-  pushV('tail', 'large', 'Glory Be', pd.seq.gloryBe, pd.texts.gloryBe, 'images/glory_be.jpg');
-  let idMedal = pushV('medal', 'medal', 'Begin', pd.seq.begin, pd.texts.begin, 'images/st_michael.jpg');
+function buildPrecatio(pd){
+  let idCross=pushV('tail','cross','Sign of Cross',pd.seq.cross,pd.texts.sign,'images/cross.jpg');
+  pushV('tail','large','Our Father',pd.seq.ourFather,pd.texts.ourFather,'images/our_father.jpg');
+  pushV('tail','small','1st Rej.',pd.seq.crux1,pd.texts.crux,'images/cross.jpg');
+  pushV('tail','small','2nd Rej.',pd.seq.crux2,pd.texts.crux,'images/cross.jpg');
+  pushV('tail','small','3rd Rej.',pd.seq.crux3,pd.texts.crux,'images/cross.jpg');
+  pushV('tail','large','Glory Be',pd.seq.gloryBe,pd.texts.gloryBe,'images/glory_be.jpg');
+  let idMedal=pushV('medal','medal','Begin',pd.seq.begin,pd.texts.begin,'images/st_michael.jpg');
 
-  for(let i=0; i<5; i++){
-    let decadeTitle = {en: pd.seq.decadeStart.en + ` ${i+1}`, la: pd.seq.decadeStart.la + ` ${i+1}`};
-    pushV('ring', 'large', `Decade ${i+1}`, decadeTitle, pd.texts.christus, 'images/cross.jpg');
-    for(let j=0; j<10; j++) {
-      let sIdx = i*10 + j;
-      let saint = pd.saints[sIdx];
-      
-      let titleEn = saint.prefixEn ? `${saint.prefixEn} ${saint.nameEn}` : saint.nameEn;
-      let titleLa = saint.prefixLa ? `${saint.prefixLa} ${saint.nameLa}` : saint.nameLa;
-
-      let textObj = {
-        en: `${titleEn}, help him/her/them.`,
-        la: `${titleLa}, tu illum/illam/eos adiuva.`
-      };
-      
-      pushV('ring', 'small', saint.nameEn, {en: titleEn, la: titleLa}, textObj, 'images/st_michael.jpg');
+  for(let i=0;i<5;i++){
+    let decadeTitle={en:pd.seq.decadeStart.en+` ${i+1}`,la:pd.seq.decadeStart.la+` ${i+1}`};
+    pushV('ring','large',`Decade ${i+1}`,decadeTitle,pd.texts.christus,'images/cross.jpg');
+    for(let j=0;j<10;j++){
+      let sIdx=i*10+j;
+      let saint=pd.saints[sIdx];
+      let titleEn=saint.prefixEn ? `${saint.prefixEn} ${saint.nameEn}` : saint.nameEn;
+      let titleLa=saint.prefixLa ? `${saint.prefixLa} ${saint.nameLa}` : saint.nameLa;
+      let textObj={en:`${titleEn}, help him/her/them.`,la:`${titleLa}, tu illum/illam/eos adiuva.`};
+      pushV('ring','small',saint.nameEn||'All Saints',{en:titleEn,la:titleLa},textObj,'images/st_michael.jpg');
     }
   }
 
-  pushRef(idMedal, 'medal', 'Salve Regina', pd.seq.salve, pd.texts.salve, 'images/hail_holy_queen.jpg');
-  pushRef(idCross, 'cross', 'St. Michael', pd.seq.stmichael, pd.texts.stmichael, 'images/st_michael.jpg');
+  pushRef(idMedal,'medal','Salve Regina',pd.seq.salve,pd.texts.salve,'images/hail_holy_queen.jpg');
+  pushRef(idMedal,'medal','St. Michael',pd.seq.stmichael,pd.texts.stmichael,'images/st_michael.jpg');
+  pushRef(idCross,'cross','End','Sign of Cross',pd.texts.sign,'images/cross.jpg');
 }
 
-function buildNovena(pd) {
-  pushV('line', 'cross', 'Opening', 'Opening', core('Sign of Cross'), 'images/cross.jpg');
-  pd.days.forEach((day, i) => {
-    pushV('line', 'large', `Day ${i+1}`, `Day ${i+1}`, day.text, pd.img);
+function buildNovena(pd){
+  const img=pd.img||'images/cross.jpg';
+  pd.days.forEach((d,i)=>{
+    pushV('ring','large',`Day ${i+1}`,{en:`Day ${i+1} of 9`,la:`Dies ${i+1} ex 9`},d.text,img);
   });
-  pushV('line', 'medal', 'Closing', 'Closing', 'In the name of the Father, and of the Son, and of the Holy Spirit. Amen.', 'images/cross.jpg');
 }
 
-// ─── SVG RENDER ──────────────────────────────────────
+// ─── SVG ROSARY RENDER (desktop circular) ────────────────
 function renderSVG(){
   const svg=document.getElementById('rosarySVG');
   svg.innerHTML='';
+  if(!beads.length) return;
+
+  // Add filter definitions for gothic glow
   const defs=document.createElementNS(SVG_NS,'defs');
+  
+  const softGlow=document.createElementNS(SVG_NS,'filter');
+  softGlow.setAttribute('id','softGlow');
+  softGlow.setAttribute('x','-100%');softGlow.setAttribute('y','-100%');
+  softGlow.setAttribute('width','300%');softGlow.setAttribute('height','300%');
+  const blur=document.createElementNS(SVG_NS,'feGaussianBlur');
+  blur.setAttribute('in','SourceGraphic');blur.setAttribute('stdDeviation','4');
+  softGlow.appendChild(blur);
+  defs.appendChild(softGlow);
   svg.appendChild(defs);
-  if(!beads.length)return;
 
-  const p=document.getElementById('rosaryPane');
-  const w=p.offsetWidth, h=p.offsetHeight;
-  svg.setAttribute('width',w); svg.setAttribute('height',h);
-  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
-
-  const cg=document.createElementNS(SVG_NS,'linearGradient');
-  cg.setAttribute('id','crossGrad');cg.setAttribute('x1','0%');cg.setAttribute('y1','0%');cg.setAttribute('x2','60%');cg.setAttribute('y2','100%');
-  [[0,'#F5DCA0'],[50,'#C9A96E'],[100,'#5A3A0A']].forEach(([o,c])=>{
-    const s=document.createElementNS(SVG_NS,'stop');s.setAttribute('offset',o+'%');s.setAttribute('stop-color',c);cg.appendChild(s);
-  });
-  defs.appendChild(cg);
-
-  const drawnBeads = beads.filter(b => b.visualRefIdx === -1);
-  const tailBeads = drawnBeads.filter(b => b.renderGroup === 'tail');
-  const ringBeads = drawnBeads.filter(b => b.renderGroup === 'ring');
-  const medalBeads = drawnBeads.filter(b => b.renderGroup === 'medal');
-  const lineBeads = drawnBeads.filter(b => b.renderGroup === 'line');
-
-  const pad=20;
-  const cx=w/2;
+  // Layout Constraints
+  const W=280, H=400;
+  const cx = W / 2;
+  const cy = 135;
+  const R = 100;
   
-  const SR=Math.max(3.0,Math.min(4.5,(w-pad*2)/36));
-  const LR=Math.max(5.5,Math.min(8.0,(w-pad*2)/20));
-  const MR=Math.max(6.5,Math.min(9.0,(w-pad*2)/16));
-  const CW=Math.max(8,Math.min(12,(w-pad*2)/14));
-  const CH=CW*1.55;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
 
-  if (lineBeads.length > 0) {
-    const startY = pad + CH;
-    const endY = h - pad - CH;
-    
-    const path = document.createElementNS(SVG_NS, 'line');
-    path.setAttribute('x1', cx); path.setAttribute('y1', startY);
-    path.setAttribute('x2', cx); path.setAttribute('y2', endY);
-    path.setAttribute('stroke', accent.chain||'rgba(120,100,70,0.45)');
-    path.setAttribute('stroke-width', '1.3');
-    svg.appendChild(path);
+  const ringBeads=beads.filter(b=>b.renderGroup==='ring');
+  const tailBeads=beads.filter(b=>b.renderGroup==='tail');
+  const medalBeads=beads.filter(b=>b.renderGroup==='medal');
 
-    lineBeads.forEach((b, i) => {
-      b.svgX = cx;
-      b.svgY = startY + i * ((endY - startY) / Math.max(1, lineBeads.length - 1));
-    });
-  } 
-  else {
-    const availH=h-pad*2;
-    const nTail = tailBeads.length;
-    const tailAlloc=Math.min(availH*0.42, (nTail)*Math.min(16,availH*0.4/Math.max(nTail,1))+CH*0.6+pad);
-    const loopAlloc=availH-tailAlloc;
-    const ovalRX=Math.min((w-pad*2)/2-LR-4, loopAlloc*0.45);
-    const ovalRY=Math.min(loopAlloc/2-LR, ovalRX*1.25); 
+  // Ring Chain
+  const chainPath=document.createElementNS(SVG_NS,'circle');
+  chainPath.setAttribute('cx',cx);chainPath.setAttribute('cy',cy);chainPath.setAttribute('r',R);
+  chainPath.setAttribute('fill','none');chainPath.setAttribute('stroke',accent.chain||'rgba(255,255,255,0.15)');
+  chainPath.setAttribute('stroke-width','1.5');chainPath.setAttribute('stroke-dasharray','2 3');
+  svg.appendChild(chainPath);
 
-    const loopCY=pad+ovalRY+LR;
-    const joinY=loopCY+ovalRY; 
-
-    if(medalBeads.length > 0) { medalBeads[0].svgX = cx; medalBeads[0].svgY = joinY; }
-
-    const gapDeg=20; 
-    ringBeads.forEach((b,i)=>{
-      const frac=ringBeads.length>1?i/(ringBeads.length-1):0;
-      const rad = ((90 - gapDeg/2) - frac * (360 - gapDeg)) * Math.PI / 180;
-      b.svgX = cx + ovalRX * Math.cos(rad);
-      b.svgY = loopCY + ovalRY * Math.sin(rad);
-    });
-
-    const tailTopBead = joinY + MR + 8; 
-    const crossY = h - pad - CH*0.5;
-
-    tailBeads.forEach((b,i)=>{
-      const t=nTail>1 ? (nTail-1-i)/(nTail-1) : 0; 
-      b.svgX = cx + Math.sin(t*Math.PI)*Math.min(4,ovalRX*0.08)*0.5;
-      b.svgY = tailTopBead + t*(crossY - tailTopBead);
-    });
-
-    const ovalPath=document.createElementNS(SVG_NS,'ellipse');
-    ovalPath.setAttribute('cx',cx);ovalPath.setAttribute('cy',loopCY);
-    ovalPath.setAttribute('rx',ovalRX);ovalPath.setAttribute('ry',ovalRY);
-    ovalPath.setAttribute('fill','none'); ovalPath.setAttribute('stroke',accent.chain);
-    ovalPath.setAttribute('stroke-width','1.3'); svg.appendChild(ovalPath);
-
-    const tailChainPath=document.createElementNS(SVG_NS,'path');
-    tailChainPath.setAttribute('d',`M ${cx} ${joinY} Q ${cx+Math.min(3,ovalRX*0.04)} ${(joinY+crossY)/2} ${cx} ${crossY-CH*0.5}`);
-    tailChainPath.setAttribute('fill','none'); tailChainPath.setAttribute('stroke',accent.chain);
-    tailChainPath.setAttribute('stroke-width','1.3'); svg.appendChild(tailChainPath);
+  // Tail Chain (Calculated based on tail length)
+  const tailGap = 20;
+  const medalY = cy + R;
+  if(tailBeads.length > 0){
+    const tailLine=document.createElementNS(SVG_NS,'line');
+    tailLine.setAttribute('x1',cx);tailLine.setAttribute('y1',medalY);
+    tailLine.setAttribute('x2',cx);tailLine.setAttribute('y2',medalY + 25 + (tailBeads.length - 1) * tailGap);
+    tailLine.setAttribute('stroke',accent.chain||'rgba(255,255,255,0.15)');
+    tailLine.setAttribute('stroke-width','1.5');
+    tailLine.setAttribute('stroke-dasharray','2 3');
+    svg.appendChild(tailLine);
   }
 
-  drawnBeads.forEach(bd => {
-    const g=document.createElementNS(SVG_NS,'g');
-    g.classList.add('r-bead');
-    const bx=bd.svgX, by=bd.svgY;
-
-    if(bd.type==='cross'){
-      const arm=CW*0.33, top=by-CH*0.5, bot=by+CH*0.5, barLeft=bx-CW*0.5, barRight=bx+CW*0.5, barTop=by-CH*0.2, barBot=by-CH*0.2+arm*1.8;
-      const pts=`${bx-arm},${top} ${bx+arm},${top} ${bx+arm},${barTop} ${barRight},${barTop} ${barRight},${barBot} ${bx+arm},${barBot} ${bx+arm},${bot} ${bx-arm},${bot} ${bx-arm},${barBot} ${barLeft},${barBot} ${barLeft},${barTop} ${bx-arm},${barTop}`;
-      
-      const cross=document.createElementNS(SVG_NS,'polygon');
-      cross.setAttribute('points',pts); cross.setAttribute('fill','url(#crossGrad)');
-      cross.setAttribute('stroke','rgba(255,220,100,0.25)'); cross.setAttribute('stroke-width','0.6');
-      cross.classList.add('bead-body'); g.appendChild(cross);
-
-      const glow=document.createElementNS(SVG_NS,'rect');
-      glow.setAttribute('x',barLeft-2); glow.setAttribute('y',top-2);
-      glow.setAttribute('width',CW+4); glow.setAttribute('height',CH+4); glow.setAttribute('rx','2');
-      glow.setAttribute('fill','none'); glow.setAttribute('stroke',accent.main); glow.setAttribute('stroke-width','1.2');
-      glow.setAttribute('opacity','0'); glow.classList.add('bead-glow'); g.appendChild(glow);
-
-    } else if(bd.type==='medal'){
-      const me=document.createElementNS(SVG_NS,'ellipse');
-      me.setAttribute('cx',bx); me.setAttribute('cy',by); me.setAttribute('rx',MR*0.72); me.setAttribute('ry',MR);
-      me.setAttribute('fill','#8B6914'); me.setAttribute('stroke','rgba(245,220,120,0.4)'); me.setAttribute('stroke-width','0.7');
-      me.classList.add('bead-body'); g.appendChild(me);
-      
-      const glow=document.createElementNS(SVG_NS,'ellipse');
-      glow.setAttribute('cx',bx); glow.setAttribute('cy',by); glow.setAttribute('rx',MR*.72+3); glow.setAttribute('ry',MR+3);
-      glow.setAttribute('fill','none'); glow.setAttribute('stroke',accent.main); glow.setAttribute('stroke-width','1.3');
-      glow.setAttribute('opacity','0'); glow.classList.add('bead-glow'); g.appendChild(glow);
-
-    } else if(bd.type==='large' || bd.type==='decade'){
-      const c=document.createElementNS(SVG_NS,'circle');
-      c.setAttribute('cx',bx); c.setAttribute('cy',by); c.setAttribute('r',LR);
-      c.setAttribute('fill','#E8C990'); c.setAttribute('stroke','rgba(255,255,255,0.25)'); c.setAttribute('stroke-width','1');
-      c.classList.add('bead-body'); g.appendChild(c);
-      
-      const glow=document.createElementNS(SVG_NS,'circle');
-      glow.setAttribute('cx',bx); glow.setAttribute('cy',by); glow.setAttribute('r',LR+3.5);
-      glow.setAttribute('fill','none'); glow.setAttribute('stroke',accent.main); glow.setAttribute('stroke-width','1.5');
-      glow.setAttribute('opacity','0'); glow.classList.add('bead-glow'); g.appendChild(glow);
-
-    } else {
-      const c=document.createElementNS(SVG_NS,'circle');
-      c.setAttribute('cx',bx); c.setAttribute('cy',by); c.setAttribute('r',SR);
-      c.setAttribute('fill',accent.color); c.setAttribute('stroke','rgba(255,255,255,0.13)'); c.setAttribute('stroke-width','0.6');
-      c.classList.add('bead-body'); g.appendChild(c);
-      
-      const glow=document.createElementNS(SVG_NS,'circle');
-      glow.setAttribute('cx',bx); glow.setAttribute('cy',by); glow.setAttribute('r',SR+3);
-      glow.setAttribute('fill','none'); glow.setAttribute('stroke',accent.main); glow.setAttribute('stroke-width','1.5');
-      glow.setAttribute('opacity','0'); glow.classList.add('bead-glow'); g.appendChild(glow);
-    }
-
-    g.addEventListener('mouseenter',()=>{
-      const t=document.getElementById('rTip');
-      t.textContent=bd.label;t.style.opacity='1';
-    });
-    g.addEventListener('mouseleave',()=>{document.getElementById('rTip').style.opacity='0'});
-
-    bd.el=g; svg.appendChild(g);
+  // Draw Beads
+  // 1. Centerpiece Medal (Intersection)
+  medalBeads.forEach(b => {
+    b.svgX = cx; b.svgY = medalY;
+    const g = createBeadElement(b, b.svgX, b.svgY, b.type);
+    b.el = g; svg.appendChild(g);
   });
 
-  beads.forEach((bd, idx) => {
-      if (bd.visualRefIdx !== -1) bd.el = beads[bd.visualRefIdx].el;
-      if (bd.el) bd.el.addEventListener('click', () => activateBead(idx));
+  // 2. Tail Beads (Bottom to Top chronologically)
+  // Index 0 in tailBeads array is placed at the furthest bottom coordinate.
+  tailBeads.forEach((b, i) => {
+    b.svgX = cx;
+    b.svgY = medalY + 25 + (tailBeads.length - 1 - i) * tailGap;
+    const g = createBeadElement(b, b.svgX, b.svgY, b.type);
+    b.el = g; svg.appendChild(g);
+  });
+
+  // 3. Ring Beads (Counter-Clockwise / Right to Left)
+  const nRing = ringBeads.length;
+  ringBeads.forEach((b, i) => {
+    const angleStep = (Math.PI * 2) / (nRing + 1);
+    const angle = Math.PI / 2 - (i + 1) * angleStep; // Right to left from bottom
+    b.svgX = cx + R * Math.cos(angle);
+    b.svgY = cy + R * Math.sin(angle);
+    const g = createBeadElement(b, b.svgX, b.svgY, b.type);
+    b.el = g; svg.appendChild(g);
   });
 }
 
+function createBeadElement(bead, x, y, type) {
+  const g = document.createElementNS(SVG_NS, 'g');
+  g.setAttribute('class', 'r-bead');
+  g.setAttribute('transform', `translate(${x},${y})`);
+
+  const sizes = { small: 5, large: 7.5, cross: 14, medal: 11 };
+  const r = sizes[type] || 5;
+
+  // Outer ambient glow for active state
+  const glow = document.createElementNS(SVG_NS, 'circle');
+  glow.setAttribute('r', r + 6);
+  glow.setAttribute('fill', 'var(--accent-main)');
+  glow.setAttribute('opacity', '0');
+  glow.setAttribute('class', 'bead-glow');
+  glow.setAttribute('filter', 'url(#softGlow)');
+  g.appendChild(glow);
+
+  const body = document.createElementNS(SVG_NS, 'g');
+  body.setAttribute('class', 'bead-body');
+
+  if (type === 'cross') {
+    // Gothic stylised Cross
+    const cross = document.createElementNS(SVG_NS, 'path');
+    cross.setAttribute('d', 'M-2.5,-16 L2.5,-16 L2.5,-3.5 L12,-3.5 L12,1.5 L2.5,1.5 L2.5,18 L-2.5,18 L-2.5,1.5 L-12,1.5 L-12,-3.5 L-2.5,-3.5 Z');
+    cross.setAttribute('fill', 'var(--accent-main)');
+    cross.setAttribute('stroke', '#000');
+    cross.setAttribute('stroke-width', '1');
+    body.appendChild(cross);
+    
+    const crossInner = document.createElementNS(SVG_NS, 'path');
+    crossInner.setAttribute('d', 'M-0.8,-14 L0.8,-14 L0.8,-1.5 L10,-1.5 L10,-0.5 L0.8,-0.5 L0.8,16 L-0.8,16 L-0.8,-0.5 L-10,-0.5 L-10,-1.5 L-0.8,-1.5 Z');
+    crossInner.setAttribute('fill', '#fff');
+    crossInner.setAttribute('opacity', '0.5');
+    body.appendChild(crossInner);
+  } else if (type === 'medal') {
+    // Octagon/Shield for Medal
+    const medal = document.createElementNS(SVG_NS, 'polygon');
+    const mR = r;
+    const a = mR * 0.4;
+    medal.setAttribute('points', `-${a},-${mR} ${a},-${mR} ${mR},-${a} ${mR},${a} ${a},${mR} -${a},${mR} -${mR},${a} -${mR},-${a}`);
+    medal.setAttribute('fill', 'var(--accent-main)');
+    body.appendChild(medal);
+    
+    const mInner = document.createElementNS(SVG_NS, 'circle');
+    mInner.setAttribute('r', mR * 0.5);
+    mInner.setAttribute('fill', 'var(--surface)');
+    mInner.setAttribute('opacity', '0.6');
+    body.appendChild(mInner);
+  } else if (type === 'large') {
+    // Diamond shape for large bead
+    const diamond = document.createElementNS(SVG_NS, 'polygon');
+    diamond.setAttribute('points', `0,-${r} ${r},0 0,${r} -${r},0`);
+    diamond.setAttribute('fill', 'var(--accent-main)');
+    body.appendChild(diamond);
+    
+    const dInner = document.createElementNS(SVG_NS, 'polygon');
+    dInner.setAttribute('points', `0,-${r/2} ${r/2},0 0,${r/2} -${r/2},0`);
+    dInner.setAttribute('fill', '#fff');
+    dInner.setAttribute('opacity', '0.4');
+    body.appendChild(dInner);
+  } else {
+    // Standard small bead
+    const circ = document.createElementNS(SVG_NS, 'circle');
+    circ.setAttribute('r', r);
+    circ.setAttribute('fill', 'var(--accent-main)');
+    circ.setAttribute('opacity', '0.8');
+    body.appendChild(circ);
+    
+    const dot = document.createElementNS(SVG_NS, 'circle');
+    dot.setAttribute('r', r * 0.3);
+    dot.setAttribute('fill', 'var(--surface)');
+    dot.setAttribute('opacity', '0.6');
+    body.appendChild(dot);
+  }
+
+  g.appendChild(body);
+
+  g.addEventListener('click', () => activateBead(beads.indexOf(bead)));
+  g.addEventListener('mouseenter', () => {
+    const tip = document.getElementById('rTip');
+    tip.textContent = resolveText(bead.label);
+    tip.style.opacity = '1';
+  });
+  g.addEventListener('mouseleave', () => {
+    document.getElementById('rTip').style.opacity = '0';
+  });
+
+  return g;
+}
+
+// ─── VERTICAL BEAD STRIP (mobile) ────────────────────────
+function renderVertBeads(){
+  const track=document.getElementById('vbTrack');
+  track.innerHTML='';
+
+  beads.forEach((b,i)=>{
+    if(b.renderGroup==='none') return; // skip ghost refs
+
+    if(i>0){
+      const conn=document.createElement('div');
+      conn.className='vb-connector';
+      track.appendChild(conn);
+    }
+
+    const bDiv=document.createElement('div');
+    bDiv.className=`vb-bead size-${b.type}`;
+    bDiv.dataset.realIdx=i;
+
+    const inner=document.createElement('div');
+    inner.className='vb-inner';
+    bDiv.appendChild(inner);
+
+    bDiv.addEventListener('click',()=>activateBead(i));
+    track.appendChild(bDiv);
+    b.vbEl=bDiv;
+  });
+}
+
+// ─── ACTIVATE BEAD ────────────────────────────────────────
 function activateBead(idx){
-  if(idx<0||idx>=beads.length)return;
+  if(idx<0||idx>=beads.length) return;
   curIdx=idx;
-  
-  beads.forEach(b=>{ if(b.el) b.el.classList.remove('active','completed'); });
-  for(let i=0; i<=idx; i++){
-      let b = beads[i];
-      if(!b.el) continue;
-      if(i === idx) b.el.classList.add('active');
-      else b.el.classList.add('completed');
+  const bead=beads[idx];
+
+  // Update SVG bead states
+  beads.forEach((b,i)=>{
+    const el=b.el;
+    if(!el) return;
+    // Beads are active if they match current index or are visual references to same meditation
+    const isActive=b.visualRefIdx===-1 ? i===idx : b.visualRefIdx===beads[idx]?.visualRefIdx || i===idx;
+    el.classList.toggle('active',isActive);
+    el.classList.toggle('completed',i<idx && b.renderGroup!=='none');
+  });
+
+  // Update vertical bead states
+  beads.forEach((b,i)=>{
+    if(!b.vbEl) return;
+    b.vbEl.classList.toggle('active',i===idx);
+    b.vbEl.classList.toggle('completed',i<idx);
+  });
+
+  // Scroll mobile bead into view
+  if(bead.vbEl){
+    bead.vbEl.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   }
 
-  // Button Opacities
-  document.getElementById('prevBtn').style.opacity = idx === 0 ? '0.3' : '1';
-  document.getElementById('prevBtn').style.pointerEvents = idx === 0 ? 'none' : 'auto';
-  document.getElementById('nextBtn').style.opacity = idx === beads.length - 1 ? '0.3' : '1';
-  document.getElementById('nextBtn').style.pointerEvents = idx === beads.length - 1 ? 'none' : 'auto';
+  // Update counter
+  const visIdx=beads.slice(0,idx+1).filter(b=>b.renderGroup!=='none').length;
+  const visTotal=beads.filter(b=>b.renderGroup!=='none').length;
+  document.getElementById('beadCtr').textContent=`${visIdx} / ${visTotal}`;
 
-  document.getElementById('beadCtr').textContent=`${idx+1} / ${beads.length}`;
-  const tp=document.getElementById('textPane');
-  tp.classList.add('fading');
-  
+  // Resolve title and text
+  const title=resolveText(bead.title);
+  const text=resolveText(bead.text);
+  const verse=bead.verse;
+
+  // Update image pane
+  const imgPane=document.getElementById('imgPane');
+  const prImg=document.getElementById('prImg');
+  const verseBadge=document.getElementById('verseBadge');
+  const prGrid=document.getElementById('prGrid');
+
+  if(bead.image){
+    prImg.src=bead.image;
+    prImg.alt=title;
+    imgPane.classList.remove('hidden');
+    imgPane.classList.add('has-img');
+    prGrid.classList.remove('no-img');
+  } else {
+    imgPane.classList.add('hidden');
+    imgPane.classList.remove('has-img');
+    prGrid.classList.add('no-img');
+  }
+
+  if(verse){
+    verseBadge.textContent=verse;
+    verseBadge.classList.add('visible');
+  } else {
+    verseBadge.classList.remove('visible');
+  }
+
+  // Animate text update
+  const textPane=document.getElementById('textPane');
+  textPane.classList.add('fading');
   setTimeout(()=>{
-    const b=beads[idx];
-    
-    let tTitle = b.title;
-    let tText = b.text;
-    if(typeof b.title === 'object') tTitle = b.title[currentLang] || b.title.en;
-    if(typeof b.text === 'object') tText = b.text[currentLang] || b.text.en;
-
-    document.getElementById('ptTitle').textContent=tTitle;
-    document.getElementById('ptBody').textContent=tText;
-
-    const imgPane=document.getElementById('imgPane');
-    const imgEl=document.getElementById('prImg');
-    const grid=document.getElementById('prGrid');
-
-    if(b.image){
-      imgEl.src=b.image;
-      imgPane.classList.remove('hidden'); imgPane.classList.add('has-img'); grid.classList.remove('no-img');
-    } else {
-      imgPane.classList.add('hidden'); imgPane.classList.remove('has-img'); grid.classList.add('no-img');
-    }
-
-    tp.classList.remove('fading');
-    tp.scrollTop=0;
-  },200);
+    document.getElementById('ptTitle').textContent=title;
+    document.getElementById('ptBody').textContent=text;
+    textPane.classList.remove('fading');
+  },220);
 }
 
-function nextBead(){ if(curIdx<beads.length-1) activateBead(curIdx+1); }
-function prevBead(){ if(curIdx>0) activateBead(curIdx-1); }
+function nextBead(){
+  if(curIdx<beads.length-1) activateBead(curIdx+1);
+}
+function prevBead(){
+  if(curIdx>0) activateBead(curIdx-1);
+}
 
-let rTimer;
-window.addEventListener('resize',()=>{
-  clearTimeout(rTimer);
-  rTimer=setTimeout(()=>{
-    if(prayerType&&document.getElementById('prayerView').classList.contains('active')){
-      renderSVG(); activateBead(curIdx);
-    }
-  },80);
+// Keyboard navigation
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('prayerView').classList.contains('active')){
+    if(e.key==='ArrowRight'||e.key==='ArrowDown') nextBead();
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp') prevBead();
+  }
 });
 
-loadData();
+// ─── SCORE ────────────────────────────────────────────────
+function awardPrayerStart(type,pd){
+  if(typeof window.awardPrayerStart==='function'){
+    window.awardPrayerStart(type,pd);
+  }
+}
 
-    // ── Score: every prayer begun is an offering ──────────────
-    // Points are matched to the depth/length of each devotion.
-    const PRAYER_POINTS = {
-        rosary: 40, dmc: 30, stmichael: 25, wotc: 25,
-        litany: 15, anima: 15, stpatrick: 20, precatio: 30
-    };
-    // Award a prayer-type once per page-load (prevents accidental farming
-    // by re-entering the same prayer; reload the page to offer it afresh).
-    const _prayerAwarded = {};
-    function awardPrayerStart(type, pd) {
-        if (typeof Fides === 'undefined' || !type) return;
-        if (_prayerAwarded[type]) return;
-        _prayerAwarded[type] = true;
-        const isNovena = type.indexOf('novena_') === 0;
-        const pts = isNovena ? 35 : (PRAYER_POINTS[type] || 15);
-        const title = (pd && pd.title) ? pd.title : 'Prayer';
-        Fides.award({
-            type: 'prayer',
-            statKey: 'prayersCompleted',
-            points: pts,
-            label: 'Prayer offered — ' + title,
-            extra: { prayerType: type }
-        });
-    }
+// ─── INIT ─────────────────────────────────────────────────
+loadData();
 </script>
 </body>
 </html>
