@@ -1,13 +1,23 @@
 {
   "core": {
     "Sign of Cross": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+    "Sign of Cross LA": "In nomine Patris, et Filii, et Spiritus Sancti. Amen.",
     "Apostles Creed": "I believe in God, the Father Almighty, Creator of Heaven and earth; and in Jesus Christ, His only Son, Our Lord, Who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died, and was buried.\n\nHe descended into hell; on the third day He arose again from the dead; He ascended into Heaven, and is seated at the right hand of God, the Father Almighty; from thence He shall come to judge the living and the dead.\n\nI believe in the Holy Spirit, the holy Catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen.",
+    "Apostles Creed LA": "Credo in Deum Patrem omnipotentem, Creatorem caeli et terrae. Et in Iesum Christum, Filium eius unicum, Dominum nostrum, qui conceptus est de Spiritu Sancto, natus ex Maria Virgine, passus sub Pontio Pilato, crucifixus, mortuus, et sepultus.\n\nDescendit ad inferos; tertia die resurrexit a mortuis; ascendit ad caelos; sedet ad dexteram Dei Patris omnipotentis; inde venturus est iudicare vivos et mortuos.\n\nCredo in Spiritum Sanctum, sanctam Ecclesiam catholicam, sanctorum communionem, remissionem peccatorum, carnis resurrectionem, vitam aeternam. Amen.",
     "Our Father": "Our Father, Who art in heaven, hallowed be Thy name; Thy kingdom come; Thy will be done on earth as it is in heaven.\n\nGive us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen.",
+    "Our Father LA": "Pater noster, qui es in caelis, sanctificetur nomen tuum. Adveniat regnum tuum. Fiat voluntas tua, sicut in caelo et in terra.\n\nPanem nostrum quotidianum da nobis hodie, et dimitte nobis debita nostra sicut et nos dimittimus debitoribus nostris. Et ne nos inducas in tentationem, sed libera nos a malo. Amen.",
     "Hail Mary": "Hail Mary, full of grace. The Lord is with thee. Blessed art thou amongst women, and blessed is the fruit of thy womb, Jesus.\n\nHoly Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.",
+    "Hail Mary LA": "Ave Maria, gratia plena, Dominus tecum. Benedicta tu in mulieribus, et benedictus fructus ventris tui, Iesus.\n\nSancta Maria, Mater Dei, ora pro nobis peccatoribus, nunc et in hora mortis nostrae. Amen.",
     "Glory Be": "Glory be to the Father, and to the Son, and to the Holy Spirit.\n\nAs it was in the beginning, is now, and ever shall be, world without end. Amen.",
+    "Glory Be LA": "Gloria Patri, et Filio, et Spiritui Sancto.\n\nSicut erat in principio, et nunc, et semper, et in saecula saeculorum. Amen.",
     "Fatima Prayer": "O my Jesus, forgive us our sins, save us from the fires of hell, and lead all souls to Heaven, especially those in most need of Thy mercy.",
+    "Fatima Prayer LA": "O mi Iesu, dimitte nobis debita nostra, salva nos ab igne inferni, perduc in caelum omnes animas, praesertim eas quae maxime indigent misericordia tua.",
     "Hail Holy Queen": "Hail, Holy Queen, Mother of Mercy, our life, our sweetness and our hope.\n\nTo thee do we cry, poor banished children of Eve; to thee do we send up our sighs, mourning and weeping in this valley of tears.\n\nTurn then, most gracious Advocate, thine eyes of mercy toward us, and after this our exile, show unto us the blessed fruit of thy womb, Jesus.\n\nO clement, O loving, O sweet Virgin Mary!\n\nPray for us, O Holy Mother of God, that we may be made worthy of the promises of Christ.",
-    "Rosary Closing": "O God, whose only begotten Son, by His life, death, and resurrection, has purchased for us the rewards of eternal life, grant we beseech Thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ Our Lord. Amen.\n\nIn the name of the Father, and of the Son, and of the Holy Spirit. Amen."
+    "Hail Holy Queen LA": "Salve, Regina, Mater misericordiae; vita, dulcedo et spes nostra, salve.\n\nAd te clamamus exsules filii Hevae. Ad te suspiramus gementes et flentes in hac lacrimarum valle.\n\nEia ergo, advocata nostra, illos tuos misericordes oculos ad nos converte. Et Iesum, benedictum fructum ventris tui, nobis post hoc exsilium ostende.\n\nO clemens, O pia, O dulcis Virgo Maria!\n\nOra pro nobis, Sancta Dei Genitrix, ut digni efficiamur promissionibus Christi.",
+    "Memorare": "Remember, O most gracious Virgin Mary, that never was it known that anyone who fled to thy protection, implored thy help, or sought thy intercession was left unaided.\n\nInspired by this confidence, I fly unto thee, O Virgin of virgins, my Mother; to thee do I come, before thee I stand, sinful and sorrowful.\n\nO Mother of the Word Incarnate, despise not my petitions, but in thy mercy hear and answer me. Amen.",
+    "Memorare LA": "Memorare, O piissima Virgo Maria, non esse auditum a saeculo, quemquam ad tua currentem praesidia, tua implorantem auxilia, tua petentem suffragia, esse derelictum.\n\nEgo tali animatus confidentia ad te, Virgo Virginum, Mater, curro, ad te venio, coram te gemens peccator assisto.\n\nNoli, Mater Verbi, verba mea despicere; sed audi propitia et exaudi. Amen.",
+    "Rosary Closing": "O God, whose only begotten Son, by His life, death, and resurrection, has purchased for us the rewards of eternal life, grant we beseech Thee, that meditating upon these mysteries of the Most Holy Rosary of the Blessed Virgin Mary, we may imitate what they contain and obtain what they promise, through the same Christ Our Lord. Amen.\n\nIn the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+    "Rosary Closing LA": "Deus, cuius Unigenitus per vitam, mortem et resurrectionem suam nobis salutis aeternae praemia comparavit, concede, quaesumus, ut haec mysteria sacratissimo beatae Mariae Virginis Rosario recolentes et imitemur quod continent, et quod promittunt assequamur. Per eundem Christum Dominum nostrum. Amen.\n\nIn nomine Patris, et Filii, et Spiritus Sancti. Amen."
   },
   "prayers": {
     "rosary": {
@@ -16,95 +26,243 @@
       "schedule": ["Glorious","Joyful","Sorrowful","Glorious","Luminous","Sorrowful","Joyful"],
       "mysteries": {
         "Joyful": [
-          { "title": "1st Joyful Mystery — The Annunciation", "meditation": "The Angel Gabriel announces to the Virgin Mary that she is to be the Mother of God. Mary humbly submits to God's will: 'Behold the handmaid of the Lord.'" },
-          { "title": "2nd Joyful Mystery — The Visitation", "meditation": "Mary visits her cousin Elizabeth, who is with child. At Mary's greeting, John leaps for joy in the womb, and Elizabeth cries: 'Blessed are you among women!'" },
-          { "title": "3rd Joyful Mystery — The Nativity", "meditation": "Jesus Christ, the Son of God, is born in a stable in Bethlehem. Angels announce His birth to the shepherds, and the star guides the Magi to the newborn King." },
-          { "title": "4th Joyful Mystery — The Presentation", "meditation": "Mary and Joseph present the child Jesus in the Temple. Simeon, filled with the Holy Spirit, takes Jesus in his arms and declares Him the Light of the World." },
-          { "title": "5th Joyful Mystery — Finding in the Temple", "meditation": "After three days of searching, Mary and Joseph find the twelve-year-old Jesus in the Temple, sitting among the teachers, listening and asking questions." }
+          {
+            "title": "1st Joyful Mystery — The Annunciation",
+            "img": "images/annunciation.jpg",
+            "verse": "Luke 1:28 — \"Hail, full of grace, the Lord is with you!\"",
+            "meditation": "The Angel Gabriel announces to the Virgin Mary that she is to be the Mother of God. Mary humbly submits to God's will: 'Behold the handmaid of the Lord; be it done to me according to thy word.' Let us ask for the virtue of humility."
+          },
+          {
+            "title": "2nd Joyful Mystery — The Visitation",
+            "img": "images/visitation.jpg",
+            "verse": "Luke 1:42 — \"Blessed are you among women, and blessed is the fruit of your womb!\"",
+            "meditation": "Mary visits her cousin Elizabeth, who is with child. At Mary's greeting, John leaps for joy in the womb, and Elizabeth cries: 'Blessed are you among women!' Let us ask for the virtue of charity toward our neighbors."
+          },
+          {
+            "title": "3rd Joyful Mystery — The Nativity",
+            "img": "images/nativity.jpg",
+            "verse": "Luke 2:11 — \"For to you is born this day in the city of David a Saviour, who is Christ the Lord.\"",
+            "meditation": "Jesus Christ, the Son of God, is born in a stable in Bethlehem. Angels announce His birth to the shepherds, and the star guides the Magi to the newborn King. Let us ask for the virtue of poverty of spirit and detachment from worldly things."
+          },
+          {
+            "title": "4th Joyful Mystery — The Presentation",
+            "img": "images/presentation.jpg",
+            "verse": "Luke 2:30–31 — \"Mine eyes have seen thy salvation which thou hast prepared in the presence of all peoples.\"",
+            "meditation": "Mary and Joseph present the child Jesus in the Temple. Simeon, filled with the Holy Spirit, takes Jesus in his arms and declares Him the Light of the World. Let us ask for the virtue of obedience to God's law."
+          },
+          {
+            "title": "5th Joyful Mystery — Finding in the Temple",
+            "img": "images/finding_temple.jpg",
+            "verse": "Luke 2:49 — \"Did you not know that I must be in my Father's house?\"",
+            "meditation": "After three days of searching, Mary and Joseph find the twelve-year-old Jesus in the Temple, sitting among the teachers, listening and asking questions. Let us ask for the virtue of zeal for the things of God."
+          }
         ],
         "Sorrowful": [
-          { "title": "1st Sorrowful Mystery — Agony in the Garden", "meditation": "Jesus prays in the Garden of Gethsemane until His sweat becomes as drops of blood. He accepts the Father's will: 'Not my will, but Thine be done.'" },
-          { "title": "2nd Sorrowful Mystery — Scourging at the Pillar", "meditation": "Jesus is bound to a pillar and scourged mercilessly. He bears every blow in reparation for the sins of the flesh and in love for each soul." },
-          { "title": "3rd Sorrowful Mystery — Crowning with Thorns", "meditation": "Soldiers weave a crown of thorns and press it upon Jesus' head, mocking Him as King of the Jews. He receives it in silence, a King of suffering and love." },
-          { "title": "4th Sorrowful Mystery — Carrying of the Cross", "meditation": "Jesus carries His heavy Cross through the streets of Jerusalem to Calvary, falling three times under its weight, yet rising each time to continue." },
-          { "title": "5th Sorrowful Mystery — The Crucifixion", "meditation": "Jesus is nailed to the Cross and dies after three hours of agony. His final words are a prayer of forgiveness and total surrender to the Father." }
+          {
+            "title": "1st Sorrowful Mystery — Agony in the Garden",
+            "img": "images/agony_garden.jpg",
+            "verse": "Luke 22:42 — \"Father, if thou art willing, remove this cup from me; nevertheless not my will, but thine, be done.\"",
+            "meditation": "Jesus prays in the Garden of Gethsemane until His sweat becomes as drops of blood. He accepts the Father's will: 'Not my will, but Thine be done.' Let us ask for the virtue of contrition for our sins."
+          },
+          {
+            "title": "2nd Sorrowful Mystery — Scourging at the Pillar",
+            "img": "images/scourging.jpg",
+            "verse": "Isaiah 53:5 — \"He was wounded for our transgressions, he was bruised for our iniquities.\"",
+            "meditation": "Jesus is bound to a pillar and scourged mercilessly. He bears every blow in reparation for the sins of the flesh and in love for each soul. Let us ask for the virtue of purity and mortification."
+          },
+          {
+            "title": "3rd Sorrowful Mystery — Crowning with Thorns",
+            "img": "images/crowning_thorns.jpg",
+            "verse": "John 19:5 — \"Behold the man!\"",
+            "meditation": "Soldiers weave a crown of thorns and press it upon Jesus' head, mocking Him as King of the Jews. He receives it in silence, a King of suffering and love. Let us ask for the virtue of courage and moral fortitude."
+          },
+          {
+            "title": "4th Sorrowful Mystery — Carrying of the Cross",
+            "img": "images/carrying_cross.jpg",
+            "verse": "Luke 23:26 — \"As they led him away, they seized one Simon of Cyrene... and laid on him the cross, to carry it behind Jesus.\"",
+            "meditation": "Jesus carries His heavy Cross through the streets of Jerusalem to Calvary, falling three times under its weight, yet rising each time to continue. Let us ask for the virtue of patience in our own sufferings."
+          },
+          {
+            "title": "5th Sorrowful Mystery — The Crucifixion",
+            "img": "images/crucifixion.jpg",
+            "verse": "John 19:30 — \"It is finished.\" And he bowed his head and gave up his spirit.",
+            "meditation": "Jesus is nailed to the Cross and dies after three hours of agony. His final words are a prayer of forgiveness and total surrender to the Father. Let us ask for the grace of final perseverance."
+          }
         ],
         "Glorious": [
-          { "title": "1st Glorious Mystery — The Resurrection", "meditation": "On the third day, Jesus rises from the dead in glory. He appears to Mary Magdalene, the disciples on the road to Emmaus, and the Apostles, confirming eternal life." },
-          { "title": "2nd Glorious Mystery — The Ascension", "meditation": "Forty days after the Resurrection, Jesus ascends bodily into Heaven before His disciples on the Mount of Olives, promising the gift of the Holy Spirit." },
-          { "title": "3rd Glorious Mystery — Descent of the Holy Spirit", "meditation": "The Holy Spirit descends upon the Apostles and Mary in the Upper Room as tongues of fire on Pentecost, empowering them to proclaim the Gospel to all nations." },
-          { "title": "4th Glorious Mystery — The Assumption", "meditation": "At the end of her earthly life, the Virgin Mary is taken body and soul into heavenly glory, a foretaste of the resurrection of all the faithful." },
-          { "title": "5th Glorious Mystery — Coronation of Mary", "meditation": "Mary is crowned Queen of Heaven and Earth, Queen of Angels and Saints, interceding for us before the throne of her Son for all eternity." }
+          {
+            "title": "1st Glorious Mystery — The Resurrection",
+            "img": "images/resurrection.jpg",
+            "verse": "John 20:17 — \"I am ascending to my Father and your Father, to my God and your God.\"",
+            "meditation": "On the third day, Jesus rises from the dead in glory. He appears to Mary Magdalene, the disciples on the road to Emmaus, and the Apostles, confirming eternal life. Let us ask for the virtue of faith."
+          },
+          {
+            "title": "2nd Glorious Mystery — The Ascension",
+            "img": "images/ascension.jpg",
+            "verse": "Acts 1:11 — \"This Jesus, who was taken up from you into heaven, will come in the same way as you saw him go.\"",
+            "meditation": "Forty days after the Resurrection, Jesus ascends bodily into Heaven before His disciples on the Mount of Olives, promising the gift of the Holy Spirit. Let us ask for the virtue of hope and desire for heaven."
+          },
+          {
+            "title": "3rd Glorious Mystery — Descent of the Holy Spirit",
+            "img": "images/pentecost.jpg",
+            "verse": "Acts 2:4 — \"They were all filled with the Holy Spirit and began to speak in other tongues.\"",
+            "meditation": "The Holy Spirit descends upon the Apostles and Mary in the Upper Room as tongues of fire on Pentecost, empowering them to proclaim the Gospel to all nations. Let us ask for the gifts of the Holy Spirit."
+          },
+          {
+            "title": "4th Glorious Mystery — The Assumption",
+            "img": "images/assumption.jpg",
+            "verse": "Revelation 12:1 — \"A great portent appeared in heaven, a woman clothed with the sun, with the moon under her feet.\"",
+            "meditation": "At the end of her earthly life, the Virgin Mary is taken body and soul into heavenly glory, a foretaste of the resurrection of all the faithful. Let us ask for the grace of a holy death."
+          },
+          {
+            "title": "5th Glorious Mystery — Coronation of Mary",
+            "img": "images/coronation.jpg",
+            "verse": "Revelation 12:1 — \"On her head a crown of twelve stars.\"",
+            "meditation": "Mary is crowned Queen of Heaven and Earth, Queen of Angels and Saints, interceding for us before the throne of her Son for all eternity. Let us ask for perseverance in devotion to Mary."
+          }
         ],
         "Luminous": [
-          { "title": "1st Luminous Mystery — Baptism in the Jordan", "meditation": "Jesus is baptized by John in the Jordan River. The heavens open, the Spirit descends as a dove, and the Father proclaims: 'This is my beloved Son.'" },
-          { "title": "2nd Luminous Mystery — Wedding at Cana", "meditation": "At Mary's intercession, Jesus performs His first miracle at the wedding in Cana, turning water into wine and revealing His glory to His disciples." },
-          { "title": "3rd Luminous Mystery — Proclamation of the Kingdom", "meditation": "Jesus proclaims the Kingdom of God, calling all to conversion of heart, and confirms His divine message with signs and miracles of healing and mercy." },
-          { "title": "4th Luminous Mystery — The Transfiguration", "meditation": "On Mount Tabor, Jesus is transfigured before Peter, James and John. His face shines like the sun, and the Father's voice declares: 'This is my beloved Son; listen to Him.'" },
-          { "title": "5th Luminous Mystery — Institution of the Eucharist", "meditation": "At the Last Supper, Jesus takes bread and wine and says: 'This is my Body... This is my Blood.' He institutes the Eucharist, the sacrament of His abiding presence." }
+          {
+            "title": "1st Luminous Mystery — Baptism in the Jordan",
+            "img": "images/baptism.jpg",
+            "verse": "Matthew 3:17 — \"This is my beloved Son, with whom I am well pleased.\"",
+            "meditation": "Jesus is baptized by John in the Jordan River. The heavens open, the Spirit descends as a dove, and the Father proclaims: 'This is my beloved Son.' Let us ask for openness to the Holy Spirit."
+          },
+          {
+            "title": "2nd Luminous Mystery — Wedding at Cana",
+            "img": "images/wedding_cana.jpg",
+            "verse": "John 2:5 — \"His mother said to the servants, 'Do whatever he tells you.'\"",
+            "meditation": "At Mary's intercession, Jesus performs His first miracle at the wedding in Cana, turning water into wine and revealing His glory to His disciples. Let us ask for a deeper trust in Mary's intercession."
+          },
+          {
+            "title": "3rd Luminous Mystery — Proclamation of the Kingdom",
+            "img": "images/proclamation.jpg",
+            "verse": "Mark 1:15 — \"The kingdom of God is at hand; repent, and believe in the gospel.\"",
+            "meditation": "Jesus proclaims the Kingdom of God, calling all to conversion of heart, and confirms His divine message with signs and miracles. Let us ask for the virtue of conversion and penance."
+          },
+          {
+            "title": "4th Luminous Mystery — The Transfiguration",
+            "img": "images/transfiguration.jpg",
+            "verse": "Matthew 17:5 — \"This is my beloved Son, with whom I am well pleased; listen to him.\"",
+            "meditation": "On Mount Tabor, Jesus is transfigured before Peter, James and John. His face shines like the sun. The Father declares: 'This is my beloved Son; listen to Him.' Let us ask for a desire for holiness."
+          },
+          {
+            "title": "5th Luminous Mystery — Institution of the Eucharist",
+            "img": "images/eucharist.jpg",
+            "verse": "Luke 22:19 — \"This is my body which is given for you. Do this in remembrance of me.\"",
+            "meditation": "At the Last Supper, Jesus takes bread and wine and says: 'This is my Body... This is my Blood.' He institutes the Eucharist, the sacrament of His abiding presence. Let us ask for a profound love for the Eucharist."
+          }
         ]
       }
     },
     "dmc": {
       "title": "Divine Mercy Chaplet",
       "accent": { "color": "#EF4444", "glow": "rgba(239,68,68,0.55)", "main": "#F87171", "chain": "rgba(190,60,60,0.45)", "btnText": "#fff" },
-      "closingText": "Eternal God, in whom mercy is endless and the treasury of compassion — inexhaustible, look kindly upon us and increase Your mercy in us, that in difficult moments we might not despair nor become despondent, but with great confidence submit ourselves to Your holy will, which is Love and Mercy itself.\n\nA Prayer to Divine Mercy:\nO, Greatly Merciful God, Infinite Goodness, today all mankind calls out from the abyss of its misery to Your mercy — to Your compassion, O God, and it is with its mighty voice of misery that it cries out: Gracious God, do not reject the prayer of this earth’s exiles! O Lord, Goodness beyond our understanding, who are acquainted with our misery through and through, and know that by our own power we cannot ascend to You, we implore You, anticipate us with Your grace and keep on increasing Your mercy in us, that we may faithfully do Your holy will all through our life and at death’s hour. Let the omnipotence of Your mercy shield us from the darts of our salvation’s enemies, that we may with confidence, as Your children, await Your final coming — that day known to You alone. And we expect to obtain everything promised us by Jesus in spite of all our wretchedness. For Jesus is our Hope: Through His merciful Heart as through an open gate we pass through to heaven."
+      "closingText": {
+        "en": "Eternal God, in whom mercy is endless and the treasury of compassion — inexhaustible, look kindly upon us and increase Your mercy in us, that in difficult moments we might not despair nor become despondent, but with great confidence submit ourselves to Your holy will, which is Love and Mercy itself.\n\nO, Greatly Merciful God, Infinite Goodness, today all mankind calls out from the abyss of its misery to Your mercy — to Your compassion, O God; and it is with its mighty voice of misery that it cries out: Gracious God, do not reject the prayer of this earth's exiles! O Lord, Goodness beyond our understanding, who are acquainted with our misery through and through, and know that by our own power we cannot ascend to You, we implore You, anticipate us with Your grace and keep on increasing Your mercy in us, that we may faithfully do Your holy will all through our life and at death's hour. Amen.",
+        "la": "Deus aeterne, in quo misericordia infinita est et thesaurus miserationum inexhaustus, respice in nos benigne et auge misericordiam tuam in nobis, ut in momentis difficilibus non desperaremus neque consternati essemus, sed cum magna fiducia voluntati tuae sanctae — quae est ipsa Caritas et Misericordia — nos submitteremus. Amen."
+      }
     },
     "stmichael": {
       "title": "Chaplet of St. Michael",
       "accent": { "color": "#94A3B8", "glow": "rgba(148,163,184,0.55)", "main": "#CBD5E1", "chain": "rgba(100,120,140,0.45)", "btnText": "#000" },
-      "opening": "O God, come to my assistance.\nO Lord, make haste to help me.\n\nGlory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen.",
-      "intro": "In honor of the nine choirs of holy Angels and Archangels, we pray the Chaplet of St. Michael. For each choir, pray one Our Father and three Hail Marys.",
+      "opening": {
+        "en": "O God, come to my assistance.\nO Lord, make haste to help me.\n\nGlory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen.",
+        "la": "Deus, in adiutorium meum intende.\nDomine, ad adiuvandum me festina.\n\nGloria Patri, et Filio, et Spiritui Sancto, sicut erat in principio, et nunc, et semper, et in saecula saeculorum. Amen."
+      },
+      "intro": {
+        "en": "In honor of the nine choirs of holy Angels and Archangels, we pray the Chaplet of St. Michael. For each choir, pray one Our Father and three Hail Marys.",
+        "la": "In honorem novem chororum Angelorum et Archangelorum sanctorum, hanc Coronam Sancti Michaelis recitamus. Pro unoquoque choro, unum Pater Noster et tres Ave Maria dicuntur."
+      },
       "choirs": [
-        "By the intercession of St. Michael and the celestial Choir of Seraphim, may the Lord make us worthy to burn with the fire of perfect charity. Amen.",
-        "By the intercession of St. Michael and the celestial Choir of Cherubim, may the Lord grant us the grace to leave the ways of sin and run in the paths of Christian perfection. Amen.",
-        "By the intercession of St. Michael and the celestial Choir of Thrones, may the Lord infuse into our hearts a true and sincere spirit of humility. Amen.",
-        "By the intercession of St. Michael and the celestial Choir of Dominations, may the Lord give us grace to govern our senses and overcome any unruly passions. Amen.",
-        "By the intercession of St. Michael and the celestial Choir of Virtues, may the Lord preserve us from evil and falling into temptation. Amen.",
-        "By the intercession of St. Michael and the celestial Choir of Powers, may the Lord protect our souls against the snares and temptations of the devil. Amen.",
-        "By the intercession of St. Michael and the celestial Choir of Principalities, may God fill our souls with a true spirit of obedience. Amen.",
-        "By the intercession of St. Michael and the celestial Choir of Archangels, may the Lord give us perseverance in faith and in all good works in order that we may attain the glory of Heaven. Amen.",
-        "By the intercession of St. Michael and the celestial Choir of Angels, may the Lord grant us to be protected by them in this mortal life and conducted in the life to come to Heaven. Amen."
+        {
+          "en": "By the intercession of St. Michael and the celestial Choir of Seraphim, may the Lord make us worthy to burn with the fire of perfect charity. Amen.",
+          "la": "Per intercessionem Sancti Michaelis et caelestem Chorum Seraphim, dignemur Dominus nos inflammare igne perfectae caritatis. Amen."
+        },
+        {
+          "en": "By the intercession of St. Michael and the celestial Choir of Cherubim, may the Lord grant us the grace to leave the ways of sin and run in the paths of Christian perfection. Amen.",
+          "la": "Per intercessionem Sancti Michaelis et caelestem Chorum Cherubim, gratiam nobis Dominus concedat relinquendi vias peccati et currendi in viis christianae perfectionis. Amen."
+        },
+        {
+          "en": "By the intercession of St. Michael and the celestial Choir of Thrones, may the Lord infuse into our hearts a true and sincere spirit of humility. Amen.",
+          "la": "Per intercessionem Sancti Michaelis et caelestem Chorum Thronorum, verum et sincerum humilitatis spiritum in corda nostra Dominus infundat. Amen."
+        },
+        {
+          "en": "By the intercession of St. Michael and the celestial Choir of Dominations, may the Lord give us grace to govern our senses and overcome any unruly passions. Amen.",
+          "la": "Per intercessionem Sancti Michaelis et caelestem Chorum Dominationum, gratiam nobis Dominus largiatur sensus nostros regendi et passiones inordinatas vincendi. Amen."
+        },
+        {
+          "en": "By the intercession of St. Michael and the celestial Choir of Virtues, may the Lord preserve us from evil and falling into temptation. Amen.",
+          "la": "Per intercessionem Sancti Michaelis et caelestem Chorum Virtutum, a malis et a tentationum laqueis nos Dominus conservet. Amen."
+        },
+        {
+          "en": "By the intercession of St. Michael and the celestial Choir of Powers, may the Lord protect our souls against the snares and temptations of the devil. Amen.",
+          "la": "Per intercessionem Sancti Michaelis et caelestem Chorum Potestatum, animas nostras contra insidias et tentationes diaboli Dominus tueatur. Amen."
+        },
+        {
+          "en": "By the intercession of St. Michael and the celestial Choir of Principalities, may God fill our souls with a true spirit of obedience. Amen.",
+          "la": "Per intercessionem Sancti Michaelis et caelestem Chorum Principatuum, verum oboedientiae spiritum animabus nostris Deus infundat. Amen."
+        },
+        {
+          "en": "By the intercession of St. Michael and the celestial Choir of Archangels, may the Lord give us perseverance in faith and in all good works in order that we may attain the glory of Heaven. Amen.",
+          "la": "Per intercessionem Sancti Michaelis et caelestem Chorum Archangelorum, perseverantiam in fide et in omnibus bonis operibus Dominus nobis concedat, ut gloriam caeli consequamur. Amen."
+        },
+        {
+          "en": "By the intercession of St. Michael and the celestial Choir of Angels, may the Lord grant us to be protected by them in this mortal life and conducted in the life to come to Heaven. Amen.",
+          "la": "Per intercessionem Sancti Michaelis et caelestem Chorum Angelorum, in hac vita mortali ab eis protegi et in vita futura in caelum deduci Dominus nobis concedat. Amen."
+        }
       ],
-      "toMichael": "O glorious prince St. Michael, chief and commander of the heavenly hosts, guardian of souls, vanquisher of rebel spirits, servant in the house of the Divine King and our admirable conductor — you who shine with excellence and superhuman virtue — deliver us from all evil, who turn to you with confidence and enable us by your gracious protection to serve God more and more faithfully every day.",
-      "closing": "Almighty and Everlasting God, Who, by a prodigy of goodness and a merciful desire for the salvation of all men, has appointed the most glorious Archangel St. Michael Prince of Your Church, make us worthy, we ask You, to be delivered from all our enemies, that none of them may harass us at the hour of death, but that we may be conducted by him into Your Presence. Through the merits of Jesus Christ Our Lord. Amen."
+      "toMichael": {
+        "en": "O glorious prince St. Michael, chief and commander of the heavenly hosts, guardian of souls, vanquisher of rebel spirits, servant in the house of the Divine King and our admirable conductor — you who shine with excellence and superhuman virtue — deliver us from all evil, who turn to you with confidence and enable us by your gracious protection to serve God more and more faithfully every day.",
+        "la": "O gloriose Princeps Sancte Michael, dux et caput exercituum caelestium, custos animarum, victor spirituum rebellium, minister in domo Regis Divini et admirabilis ductor noster — qui in excellentia et virtute supernaturali fulges — libera nos ab omni malo qui confidenter ad te recurrimus, et da ut tua propitia protectione Deo fidelius quotidie serviamus."
+      },
+      "closing": {
+        "en": "Almighty and Everlasting God, Who, by a prodigy of goodness and a merciful desire for the salvation of all men, has appointed the most glorious Archangel St. Michael Prince of Your Church, make us worthy, we ask You, to be delivered from all our enemies, that none of them may harass us at the hour of death, but that we may be conducted by him into Your Presence. Through the merits of Jesus Christ Our Lord. Amen.",
+        "la": "Omnipotens sempiterne Deus, qui mirabile bonitatis prodigium et misericordes desiderio salutis omnium hominum, gloriosissimum Archangelum Michaelem Principem Ecclesiae tuae constituisti, dignos nos fac, quaesumus, ab omnibus hostibus nostris liberari, ut nulli eorum in hora mortis nostrae molesti sint, sed ab ipso in conspectu tuum perduci mereamur. Per merita Iesu Christi Domini nostri. Amen."
+      }
     },
     "wotc": {
       "title": "Way of the Cross",
       "accent": { "color": "#8B5CF6", "glow": "rgba(139,92,246,0.55)", "main": "#A78BFA", "chain": "rgba(120,80,220,0.45)", "btnText": "#fff" },
       "stations": [
-        { "title": "Jesus is Condemned to Death", "meditation": "Pilate yields to the cries of the crowd and condemns the innocent Jesus to death. How often do we yield to the crowd and compromise our faith? Lord, grant us courage to stand for truth." },
-        { "title": "Jesus Takes Up His Cross", "meditation": "Jesus takes up the heavy Cross without complaint. He carries it willingly out of love for each of us. What cross do you carry today? Offer it to Him." },
-        { "title": "Jesus Falls the First Time", "meditation": "Exhausted and weak, Jesus falls beneath the weight of the Cross. Yet He rises. His fall shows our human fragility; His rising shows divine perseverance. Rise with Him." },
-        { "title": "Jesus Meets His Sorrowful Mother", "meditation": "Mary meets her Son on the way to Calvary. Their eyes meet in unspeakable sorrow and love. Mary stood firm in faith when all others fled. Ask her to strengthen your faith." },
-        { "title": "Simon of Cyrene Helps Carry the Cross", "meditation": "Simon is compelled to help Jesus carry the Cross. He who came as a bystander became a sharer in redemption. How do we help carry the cross of our neighbors?" },
-        { "title": "Veronica Wipes the Face of Jesus", "meditation": "A woman of Jerusalem steps forward and wipes the face of Jesus. An act of tender mercy in the midst of cruelty. On her cloth, His image remains. Do we seek His face?" },
-        { "title": "Jesus Falls a Second Time", "meditation": "Jesus falls again. The weight of our sins and the sins of the world press Him down. Still He rises for love of us. How many times has He lifted us from our own falls?" },
-        { "title": "Jesus Speaks to the Women of Jerusalem", "meditation": "Jesus pauses to console the weeping women: 'Daughters of Jerusalem, weep not for me, but for yourselves and your children.' Even in agony, His heart is for others." },
-        { "title": "Jesus Falls a Third Time", "meditation": "Jesus falls a third time, nearly unable to continue. The end is near. He could call ten thousand angels — but does not. Love holds Him to the Cross." },
-        { "title": "Jesus is Stripped of His Garments", "meditation": "Jesus is stripped of His garments, left with nothing. He is humiliated so that we might be clothed in grace and dignity. He empties Himself so we may be filled." },
-        { "title": "Jesus is Nailed to the Cross", "meditation": "The nails pierce His hands and feet. He is fixed to the Cross. 'Father, forgive them, for they know not what they do.' His first word is forgiveness. For us." },
-        { "title": "Jesus Dies on the Cross", "meditation": "'It is finished.' Jesus bows His head and gives up His spirit. The veil of the Temple tears in two. In His death, the door to the Father is opened for all." },
-        { "title": "Jesus is Taken Down from the Cross", "meditation": "The body of Jesus is laid in the arms of His Mother. Mary holds Him as she did at Bethlehem. From manger to tomb, she was faithful. Entrust yourself to her arms." },
-        { "title": "Jesus is Laid in the Tomb", "meditation": "Jesus is laid in the tomb and the stone is rolled shut. It appears to be the end. But this is not the end — it is three days before the dawn of eternity." }
+        { "title": "Jesus is Condemned to Death", "img": "images/station_1.jpg", "meditation": { "en": "Pilate yields to the cries of the crowd and condemns the innocent Jesus to death. How often do we yield to the crowd and compromise our faith? Lord, grant us courage to stand for truth.", "la": "Pilatus clamoribus turbae cedit et Iesum innocentem morti condemnat. Quoties nos quoque turbae cedimus et fidem nostram compromittimus? Domine, da nobis fortitudinem pro veritate standum." } },
+        { "title": "Jesus Takes Up His Cross", "img": "images/station_2.jpg", "meditation": { "en": "Jesus takes up the heavy Cross without complaint. He carries it willingly out of love for each of us. What cross do you carry today? Offer it to Him.", "la": "Iesus Crucem gravem sine querimonia tollit. Eam libenter ex amore erga nos singulos portat. Quam crucem tu hodie portas? Offer eam Ei." } },
+        { "title": "Jesus Falls the First Time", "img": "images/station_3.jpg", "meditation": { "en": "Exhausted and weak, Jesus falls beneath the weight of the Cross. Yet He rises. His fall shows our human fragility; His rising shows divine perseverance. Rise with Him.", "la": "Exhaustus et debilis, Iesus sub pondere Crucis cadit. Attamen resurgit. Casus eius fragilitatem humanam ostendit; resurrectio eius perseverantiam divinam. Surge cum Eo." } },
+        { "title": "Jesus Meets His Sorrowful Mother", "img": "images/station_4.jpg", "meditation": { "en": "Mary meets her Son on the way to Calvary. Their eyes meet in unspeakable sorrow and love. Mary stood firm in faith when all others fled. Ask her to strengthen your faith.", "la": "Maria Filium suum in via ad Calvariam occurrit. Oculi eorum in dolore et amore ineffabili se contuuntur. Maria in fide stabilis manebat dum ceteri fugerant. Roga eam fidem tuam corroborare." } },
+        { "title": "Simon of Cyrene Helps Carry the Cross", "img": "images/station_5.jpg", "meditation": { "en": "Simon is compelled to help Jesus carry the Cross. He who came as a bystander became a sharer in redemption. How do we help carry the cross of our neighbors?", "la": "Simon cogitur Iesu Crucem portare adiuvare. Qui ut spectator venerat, particeps redemptionis factus est. Quomodo nos crucem proximorum portare adiuvamus?" } },
+        { "title": "Veronica Wipes the Face of Jesus", "img": "images/station_6.jpg", "meditation": { "en": "A woman of Jerusalem steps forward and wipes the face of Jesus. An act of tender mercy in the midst of cruelty. On her cloth, His image remains. Do we seek His face?", "la": "Mulier Hierosolymitana progreditur et faciem Iesu abstergit. Actus misericordiae tenellae in medio crudelitatis. In velo eius imago eius manet. Nos quoque faciem Eius quaerimus?" } },
+        { "title": "Jesus Falls a Second Time", "img": "images/station_7.jpg", "meditation": { "en": "Jesus falls again. The weight of our sins and the sins of the world press Him down. Still He rises for love of us. How many times has He lifted us from our own falls?", "la": "Iesus iterum cadit. Pondus peccatorum nostrorum et totius mundi eum premit. Et tamen surgit ex amore nostri. Quoties ipse nos a propriis casibus erexit?" } },
+        { "title": "Jesus Speaks to the Women of Jerusalem", "img": "images/station_8.jpg", "meditation": { "en": "Jesus pauses to console the weeping women: 'Daughters of Jerusalem, weep not for me, but for yourselves and your children.' Even in agony, His heart is for others.", "la": "Iesus sistit ut mulieres flentes consoletur: 'Filiae Hierusalem, nolite flere super me, sed super vos ipsas flete et super filios vestros.' Etiam in agonia, cor Eius aliis patet." } },
+        { "title": "Jesus Falls a Third Time", "img": "images/station_9.jpg", "meditation": { "en": "Jesus falls a third time, nearly unable to continue. The end is near. He could call ten thousand angels — but does not. Love holds Him to the Cross.", "la": "Iesus tertio cadit, vix progredi potens. Finis adest. Posset decem milia angelorum vocare — sed non vocat. Amor eum Cruci affigit." } },
+        { "title": "Jesus is Stripped of His Garments", "img": "images/station_10.jpg", "meditation": { "en": "Jesus is stripped of His garments, left with nothing. He is humiliated so that we might be clothed in grace and dignity. He empties Himself so we may be filled.", "la": "Iesus vestimentis spoliatur, nihil ei relictum. Humiliatur ut nos gratia et dignitate induamur. Semetipsum exinanit ut nos impleamur." } },
+        { "title": "Jesus is Nailed to the Cross", "img": "images/station_11.jpg", "meditation": { "en": "The nails pierce His hands and feet. He is fixed to the Cross. 'Father, forgive them, for they know not what they do.' His first word is forgiveness. For us.", "la": "Clavi manus eius et pedes transfigunt. Cruci affigitur. 'Pater, ignosce illis, quia nesciunt quid faciunt.' Primum verbum Eius est venia. Pro nobis." } },
+        { "title": "Jesus Dies on the Cross", "img": "images/station_12.jpg", "meditation": { "en": "'It is finished.' Jesus bows His head and gives up His spirit. The veil of the Temple tears in two. In His death, the door to the Father is opened for all.", "la": "'Consummatum est.' Iesus inclinat caput et spiritum tradit. Velum templi in duas partes scissum est. In morte Eius, ianua ad Patrem omnibus aperta est." } },
+        { "title": "Jesus is Taken Down from the Cross", "img": "images/station_13.jpg", "meditation": { "en": "The body of Jesus is laid in the arms of His Mother. Mary holds Him as she did at Bethlehem. From manger to tomb, she was faithful. Entrust yourself to her arms.", "la": "Corpus Iesu in ulnas Matris Eius deponitur. Maria eum tenet sicut in Bethleem. A praesepio usque ad sepulchrum, fidelis erat. Te Ipse eius ulnis committe." } },
+        { "title": "Jesus is Laid in the Tomb", "img": "images/station_14.jpg", "meditation": { "en": "Jesus is laid in the tomb and the stone is rolled shut. It appears to be the end. But this is not the end — it is three days before the dawn of eternity.", "la": "Iesus in sepulchrum ponitur et lapis advolutus est. Finis esse videtur. Sed hic non est finis — tres dies ante auroram aeternitatis." } }
       ],
-      "closing": "Lord Jesus Christ, Your passion and death is the sacrifice that unites earth and heaven and reconciles all people to You. May we who have faithfully reflected on these mysteries follow in Your steps and so come to share Your glory in heaven where You live and reign with the Father and the Holy Spirit, one God, for ever and ever. Amen."
+      "closing": {
+        "en": "Lord Jesus Christ, Your passion and death is the sacrifice that unites earth and heaven and reconciles all people to You. May we who have faithfully reflected on these mysteries follow in Your steps and so come to share Your glory in heaven where You live and reign with the Father and the Holy Spirit, one God, for ever and ever. Amen.",
+        "la": "Domine Iesu Christe, passio et mors tua sacrificium est quod terram et caelum unit omnesque homines tibi reconciliat. Da ut nos, qui haec mysteria fideliter meditati sumus, vestigia tua sequentes, gloriam tuam in caelo, ubi cum Patre et Spiritu Sancto, unus Deus, vivis et regnas in saecula saeculorum participes fieri mereamur. Amen."
+      }
     },
     "litany": {
       "title": "Litany of the Saints",
       "accent": { "color": "#10B981", "glow": "rgba(16,185,129,0.55)", "main": "#34D399", "chain": "rgba(20,140,100,0.45)", "btnText": "#fff" },
       "sections": [
-        { "title": "Lord Have Mercy", "text": "Lord, have mercy on us.\nChrist, have mercy on us.\nLord, have mercy on us.\nChrist, hear us.\nChrist, graciously hear us.\n\nGod the Father of heaven, have mercy on us.\nGod the Son, Redeemer of the world, have mercy on us.\nGod the Holy Spirit, have mercy on us.\nHoly Trinity, one God, have mercy on us." },
-        { "title": "Holy Mary & Angels", "text": "Holy Mary, pray for us.\nHoly Mother of God, pray for us.\nHoly Virgin of virgins, pray for us.\nSt. Michael, pray for us.\nSt. Gabriel, pray for us.\nSt. Raphael, pray for us.\nAll you holy Angels and Archangels, pray for us." },
-        { "title": "Patriarchs & Prophets", "text": "St. John the Baptist, pray for us.\nSt. Joseph, pray for us.\nAll you holy Patriarchs and Prophets, pray for us." },
-        { "title": "Apostles & Evangelists", "text": "St. Peter, pray for us.\nSt. Paul, pray for us.\nSt. Andrew, pray for us.\nSt. James, pray for us.\nSt. John, pray for us.\nSt. Thomas, pray for us.\nSt. Mary Magdalene, pray for us.\nAll you holy Apostles and Evangelists, pray for us." },
-        { "title": "Holy Martyrs", "text": "St. Stephen, pray for us.\nSt. Lawrence, pray for us.\nSt. Agnes, pray for us.\nSt. Cecilia, pray for us.\nSt. Perpetua & Felicity, pray for us.\nAll you holy Martyrs, pray for us." },
-        { "title": "Bishops & Doctors", "text": "St. Gregory the Great, pray for us.\nSt. Ambrose, pray for us.\nSt. Augustine, pray for us.\nSt. Jerome, pray for us.\nSt. Thomas Aquinas, pray for us.\nAll you holy Bishops and Confessors, pray for us." },
-        { "title": "Priests & Religious", "text": "St. Anthony of Padua, pray for us.\nSt. Benedict, pray for us.\nSt. Dominic, pray for us.\nSt. Francis of Assisi, pray for us.\nSt. Ignatius of Loyola, pray for us.\nAll you holy Priests and Levites, pray for us." },
-        { "title": "Holy Women & All Saints", "text": "St. Anne, pray for us.\nSt. Monica, pray for us.\nSt. Teresa of Ávila, pray for us.\nSt. Thérèse of Lisieux, pray for us.\nAll you holy men and women, Saints of God, make intercession for us." },
-        { "title": "Deliverances", "text": "Be merciful, spare us, O Lord.\nBe merciful, graciously hear us, O Lord.\n\nFrom all evil, deliver us, O Lord.\nFrom all sin, deliver us, O Lord.\nFrom Your wrath, deliver us, O Lord.\nFrom a sudden and unprovided death, deliver us, O Lord.\nBy the mystery of Your holy Incarnation, deliver us, O Lord.\nBy Your Cross and Passion, deliver us, O Lord.\nBy Your death and burial, deliver us, O Lord.\nBy Your holy Resurrection, deliver us, O Lord.\nBy Your Ascension into heaven, deliver us, O Lord." }
+        { "title": { "en": "Lord Have Mercy", "la": "Kyrie Eleison" }, "text": { "en": "Lord, have mercy on us.\nChrist, have mercy on us.\nLord, have mercy on us.\nChrist, hear us.\nChrist, graciously hear us.\n\nGod the Father of heaven, have mercy on us.\nGod the Son, Redeemer of the world, have mercy on us.\nGod the Holy Spirit, have mercy on us.\nHoly Trinity, one God, have mercy on us.", "la": "Kyrie, eleison.\nChriste, eleison.\nKyrie, eleison.\nChriste, audi nos.\nChriste, exaudi nos.\n\nPater de caelis, Deus, miserere nobis.\nFili, Redemptor mundi, Deus, miserere nobis.\nSpiritus Sancte, Deus, miserere nobis.\nSancta Trinitas, unus Deus, miserere nobis." } },
+        { "title": { "en": "Holy Mary & Angels", "la": "Sancta Maria et Angeli" }, "text": { "en": "Holy Mary, pray for us.\nHoly Mother of God, pray for us.\nHoly Virgin of virgins, pray for us.\nSt. Michael, pray for us.\nSt. Gabriel, pray for us.\nSt. Raphael, pray for us.\nAll you holy Angels and Archangels, pray for us.", "la": "Sancta Maria, ora pro nobis.\nSancta Dei Genitrix, ora pro nobis.\nSancta Virgo virginum, ora pro nobis.\nSancte Michael, ora pro nobis.\nSancte Gabriel, ora pro nobis.\nSancte Raphael, ora pro nobis.\nOmnes sancti Angeli et Archangeli, orate pro nobis." } },
+        { "title": { "en": "Patriarchs & Prophets", "la": "Patriarchae et Prophetae" }, "text": { "en": "St. John the Baptist, pray for us.\nSt. Joseph, pray for us.\nAll you holy Patriarchs and Prophets, pray for us.", "la": "Sancte Ioannes Baptista, ora pro nobis.\nSancte Ioseph, ora pro nobis.\nOmnes sancti Patriarchae et Prophetae, orate pro nobis." } },
+        { "title": { "en": "Apostles & Evangelists", "la": "Apostoli et Evangelistae" }, "text": { "en": "St. Peter, pray for us.\nSt. Paul, pray for us.\nSt. Andrew, pray for us.\nSt. James, pray for us.\nSt. John, pray for us.\nSt. Thomas, pray for us.\nSt. Mary Magdalene, pray for us.\nAll you holy Apostles and Evangelists, pray for us.", "la": "Sancte Petre, ora pro nobis.\nSancte Paule, ora pro nobis.\nSancte Andrea, ora pro nobis.\nSancte Iacobe, ora pro nobis.\nSancte Ioannes, ora pro nobis.\nSancte Thoma, ora pro nobis.\nSancta Maria Magdalena, ora pro nobis.\nOmnes sancti Apostoli et Evangelistae, orate pro nobis." } },
+        { "title": { "en": "Holy Martyrs", "la": "Sancti Martyres" }, "text": { "en": "St. Stephen, pray for us.\nSt. Lawrence, pray for us.\nSt. Agnes, pray for us.\nSt. Cecilia, pray for us.\nSt. Perpetua & Felicity, pray for us.\nAll you holy Martyrs, pray for us.", "la": "Sancte Stephane, ora pro nobis.\nSancte Laurenti, ora pro nobis.\nSancta Agnes, ora pro nobis.\nSancta Caecilia, ora pro nobis.\nSanctae Perpetua et Felicitas, orate pro nobis.\nOmnes sancti Martyres, orate pro nobis." } },
+        { "title": { "en": "Bishops & Doctors", "la": "Episcopi et Doctores" }, "text": { "en": "St. Gregory the Great, pray for us.\nSt. Ambrose, pray for us.\nSt. Augustine, pray for us.\nSt. Jerome, pray for us.\nSt. Thomas Aquinas, pray for us.\nAll you holy Bishops and Confessors, pray for us.", "la": "Sancte Gregori, ora pro nobis.\nSancte Ambrosi, ora pro nobis.\nSancte Augustine, ora pro nobis.\nSancte Hieronyme, ora pro nobis.\nSancte Thoma Aquinas, ora pro nobis.\nOmnes sancti Episcopi et Confessores, orate pro nobis." } },
+        { "title": { "en": "Priests & Religious", "la": "Sacerdotes et Religiosi" }, "text": { "en": "St. Anthony of Padua, pray for us.\nSt. Benedict, pray for us.\nSt. Dominic, pray for us.\nSt. Francis of Assisi, pray for us.\nSt. Ignatius of Loyola, pray for us.\nAll you holy Priests and Levites, pray for us.", "la": "Sancte Antoni Patavine, ora pro nobis.\nSancte Benedicte, ora pro nobis.\nSancte Dominice, ora pro nobis.\nSancte Francisce, ora pro nobis.\nSancte Ignati, ora pro nobis.\nOmnes sancti Sacerdotes et Levitae, orate pro nobis." } },
+        { "title": { "en": "Holy Women & All Saints", "la": "Sanctae Mulieres et Omnes Sancti" }, "text": { "en": "St. Anne, pray for us.\nSt. Monica, pray for us.\nSt. Teresa of Ávila, pray for us.\nSt. Thérèse of Lisieux, pray for us.\nAll you holy men and women, Saints of God, make intercession for us.", "la": "Sancta Anna, ora pro nobis.\nSancta Monica, ora pro nobis.\nSancta Teresia Abulensis, ora pro nobis.\nSancta Theresia a Iesu Infante, ora pro nobis.\nOmnes Sancti et Sanctae Dei, intercedite pro nobis." } },
+        { "title": { "en": "Deliverances", "la": "Liberationes" }, "text": { "en": "Be merciful, spare us, O Lord.\nBe merciful, graciously hear us, O Lord.\n\nFrom all evil, deliver us, O Lord.\nFrom all sin, deliver us, O Lord.\nFrom Your wrath, deliver us, O Lord.\nFrom a sudden and unprovided death, deliver us, O Lord.\nBy the mystery of Your holy Incarnation, deliver us, O Lord.\nBy Your Cross and Passion, deliver us, O Lord.\nBy Your death and burial, deliver us, O Lord.\nBy Your holy Resurrection, deliver us, O Lord.\nBy Your Ascension into heaven, deliver us, O Lord.", "la": "Propitius esto, parce nobis, Domine.\nPropitius esto, exaudi nos, Domine.\n\nAb omni malo, libera nos, Domine.\nAb omni peccato, libera nos, Domine.\nAb ira tua, libera nos, Domine.\nA subitanea et improvisa morte, libera nos, Domine.\nPer mysterium sanctae Incarnationis tuae, libera nos, Domine.\nPer Crucem et Passionem tuam, libera nos, Domine.\nPer mortem et sepulturam tuam, libera nos, Domine.\nPer sanctam Resurrectionem tuam, libera nos, Domine.\nPer admirabilem Ascensionem tuam, libera nos, Domine." } }
       ],
-      "closing": "Lamb of God, who takes away the sins of the world, spare us, O Lord.\nLamb of God, who takes away the sins of the world, graciously hear us, O Lord.\nLamb of God, who takes away the sins of the world, have mercy on us.\n\nO God, our refuge and our strength, look down with mercy upon Your people. By the intercession of the glorious and immaculate Virgin Mary, Mother of God, of Saint Joseph her spouse, of the blessed Apostles, and of all the saints, in Your mercy hear our prayers. Through Christ Our Lord. Amen."
+      "closing": {
+        "en": "Lamb of God, who takes away the sins of the world, spare us, O Lord.\nLamb of God, who takes away the sins of the world, graciously hear us, O Lord.\nLamb of God, who takes away the sins of the world, have mercy on us.\n\nO God, our refuge and our strength, look down with mercy upon Your people. By the intercession of the glorious and immaculate Virgin Mary, Mother of God, of Saint Joseph her spouse, of the blessed Apostles, and of all the saints, in Your mercy hear our prayers. Through Christ Our Lord. Amen.",
+        "la": "Agnus Dei, qui tollis peccata mundi, parce nobis, Domine.\nAgnus Dei, qui tollis peccata mundi, exaudi nos, Domine.\nAgnus Dei, qui tollis peccata mundi, miserere nobis.\n\nDeus, refugium nostrum et virtus, populo tuo misericorditer respice. Per intercessionem gloriosae et immaculatae Virginis Mariae, Genitricis Dei, Sancti Ioseph sponsi eius, beatorum Apostolorum et omnium Sanctorum, precibus nostris in misericordia tua exaudi. Per Christum Dominum nostrum. Amen."
+      }
     },
     "anima": {
       "title": "Anima Christi",
@@ -132,14 +290,17 @@
       "title": "St. Patrick's Breastplate",
       "accent": { "color": "#0D9488", "glow": "rgba(13,148,136,0.55)", "main": "#2DD4BF", "chain": "rgba(10,100,90,0.45)", "btnText": "#fff" },
       "sections": [
-        { "title": "I Arise Today — The Trinity", "text": "I arise today\nThrough a mighty strength, the invocation of the Trinity,\nThrough belief in the Threeness,\nThrough confession of the Oneness\nOf the Creator of creation." },
-        { "title": "Through Christ's Life", "text": "I arise today\nThrough the strength of Christ's birth with His baptism,\nThrough the strength of His crucifixion with His burial,\nThrough the strength of His resurrection with His ascension,\nThrough the strength of His descent for the judgment of doom." },
-        { "title": "Through the Angels & Saints", "text": "I arise today\nThrough the strength of the love of cherubim,\nIn the obedience of angels,\nIn the service of archangels,\nIn hope of resurrection to meet with reward,\nIn prayers of patriarchs,\nIn predictions of prophets,\nIn preachings of apostles,\nIn faith of confessors,\nIn innocence of holy virgins,\nIn deeds of righteous men." },
-        { "title": "God's Shield", "text": "I arise today, through\nGod's strength to pilot me,\nGod's might to uphold me,\nGod's wisdom to guide me,\nGod's eye to look before me,\nGod's ear to hear me,\nGod's word to speak for me,\nGod's hand to guard me,\nGod's shield to protect me,\nGod's host to save me\nFrom snares of devils,\nFrom temptation of vices,\nFrom everyone who shall wish me ill." },
-        { "title": "Christ Be With Me", "text": "Christ with me,\nChrist before me,\nChrist behind me,\nChrist in me,\nChrist beneath me,\nChrist above me,\nChrist on my right,\nChrist on my left,\nChrist when I lie down,\nChrist when I sit down,\nChrist when I arise." },
-        { "title": "Christ In All Things", "text": "Christ in the heart of every man who thinks of me,\nChrist in the mouth of everyone who speaks of me,\nChrist in every eye that sees me,\nChrist in every ear that hears me.\n\nI arise today\nThrough a mighty strength, the invocation of the Trinity,\nThrough belief in the Threeness,\nThrough confession of the Oneness\nOf the Creator of creation." }
+        { "title": { "en": "I Arise Today — The Trinity", "la": "Surgo Hodie — Trinitas" }, "text": { "en": "I arise today\nThrough a mighty strength, the invocation of the Trinity,\nThrough belief in the Threeness,\nThrough confession of the Oneness\nOf the Creator of creation.", "la": "Surgo hodie\nPer potentiam virtutis, per invocationem Trinitatis,\nPer fidem in Trinitatem,\nPer confessionem Unitatis\nCreatoris creationis." } },
+        { "title": { "en": "Through Christ's Life", "la": "Per Vitam Christi" }, "text": { "en": "I arise today\nThrough the strength of Christ's birth with His baptism,\nThrough the strength of His crucifixion with His burial,\nThrough the strength of His resurrection with His ascension,\nThrough the strength of His descent for the judgment of doom.", "la": "Surgo hodie\nPer virtutem nativitatis Christi cum eius baptismo,\nPer virtutem crucifixionis eius cum sepultura,\nPer virtutem resurrectionis eius cum ascensione,\nPer virtutem descensus eius ad iudicium extremum." } },
+        { "title": { "en": "Through the Angels & Saints", "la": "Per Angelos et Sanctos" }, "text": { "en": "I arise today\nThrough the strength of the love of cherubim,\nIn the obedience of angels,\nIn the service of archangels,\nIn hope of resurrection to meet with reward,\nIn prayers of patriarchs,\nIn predictions of prophets,\nIn preachings of apostles,\nIn faith of confessors,\nIn innocence of holy virgins,\nIn deeds of righteous men.", "la": "Surgo hodie\nPer fortitudinem amoris cherubin,\nIn oboedientia angelorum,\nIn servitio archangelorum,\nIn spe resurrectionis ad praemium,\nIn precibus patriarcharum,\nIn vaticiniis prophetarum,\nIn praedicatione apostolorum,\nIn fide confessorum,\nIn innocentia sanctarum virginum,\nIn iustitia virorum rectorum." } },
+        { "title": { "en": "God's Shield", "la": "Scutum Dei" }, "text": { "en": "I arise today, through\nGod's strength to pilot me,\nGod's might to uphold me,\nGod's wisdom to guide me,\nGod's eye to look before me,\nGod's ear to hear me,\nGod's word to speak for me,\nGod's hand to guard me,\nGod's shield to protect me,\nGod's host to save me\nFrom snares of devils,\nFrom temptation of vices,\nFrom everyone who shall wish me ill.", "la": "Surgo hodie per\nFortitudinem Dei ut me gubernet,\nPotentiam Dei ut me sustineat,\nSapientiam Dei ut me ducat,\nOculum Dei ut ante me prospiciat,\nAurem Dei ut me audiat,\nVerbum Dei ut pro me loquatur,\nManum Dei ut me custodiat,\nScutum Dei ut me protegat,\nExercitum Dei ut me salvet\nA laqueis daemonum,\nA tentatione vitiorum,\nAb omnibus qui mihi mali sint." } },
+        { "title": { "en": "Christ Be With Me", "la": "Christus Mecum" }, "text": { "en": "Christ with me,\nChrist before me,\nChrist behind me,\nChrist in me,\nChrist beneath me,\nChrist above me,\nChrist on my right,\nChrist on my left,\nChrist when I lie down,\nChrist when I sit down,\nChrist when I arise.", "la": "Christus mecum,\nChristus ante me,\nChristus post me,\nChristus in me,\nChristus subtus me,\nChristus supra me,\nChristus a dextris,\nChristus a sinistris,\nChristus ubi cubo,\nChristus ubi assido,\nChristus ubi surgo." } },
+        { "title": { "en": "Christ In All Things", "la": "Christus in Omnibus" }, "text": { "en": "Christ in the heart of every man who thinks of me,\nChrist in the mouth of everyone who speaks of me,\nChrist in every eye that sees me,\nChrist in every ear that hears me.\n\nI arise today\nThrough a mighty strength, the invocation of the Trinity,\nThrough belief in the Threeness,\nThrough confession of the Oneness\nOf the Creator of creation.", "la": "Christus in corde omnis qui de me cogitat,\nChristus in ore omnis qui de me loquitur,\nChristus in oculo omnis qui me videt,\nChristus in aure omnis qui me audit.\n\nSurgo hodie\nPer potentiam virtutis, per invocationem Trinitatis,\nPer fidem in Trinitatem,\nPer confessionem Unitatis\nCreatoris creationis." } }
       ],
-      "closing": "Salvation is of the Lord.\nSalvation is of the Lord.\nSalvation is of Christ.\nMay Thy salvation, O Lord, be ever with us. Amen."
+      "closing": {
+        "en": "Salvation is of the Lord.\nSalvation is of the Lord.\nSalvation is of Christ.\nMay Thy salvation, O Lord, be ever with us. Amen.",
+        "la": "Salus Domini est.\nSalus Domini est.\nSalus Christi est.\nSalus tua, Domine, semper nobiscum sit. Amen."
+      }
     },
     "precatio": {
       "title": "Precatio Impossibilis",
@@ -242,15 +403,15 @@
       "img": "images/st_michael.jpg",
       "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
       "days": [
-        { "text": "Glorious St. Michael, guardian and defender of the Church of Jesus Christ, come to the assistance of His followers, against whom the powers of hell are unchained." },
-        { "text": "St. Michael, Angel of Peace, pray for us that the peace of God, which surpasses all understanding, may guard our hearts and minds." },
-        { "text": "O Victorious Prince, most humble guardian of the Church of God and of faithful souls, who with such charity and zeal took part in so many conflicts, defend us." },
-        { "text": "St. Michael, you who stand by the altar of incense, present my prayers to the Most High." },
-        { "text": "Valiant warrior, defend us against the attacks of the enemy of our souls." },
-        { "text": "Angel of the Last Judgment, grant us the grace to live faithfully according to God's commandments." },
-        { "text": "Glorious Prince of the heavenly court, guide us in the ways of virtue." },
-        { "text": "St. Michael, support us in our final hour and bring us safely to the judgment seat of Christ." },
-        { "text": "O mighty Archangel, we entrust our lives, our families, and our parish to your vigilant protection." }
+        { "text": { "en": "Glorious St. Michael, guardian and defender of the Church of Jesus Christ, come to the assistance of His followers, against whom the powers of hell are unchained.", "la": "Gloriose Sancte Michael, custos et defensor Ecclesiae Iesu Christi, ades in auxilium sequacium eius, contra quos potestates inferni solutae sunt." } },
+        { "text": { "en": "St. Michael, Angel of Peace, pray for us that the peace of God, which surpasses all understanding, may guard our hearts and minds.", "la": "Sancte Michael, Angele Pacis, ora pro nobis ut pax Dei, quae omnem intellectum superat, corda nostra et mentes custodiat." } },
+        { "text": { "en": "O Victorious Prince, most humble guardian of the Church of God and of faithful souls, who with such charity and zeal took part in so many conflicts, defend us.", "la": "O Princeps Victoriosissime, humillime custos Ecclesiae Dei et animarum fidelium, qui tanta caritate et zelo in tot certaminibus participasti, defende nos." } },
+        { "text": { "en": "St. Michael, you who stand by the altar of incense, present my prayers to the Most High.", "la": "Sancte Michael, qui ante altare incensi assistis, preces meas ad Altissimum perfer." } },
+        { "text": { "en": "Valiant warrior, defend us against the attacks of the enemy of our souls.", "la": "Valide bellator, defende nos contra impetus hostis animarum nostrarum." } },
+        { "text": { "en": "Angel of the Last Judgment, grant us the grace to live faithfully according to God's commandments.", "la": "Angele Iudicii Extremi, gratiam nobis concede ut fideliter secundum mandata Dei vivamus." } },
+        { "text": { "en": "Glorious Prince of the heavenly court, guide us in the ways of virtue.", "la": "Gloriose Princeps caelestis aulae, duc nos in viis virtutis." } },
+        { "text": { "en": "St. Michael, support us in our final hour and bring us safely to the judgment seat of Christ.", "la": "Sancte Michael, sustenta nos in hora nostra extrema et ad tribunal Christi nos secure perduc." } },
+        { "text": { "en": "O mighty Archangel, we entrust our lives, our families, and our parish to your vigilant protection.", "la": "O potens Archangele, vitam nostram, familias nostras et paroeciam nostram tutelae tuae vigilanti committimus." } }
       ]
     },
     "novena_olph": {
@@ -258,15 +419,15 @@
       "img": "images/olph.jpg",
       "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
       "days": [
-        { "text": "O Mother of Perpetual Help, grant that I may ever invoke thy most powerful name, which is the safeguard of the living and the salvation of the dying." },
-        { "text": "O Purest Mary, O Sweetest Mary, let thy name henceforth be ever on my lips." },
-        { "text": "Delay not, O Blessed Lady, to help me whenever I call on thee, for, in all my needs, in all my temptations I shall never cease to call on thee." },
-        { "text": "O Mother of Perpetual Help, thou art the dispenser of all the goods which God grants to us miserable sinners." },
-        { "text": "O Mother of Perpetual Help, we come before thy picture to pour out our hearts to thee." },
-        { "text": "Thou art the advocate of the most wretched and abandoned sinners who have recourse to thee." },
-        { "text": "O Mother of Perpetual Help, thou art my hope. Help me, dearest Mother, for I recommend myself to thee." },
-        { "text": "In thy hands I place my eternal salvation and to thee do I entrust my soul." },
-        { "text": "O Mother of Perpetual Help, beg of Jesus to grant me the grace to always have recourse to thee." }
+        { "text": { "en": "O Mother of Perpetual Help, grant that I may ever invoke thy most powerful name, which is the safeguard of the living and the salvation of the dying.", "la": "O Mater Perpetui Auxilii, da ut nomen tuum potentissimum semper invocare possim, quod est praesidium viventium et salus morientium." } },
+        { "text": { "en": "O Purest Mary, O Sweetest Mary, let thy name henceforth be ever on my lips.", "la": "O Purissima Maria, O Dulcissima Maria, sit nomen tuum ex hoc semper in labiis meis." } },
+        { "text": { "en": "Delay not, O Blessed Lady, to help me whenever I call on thee, for, in all my needs, in all my temptations I shall never cease to call on thee.", "la": "Ne moreris, O Beata Domina, me adiuvare quoties te invoco; nam in omnibus necessitatibus meis, in omnibus tentationibus, te invocare non cessabo." } },
+        { "text": { "en": "O Mother of Perpetual Help, thou art the dispenser of all the goods which God grants to us miserable sinners.", "la": "O Mater Perpetui Auxilii, tu es dispensatrix omnium bonorum quae Deus nobis miserabilibus peccatoribus concedit." } },
+        { "text": { "en": "O Mother of Perpetual Help, we come before thy picture to pour out our hearts to thee.", "la": "O Mater Perpetui Auxilii, ante imaginem tuam venimus ut corda nostra tibi effundamus." } },
+        { "text": { "en": "Thou art the advocate of the most wretched and abandoned sinners who have recourse to thee.", "la": "Tu es advocata miserrimorum et derelictorum peccatorum qui ad te confugiunt." } },
+        { "text": { "en": "O Mother of Perpetual Help, thou art my hope. Help me, dearest Mother, for I recommend myself to thee.", "la": "O Mater Perpetui Auxilii, tu es spes mea. Adiuva me, carissima Mater, quia me tibi commendo." } },
+        { "text": { "en": "In thy hands I place my eternal salvation and to thee do I entrust my soul.", "la": "In manibus tuis pono salutem meam aeternam et tibi animam meam committo." } },
+        { "text": { "en": "O Mother of Perpetual Help, beg of Jesus to grant me the grace to always have recourse to thee.", "la": "O Mater Perpetui Auxilii, roga Iesum ut gratiam mihi concedat semper ad te recurrendi." } }
       ]
     },
     "novena_holyspirit": {
@@ -274,15 +435,15 @@
       "img": "images/holy_spirit.jpg",
       "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
       "days": [
-        { "text": "Holy Spirit! Lord of Light! From Your clear celestial height, Your pure beaming radiance give." },
-        { "text": "Come, Father of the poor. Come, treasures which endure; Come, Light of all that live!" },
-        { "text": "Thou, of all consolers best, Visiting the troubled breast, Dost refreshing peace bestow." },
-        { "text": "Thou in toil art comfort sweet, Pleasant coolness in the heat, Solace in the midst of woe." },
-        { "text": "Light immortal! Light Divine! Visit Thou these hearts of Thine, And our inmost being fill!" },
-        { "text": "If Thou take Thy grace away, Nothing pure in man will stay, All his good is turn'd to ill." },
-        { "text": "Heal our wounds; our strength renew; On our dryness pour Thy dew; Wash the stains of guilt away." },
-        { "text": "Bend the stubborn heart and will; Melt the frozen, warm the chill; Guide the steps that go astray." },
-        { "text": "Thou, on those who evermore Thee confess and Thee Adore, In Thy sevenfold gifts, Descend. Amen." }
+        { "text": { "en": "Holy Spirit! Lord of Light! From Your clear celestial height, Your pure beaming radiance give.", "la": "Spiritus Sancte! Domine Luminis! De clara tua caelesti altitudine, puram tuam radiantem claritatem da." } },
+        { "text": { "en": "Come, Father of the poor. Come, treasures which endure; Come, Light of all that live!", "la": "Veni, Pater pauperum. Veni, datorum munerum. Veni, lumen cordium!" } },
+        { "text": { "en": "Thou, of all consolers best, Visiting the troubled breast, Dost refreshing peace bestow.", "la": "Consolator optime, dulcis hospes animae, dulce refrigerium." } },
+        { "text": { "en": "Thou in toil art comfort sweet, Pleasant coolness in the heat, Solace in the midst of woe.", "la": "In labore requies, in aestu temperies, in fletu solatium." } },
+        { "text": { "en": "Light immortal! Light Divine! Visit Thou these hearts of Thine, And our inmost being fill!", "la": "O lux beatissima, reple cordis intima tuorum fidelium." } },
+        { "text": { "en": "If Thou take Thy grace away, Nothing pure in man will stay, All his good is turn'd to ill.", "la": "Sine tua divinitate, nihil est in homine, nihil est innoxium." } },
+        { "text": { "en": "Heal our wounds; our strength renew; On our dryness pour Thy dew; Wash the stains of guilt away.", "la": "Lava quod est sordidum, riga quod est aridum, sana quod est saucium." } },
+        { "text": { "en": "Bend the stubborn heart and will; Melt the frozen, warm the chill; Guide the steps that go astray.", "la": "Flecte quod est rigidum, fove quod est frigidum, rege quod est devium." } },
+        { "text": { "en": "Thou, on those who evermore Thee confess and Thee Adore, In Thy sevenfold gifts, Descend. Amen.", "la": "Da tuis fidelibus, in te confidentibus, sacrum septenarium. Da virtutis meritum, da salutis exitum, da perenne gaudium. Amen." } }
       ]
     },
     "novena_stjude": {
@@ -290,15 +451,15 @@
       "img": "images/st_jude.jpg",
       "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
       "days": [
-        { "text": "Most holy Apostle, St. Jude, faithful servant and friend of Jesus, the Church honors and invokes you universally, as the patron of difficult cases, of things almost despaired of." },
-        { "text": "Pray for me, I am so helpless and alone. Intercede with God for me that He bring visible and speedy help where help is almost despaired of." },
-        { "text": "Come to my assistance in this great need that I may receive the consolation and help of heaven in all my necessities, tribulations, and sufferings." },
-        { "text": "I promise you, O Blessed St. Jude, to be ever mindful of this great favor granted me by God." },
-        { "text": "I promise to always honor you as my special and powerful patron, and to gratefully encourage devotion to you." },
-        { "text": "May the Most Sacred Heart of Jesus be adored, and loved in all the tabernacles until the end of time." },
-        { "text": "May the most Holy Heart of Jesus be praised and glorified now and forever." },
-        { "text": "St. Jude, pray for us and hear our prayers. St. Jude, maker of miracles, pray for us." },
-        { "text": "St. Jude, helper of the hopeless, pray for us. Amen." }
+        { "text": { "en": "Most holy Apostle, St. Jude, faithful servant and friend of Jesus, the Church honors and invokes you universally, as the patron of difficult cases, of things almost despaired of.", "la": "Sanctissime Apostole Sancte Iuda, serve fidelis et amice Iesu, Ecclesia te universaliter honorat et invocat, ut patronum causarum difficilium, rerum prope desperatarum." } },
+        { "text": { "en": "Pray for me, I am so helpless and alone. Intercede with God for me that He bring visible and speedy help where help is almost despaired of.", "la": "Ora pro me, tam impotente et solitario. Intercede apud Deum pro me ut auxilum visibile et celere adducat ubi auxilium prope desperatum est." } },
+        { "text": { "en": "Come to my assistance in this great need that I may receive the consolation and help of heaven in all my necessities, tribulations, and sufferings.", "la": "Adsis mihi in hac magna necessitate ut consolationem et auxilium caeleste in omnibus necessitatibus, tribulationibus et doloribus meis accipere possim." } },
+        { "text": { "en": "I promise you, O Blessed St. Jude, to be ever mindful of this great favor granted me by God.", "la": "Promitto tibi, O Beate Sancte Iuda, me semper memorem fore huius magni beneficii a Deo mihi concessi." } },
+        { "text": { "en": "I promise to always honor you as my special and powerful patron, and to gratefully encourage devotion to you.", "la": "Promitto me semper te honoraturum ut patronum meum specialem et potentem, ac gratanter devotionem erga te fovere." } },
+        { "text": { "en": "May the Most Sacred Heart of Jesus be adored, and loved in all the tabernacles until the end of time.", "la": "Adoretur et ametur Sacratissimum Cor Iesu in omnibus tabernaculis usque ad consummationem saeculi." } },
+        { "text": { "en": "May the most Holy Heart of Jesus be praised and glorified now and forever.", "la": "Laudetur et glorificetur sanctissimum Cor Iesu nunc et in saecula saeculorum." } },
+        { "text": { "en": "St. Jude, pray for us and hear our prayers. St. Jude, maker of miracles, pray for us.", "la": "Sancte Iuda, ora pro nobis et exaudi preces nostras. Sancte Iuda, miraculorum effector, ora pro nobis." } },
+        { "text": { "en": "St. Jude, helper of the hopeless, pray for us. Amen.", "la": "Sancte Iuda, auxiliator desperatorum, ora pro nobis. Amen." } }
       ]
     },
     "novena_staugustine": {
@@ -306,15 +467,15 @@
       "img": "images/st_augustine.jpg",
       "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
       "days": [
-        { "text": "O glorious St. Augustine, the light and oracle of the faithful, I most fervently join with thee in returning thanks to God for the endless blessings bestowed on thee." },
-        { "text": "Thou who wast once a captive of error and a slave to thy passions, obtained by the tears of thy holy mother, St. Monica, the grace of a sincere conversion." },
-        { "text": "O holy Doctor of the Church, pray that I may imitate thy profound humility and detest my past transgressions." },
-        { "text": "Obtain for me the grace of true contrition and a firm resolution to amend my life." },
-        { "text": "Intercede for me, that I may be consumed with the fire of divine love which so wholly possessed thy soul." },
-        { "text": "St. Augustine, guide my intellect and will, that I may clearly understand and firmly embrace the truths of our holy faith." },
-        { "text": "O great penitent, help me to remain watchful over my senses and passions." },
-        { "text": "Grant that, imitating thy example in life, I may, through thy intercession, reach the eternal joy of heaven." },
-        { "text": "O God, who didst wonderfully convert St. Augustine, grant us the grace to serve Thee with pure hearts and minds. Amen." }
+        { "text": { "en": "O glorious St. Augustine, the light and oracle of the faithful, I most fervently join with thee in returning thanks to God for the endless blessings bestowed on thee.", "la": "O gloriose Sancte Augustine, lux et oraculum fidelium, ferventissime tecum Deo gratias ago pro infinitis beneficiis tibi collatis." } },
+        { "text": { "en": "Thou who wast once a captive of error and a slave to thy passions, obtained by the tears of thy holy mother, St. Monica, the grace of a sincere conversion.", "la": "Tu qui quondam captivus erroris et servus passionum, per lacrimas sanctae matris tuae, Sanctae Monicae, gratiam sincerae conversionis obtinuisti." } },
+        { "text": { "en": "O holy Doctor of the Church, pray that I may imitate thy profound humility and detest my past transgressions.", "la": "O sancte Doctor Ecclesiae, ora ut profundam humilitatem tuam imiter et praeterita delicta mea detestor." } },
+        { "text": { "en": "Obtain for me the grace of true contrition and a firm resolution to amend my life.", "la": "Obtine mihi gratiam verae contritionis et firmum propositum vitam meam emendandi." } },
+        { "text": { "en": "Intercede for me, that I may be consumed with the fire of divine love which so wholly possessed thy soul.", "la": "Intercede pro me, ut igne amoris divini consumar qui animam tuam tam plene possedit." } },
+        { "text": { "en": "St. Augustine, guide my intellect and will, that I may clearly understand and firmly embrace the truths of our holy faith.", "la": "Sancte Augustine, intellectum et voluntatem meam dirige, ut veritates sanctae fidei nostrae clare intellegam et firmiter amplectar." } },
+        { "text": { "en": "O great penitent, help me to remain watchful over my senses and passions.", "la": "O magne paenitens, adiuva me vigilantem manere super sensus et passiones meas." } },
+        { "text": { "en": "Grant that, imitating thy example in life, I may, through thy intercession, reach the eternal joy of heaven.", "la": "Concede ut, exemplo tuo in vita imitato, per intercessionem tuam, aeternam caeli laetitiam consequar." } },
+        { "text": { "en": "O God, who didst wonderfully convert St. Augustine, grant us the grace to serve Thee with pure hearts and minds. Amen.", "la": "O Deus, qui Sanctum Augustinum mirabiliter convertisti, concede nobis gratiam tibi corde et mente puro serviendi. Amen." } }
       ]
     },
     "novena_sacredheart": {
@@ -322,15 +483,15 @@
       "img": "images/sacred_heart.jpg",
       "accent": { "color": "#FBBF24", "glow": "rgba(251,191,36,0.55)", "main": "#FCD34D", "chain": "rgba(220,160,30,0.45)", "btnText": "#000" },
       "days": [
-        { "text": "O my Jesus, You have said: 'Truly I say to you, ask and you will receive, seek and you will find, knock and it will be opened to you.' Behold I knock, I seek and ask for the grace of..." },
-        { "text": "Sacred Heart of Jesus, I place all my trust in You." },
-        { "text": "O my Jesus, You have said: 'Truly I say to you, if you ask anything of the Father in My name, He will give it to you.' Behold, in Your name, I ask the Father for the grace of..." },
-        { "text": "Sacred Heart of Jesus, I place all my trust in You." },
-        { "text": "O my Jesus, You have said: 'Truly I say to you, heaven and earth will pass away, but My words will not pass away.' Encouraged by Your infallible words I now ask for the grace of..." },
-        { "text": "Sacred Heart of Jesus, I place all my trust in You." },
-        { "text": "O Sacred Heart of Jesus, for whom it is impossible not to have compassion on the afflicted, have pity on us miserable sinners." },
-        { "text": "Grant us the grace which we ask of You, through the Sorrowful and Immaculate Heart of Mary, Your tender Mother and ours." },
-        { "text": "Hail Holy Queen... St. Joseph, foster father of Jesus, pray for us. Amen." }
+        { "text": { "en": "O my Jesus, You have said: 'Truly I say to you, ask and you will receive, seek and you will find, knock and it will be opened to you.' Behold I knock, I seek and ask for the grace of...", "la": "O mi Iesu, dixisti: 'Amen dico vobis, petite et dabitur vobis, quaerite et invenietis, pulsate et aperietur vobis.' Ecce pulso, quaero et peto gratiam..." } },
+        { "text": { "en": "Sacred Heart of Jesus, I place all my trust in You.", "la": "Cor Sacratissimum Iesu, in Te omnem fiduciam meam pono." } },
+        { "text": { "en": "O my Jesus, You have said: 'Truly I say to you, if you ask anything of the Father in My name, He will give it to you.' Behold, in Your name, I ask the Father for the grace of...", "la": "O mi Iesu, dixisti: 'Amen dico vobis, si quid petieritis Patrem in nomine meo, dabit vobis.' Ecce, in nomine tuo, Patrem peto gratiam..." } },
+        { "text": { "en": "Sacred Heart of Jesus, I place all my trust in You.", "la": "Cor Sacratissimum Iesu, in Te omnem fiduciam meam pono." } },
+        { "text": { "en": "O my Jesus, You have said: 'Truly I say to you, heaven and earth will pass away, but My words will not pass away.' Encouraged by Your infallible words I now ask for the grace of...", "la": "O mi Iesu, dixisti: 'Amen dico vobis, caelum et terra transibunt, verba autem mea non transibunt.' Verbis tuis infallibilibus confirmatus, nunc peto gratiam..." } },
+        { "text": { "en": "Sacred Heart of Jesus, I place all my trust in You.", "la": "Cor Sacratissimum Iesu, in Te omnem fiduciam meam pono." } },
+        { "text": { "en": "O Sacred Heart of Jesus, for whom it is impossible not to have compassion on the afflicted, have pity on us miserable sinners.", "la": "O Cor Sacratissimum Iesu, cui impossibile est non misereri afflictorum, miserere nobis miserabilibus peccatoribus." } },
+        { "text": { "en": "Grant us the grace which we ask of You, through the Sorrowful and Immaculate Heart of Mary, Your tender Mother and ours.", "la": "Concede nobis gratiam quam a Te petimus, per Cor Dolorosum et Immaculatum Mariae, Matris tuae et nostrae." } },
+        { "text": { "en": "Hail Holy Queen... St. Joseph, foster father of Jesus, pray for us. Amen.", "la": "Salve Regina... Sancte Ioseph, nutricie Iesu, ora pro nobis. Amen." } }
       ]
     }
   }
