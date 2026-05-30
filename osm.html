@@ -13,11 +13,8 @@
   --bg:#0e0e0d;--s1:#161614;--s2:#1c1c19;--s3:#242420;--s4:#2e2e29;
   --tx:#e8e2d4;--tx2:#8a8474;--tx3:#4a4840;
   --br:rgba(200,185,140,0.10);
-  
-  /* St. Michael Red Theme */
   --red:#c0392b;--red2:#e74c3c;--red3:#f1948a;
   --rdim:rgba(192,57,43,0.10);--rglow:rgba(192,57,43,0.25);
-  
   --gold:#c9a84c;--gold2:#e8c96a;--teal:#2eb89a;--teal2:#4dd6b8;
   --r:14px;--ease:cubic-bezier(0.16,1,0.3,1);
 }
@@ -167,17 +164,155 @@ body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;o
 }
 .ph-title em{color:var(--red3);font-style:italic}
 .ph-desc{font-size:12.5px;color:var(--tx2);line-height:1.75;max-width:380px; margin-bottom: 24px;}
-.ph-verse{
-  font-family:'DM Serif Display',serif;font-style:italic;
-  font-size:14px;color:var(--tx3);line-height:1.65;
-  padding:18px 20px;border:1px solid var(--br);border-radius:12px;
-  background:var(--s1);position:relative;
+
+/* ══════════════════════════════════════
+   INTENTION OF THE MONTH BLOCK
+══════════════════════════════════════ */
+.iotm-block {
+  position: relative;
+  background: var(--s1);
+  border: 1px solid var(--br);
+  border-radius: 14px;
+  overflow: hidden;
 }
-.ph-verse::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(to right,transparent,var(--red),transparent);opacity:0.3;
+.iotm-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  opacity: 0.5;
 }
-.ph-verse cite{display:block;margin-top:8px;font-size:10px;letter-spacing:0.12em;color:var(--tx3);font-style:normal;font-family:'Cinzel',serif}
+.iotm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px 0;
+  gap: 10px;
+}
+.iotm-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.iotm-eyebrow svg { opacity: 0.75; }
+
+/* Edit button — OSM only */
+.iotm-edit-btn {
+  display: none; /* shown via JS for OSM users */
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(201,168,76,0.3);
+  background: rgba(201,168,76,0.06);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.iotm-edit-btn:hover {
+  background: rgba(201,168,76,0.14);
+  border-color: rgba(201,168,76,0.6);
+  box-shadow: 0 4px 14px rgba(201,168,76,0.15);
+}
+.iotm-edit-btn.osm-visible { display: flex; }
+
+/* View state */
+.iotm-view {
+  padding: 16px 20px 20px;
+}
+.iotm-text {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--tx);
+}
+.iotm-source {
+  display: block;
+  margin-top: 10px;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-style: normal;
+  opacity: 0.75;
+}
+
+/* Edit state */
+.iotm-editor {
+  display: none;
+  padding: 0 18px 18px;
+  flex-direction: column;
+  gap: 12px;
+}
+.iotm-editor.active { display: flex; }
+.iotm-editor textarea {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--s2);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 10px;
+  color: var(--tx);
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 13.5px;
+  line-height: 1.65;
+  outline: none;
+  resize: none;
+  height: 100px;
+  transition: all 0.25s;
+}
+.iotm-editor textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+}
+.iotm-editor-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.iotm-save-btn {
+  padding: 9px 22px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #b8900a, var(--gold));
+  color: #1a1400;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.iotm-save-btn:hover { box-shadow: 0 6px 18px rgba(201,168,76,0.3); transform: translateY(-1px); }
+.iotm-save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.iotm-cancel-btn {
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--br);
+  background: none;
+  color: var(--tx2);
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.iotm-cancel-btn:hover { border-color: var(--tx2); color: var(--tx); }
 
 /* ── COUNTER STRIP (Bottom spans full width) ── */
 .counter-strip{
@@ -305,7 +440,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;o
 .note-pray:hover{border-color:var(--red2);color:var(--red2);transform:scale(1.15)}
 .note-pray.prayed{border-color:var(--red2);color:var(--red2);background:var(--rdim)}
 
-/* Color variants (Restored Map) */
+/* Color variants */
 .nc-red{--nc-tape:rgba(192,57,43,0.2);--nc-border:rgba(192,57,43,0.3);--nc-label:var(--red2)}
 .nc-gold{--nc-tape:rgba(201,168,76,0.2);--nc-border:rgba(201,168,76,0.3);--nc-label:var(--gold)}
 .nc-teal{--nc-tape:rgba(46,184,154,0.18);--nc-border:rgba(46,184,154,0.28);--nc-label:var(--teal2)}
@@ -319,9 +454,26 @@ body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;o
 }
 .sacred-divider .ref{display:block;margin-top:5px;font-size:9px;font-family:'Cinzel',serif;letter-spacing:0.2em;font-style:normal;color:var(--tx3);opacity:0.6}
 
-/* ── RESPONSIVE ── */
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
 @media(max-width:860px){
-  .layout-grid { grid-template-columns: 1fr; gap: 40px; }
+  .layout-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+    /* On mobile: hero + IotM + form first, then wall second */
+    display: flex;
+    flex-direction: column;
+  }
+  /* Reorder: left (hero/iotm/form) stays first, right (wall) follows */
+  .layout-left { order: 1; }
+  .layout-right { order: 2; margin-top: 40px; }
+
+  /* On mobile, show wall right after title area — before the form */
+  /* We do this by restructuring in JS for mobile, or via CSS order trick */
+  .mobile-wall-first .layout-right { order: 1; margin-top: 0; margin-bottom: 36px; }
+  .mobile-wall-first .layout-left { order: 2; }
+
   .counter-strip{grid-template-columns:repeat(2,1fr)}
   .wall-grid{columns:1}
   #main{padding:72px 14px 120px}
@@ -332,6 +484,30 @@ body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;o
   .if-footer{flex-direction:column;align-items:stretch}
   .if-submit{text-align:center}
 }
+
+/* Mobile layout: wall appears right after hero+iotm, before form */
+/* We achieve this with a reorder approach in the grid */
+@media(max-width:860px) {
+  .layout-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  /* Hero section stays on top, then wall, then form */
+  .page-hero { order: 1; }
+  .iotm-block-wrapper { order: 2; }
+  .layout-right { order: 3; margin-top: 36px; margin-bottom: 0; }
+  /* Form section goes last on mobile */
+  .form-section { order: 4; margin-top: 36px; }
+
+  /* Flatten layout-left into individual segments for reordering */
+  .layout-left {
+    display: contents; /* Let children participate directly in grid */
+  }
+  .layout-grid {
+    grid-template-rows: auto;
+  }
+}
 </style>
 </head>
 <body>
@@ -341,19 +517,16 @@ body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;o
 <div id="intro">
   <div class="intro-ui">
     <div class="i-kicker">Fides Sacrarium</div>
-
     <svg class="i-shield-wrap" viewBox="0 0 54 62" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M27 2 L50 10 L50 33 Q50 50 27 60 Q4 50 4 33 L4 10 Z" fill="var(--s2)"/>
       <path d="M27 7 L46 14 L46 32 Q46 47 27 56 Q8 47 8 32 L8 14 Z" fill="none" stroke="var(--br)" stroke-width="1"/>
       <line x1="27" y1="19" x2="27" y2="44" stroke="var(--tx)" stroke-width="2" stroke-linecap="round"/>
       <line x1="16" y1="29" x2="38" y2="29" stroke="var(--tx)" stroke-width="2" stroke-linecap="round"/>
     </svg>
-
     <h1 class="i-title">
       <span class="i-title-row"><span class="i-title-inner">Order of</span></span>
       <span class="i-title-row"><span class="i-title-inner">St. Michael</span></span>
     </h1>
-
     <div class="i-rule"></div>
     <div class="i-sub">A Brotherhood of Prayer &amp; Intercession</div>
   </div>
@@ -387,48 +560,89 @@ body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;o
 
 <main id="main">
   <div class="wrap">
-    
+
     <div class="layout-grid">
+
+      <!-- LEFT COLUMN -->
       <div class="layout-left">
+
+        <!-- HERO -->
         <section class="page-hero">
           <div class="ph-eyebrow">Holy Intercession <span class="ph-eyebrow-line"></span></div>
           <h1 class="ph-title">Where intentions are<br><em>lifted to heaven</em></h1>
           <p class="ph-desc">Every intention placed here is carried before God by the prayers of the order. All intentions are anonymous and held before the Lord for seven days.</p>
-          <div class="ph-verse">
-            "Therefore confess your sins to each other and pray for each other so that you may be healed. The prayer of a righteous person is powerful and effective."
-            <cite>James 5:16</cite>
+
+          <!-- INTENTION OF THE MONTH -->
+          <div class="iotm-block-wrapper">
+            <div class="iotm-block" id="iotm-block">
+              <div class="iotm-header">
+                <div class="iotm-eyebrow">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                  </svg>
+                  Intention of the Month
+                </div>
+                <button class="iotm-edit-btn" id="iotm-edit-btn" onclick="openIotmEditor()">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                  </svg>
+                  Edit
+                </button>
+              </div>
+
+              <!-- View state -->
+              <div class="iotm-view" id="iotm-view">
+                <div class="iotm-text" id="iotm-text">Loading…</div>
+                <cite class="iotm-source" id="iotm-source"></cite>
+              </div>
+
+              <!-- Edit state (OSM only) -->
+              <div class="iotm-editor" id="iotm-editor">
+                <textarea id="iotm-textarea" placeholder="Enter the intention of the month…" maxlength="500"></textarea>
+                <div class="iotm-editor-footer">
+                  <button class="iotm-cancel-btn" onclick="closeIotmEditor()">Cancel</button>
+                  <button class="iotm-save-btn" id="iotm-save-btn" onclick="saveIotm()">Save Intention</button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <div class="sec-head">
-          <div class="sec-eye">Offer Your Intention</div>
-          <h2 class="sec-title">Lay your burden at the feet of the Lord</h2>
-        </div>
-        <div class="intent-form">
-          <div class="if-grid">
-            <div class="if-field">
-              <label>Category</label>
-              <select id="if-cat">
-                <option value="healing">Healing</option>
-                <option value="protection">Protection</option>
-                <option value="conversion">Conversion</option>
-                <option value="peace">Peace</option>
-                <option value="thanksgiving">Thanksgiving</option>
-                <option value="guidance">Guidance</option>
-              </select>
+        <!-- ADD INTENTION FORM -->
+        <div class="form-section">
+          <div class="sec-head">
+            <div class="sec-eye">Offer Your Intention</div>
+            <h2 class="sec-title">Lay your burden at the feet of the Lord</h2>
+          </div>
+          <div class="intent-form">
+            <div class="if-grid">
+              <div class="if-field">
+                <label>Category</label>
+                <select id="if-cat">
+                  <option value="healing">Healing</option>
+                  <option value="protection">Protection</option>
+                  <option value="conversion">Conversion</option>
+                  <option value="peace">Peace</option>
+                  <option value="thanksgiving">Thanksgiving</option>
+                  <option value="guidance">Guidance</option>
+                </select>
+              </div>
+              <div class="if-field">
+                <label>Your Intention</label>
+                <textarea id="if-text" placeholder="Lord, I lift up this intention to you…" maxlength="300"></textarea>
+              </div>
             </div>
-            <div class="if-field">
-              <label>Your Intention</label>
-              <textarea id="if-text" placeholder="Lord, I lift up this intention to you…" maxlength="300"></textarea>
+            <div class="if-footer">
+              <p class="if-note">All intentions are anonymous and held before God for seven days.</p>
+              <button class="if-submit" id="if-btn" onclick="submitIntention()">Offer This Intention</button>
             </div>
           </div>
-          <div class="if-footer">
-            <p class="if-note">All intentions are anonymous and held before God for seven days.</p>
-            <button class="if-submit" id="if-btn" onclick="submitIntention()">Offer This Intention</button>
-          </div>
         </div>
-      </div>
 
+      </div><!-- /layout-left -->
+
+      <!-- RIGHT COLUMN: PRAYER WALL -->
       <div class="layout-right">
         <div class="wall-head">
           <div>
@@ -446,8 +660,10 @@ body::after{content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;o
           <div class="wall-empty">Loading intentions…</div>
         </div>
       </div>
-    </div>
 
+    </div><!-- /layout-grid -->
+
+    <!-- COUNTER STRIP -->
     <div class="counter-strip">
       <div class="cnt-tile" style="--ct:var(--red2)">
         <div class="cnt-icon">
@@ -513,36 +729,28 @@ function toggleTheme(){
 
 /* ══════════════════════════════════════
    PIXEL SCATTER ANIMATION
-   — maps particles to the Fides shield logo
 ══════════════════════════════════════ */
 (function(){
   const canvas=document.getElementById('scatter-canvas');
   const ctx=canvas.getContext('2d');
   let W,H,particles=[];
   const COUNT=800;
-  let phase='scatter'; 
+  let phase='scatter';
   let startT=null;
-  let raf=null;
 
-  function resize(){
-    W=canvas.width=window.innerWidth;
-    H=canvas.height=window.innerHeight;
-  }
+  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
 
-  // Render the shield shape to extract coordinate mapping for particles
-  function getLogoPixels() {
-    const oc = document.createElement('canvas');
-    oc.width = 54; oc.height = 62;
-    const octx = oc.getContext('2d');
-    octx.fillStyle = 'white';
+  function getLogoPixels(){
+    const oc=document.createElement('canvas');
+    oc.width=54;oc.height=62;
+    const octx=oc.getContext('2d');
+    octx.fillStyle='white';
     octx.fill(new Path2D('M27 2 L50 10 L50 33 Q50 50 27 60 Q4 50 4 33 L4 10 Z'));
-    const idata = octx.getImageData(0,0,54,62).data;
-    const validPixels = [];
-    for(let i=0; i<idata.length; i+=4) {
-      if(idata[i+3] > 128) {
-        const px = (i/4) % 54;
-        const py = Math.floor((i/4) / 54);
-        validPixels.push({x: px, y: py});
+    const idata=octx.getImageData(0,0,54,62).data;
+    const validPixels=[];
+    for(let i=0;i<idata.length;i+=4){
+      if(idata[i+3]>128){
+        validPixels.push({x:(i/4)%54,y:Math.floor((i/4)/54)});
       }
     }
     return validPixels;
@@ -550,30 +758,22 @@ function toggleTheme(){
 
   function init(){
     resize();
-    const validPixels = getLogoPixels();
-    const scale = Math.min(W, H) * 0.0075; // dynamic sizing
-
-    particles=Array.from({length:COUNT}, () => {
-      const rpx = validPixels[Math.floor(Math.random()*validPixels.length)];
-      const tx = W/2 + (rpx.x - 27) * scale;
-      const ty = H/2 + (rpx.y - 31) * scale;
-      const sx = Math.random()*W;
-      const sy = Math.random()*H;
-      const size = Math.random()<0.7 ? 2 : Math.random()<0.5 ? 3 : 1;
-      return {
-        x: sx, y: sy,
-        tx: tx, ty: ty,
-        sx, sy,
-        size,
-        hue: Math.random()<0.12 ? 0 : 355+Math.random()*15, // shifted to red spectrum
-        sat: Math.random()<0.12 ? 10 : 70+Math.random()*30,
-        lit: 40+Math.random()*25,
-        opacity: 0.15+Math.random()*0.65,
-        speed: 0.022+Math.random()*0.038,
-        phaseOff: Math.random()*Math.PI*2,
-        dispVx: 0,
-        dispVy: 0
-      };
+    const validPixels=getLogoPixels();
+    const scale=Math.min(W,H)*0.0075;
+    particles=Array.from({length:COUNT},()=>{
+      const rpx=validPixels[Math.floor(Math.random()*validPixels.length)];
+      const tx=W/2+(rpx.x-27)*scale;
+      const ty=H/2+(rpx.y-31)*scale;
+      const sx=Math.random()*W,sy=Math.random()*H;
+      const size=Math.random()<0.7?2:Math.random()<0.5?3:1;
+      return{x:sx,y:sy,tx,ty,sx,sy,size,
+        hue:Math.random()<0.12?0:355+Math.random()*15,
+        sat:Math.random()<0.12?10:70+Math.random()*30,
+        lit:40+Math.random()*25,
+        opacity:0.15+Math.random()*0.65,
+        speed:0.022+Math.random()*0.038,
+        phaseOff:Math.random()*Math.PI*2,
+        dispVx:0,dispVy:0};
     });
   }
 
@@ -581,11 +781,7 @@ function toggleTheme(){
     if(!startT) startT=ts;
     const elapsed=(ts-startT)/1000;
     ctx.clearRect(0,0,W,H);
-
-    if(phase==='scatter'){
-      if(elapsed>0.2) phase='gather';
-    }
-
+    if(phase==='scatter'&&elapsed>0.2) phase='gather';
     if(phase==='gather'||phase==='hold'){
       particles.forEach(p=>{
         p.x+=(p.tx-p.x)*p.speed;
@@ -598,8 +794,7 @@ function toggleTheme(){
     } else if(phase==='disperse'){
       let anyVisible=false;
       particles.forEach(p=>{
-        p.x+=p.dispVx;
-        p.y+=p.dispVy;
+        p.x+=p.dispVx;p.y+=p.dispVy;
         p.dispVx*=0.96;p.dispVy*=0.96;
         p.opacity-=0.018;
         if(p.opacity>0){
@@ -610,19 +805,17 @@ function toggleTheme(){
       });
       if(!anyVisible){phase='done';canvas.style.display='none';return;}
     }
-
-    raf=requestAnimationFrame(draw);
+    requestAnimationFrame(draw);
   }
 
   window.addEventListener('resize',resize);
   init();
-  raf=requestAnimationFrame(draw);
+  requestAnimationFrame(draw);
 
   window._osmDisperse=function(){
     phase='disperse';
     particles.forEach(p=>{
-      const dx=p.x-W/2;
-      const dy=p.y-H/2;
+      const dx=p.x-W/2,dy=p.y-H/2;
       const dist=Math.sqrt(dx*dx+dy*dy)||1;
       const speed=4+Math.random()*12;
       p.dispVx=(dx/dist)*speed+(Math.random()-0.5)*4;
@@ -634,60 +827,189 @@ function toggleTheme(){
 /* ── AUTO-ENTER ── */
 let _entered=false;
 function enterOSM(){
-  if(_entered) return;
+  if(_entered)return;
   _entered=true;
   window._osmDisperse();
-  setTimeout(()=>{
-    document.getElementById('intro').classList.add('gone');
-  },350);
+  setTimeout(()=>{ document.getElementById('intro').classList.add('gone'); },350);
 }
-setTimeout(()=>{ if(!_entered) enterOSM(); }, 2800);
+setTimeout(()=>{ if(!_entered) enterOSM(); },2800);
 
-/* ── AUTH ── */
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
 let _uid=null;
-if(typeof auth!=='undefined'){
-  auth.onAuthStateChanged(user=>{
-    if(!user){window.location.href='auth.html';return;}
-    _uid=user.uid;
+let _isOsm=false;
+
+/* ══════════════════════════════════════
+   POPE'S INTENTIONS — Monthly fallback
+   Source: Vatican monthly intentions
+══════════════════════════════════════ */
+const POPE_INTENTIONS = {
+  1:  "For artificial intelligence: We pray that the use of artificial intelligence will enhance human dignity, contribute to peace and justice, and protect creation.",
+  2:  "For the sick: We pray that the sick may receive the care they need and that health workers, family, and volunteers may be supported by the Holy Spirit.",
+  3:  "For the martyrs of our time: We pray for Christians who are persecuted, that they may find support from their communities and that their witness may soften the hearts of those who persecute them.",
+  4:  "For the culture of peace: We pray that political leaders may be at the service of their own people, working for integral human development and for the common good.",
+  5:  "For the formation of religious and seminarians: We pray that religious and seminarians grow in their own vocations through their human, pastoral, spiritual, and community formation.",
+  6:  "For the elderly: We pray that the elderly, especially those who are alone, may find real opportunities for engagement with the communities around them.",
+  7:  "For the pastoral care of parishes: We pray that parishes, placing communion at the centre, may increasingly become communities of faith, fraternity, and welcome.",
+  8:  "For political leaders: We pray that political leaders be at the service of their own people, working for integral human development and the common good.",
+  9:  "For the cry of the Earth: We pray that each one of us will hear and take to heart the cry of the Earth and of victims of natural disasters and climactic change.",
+  10: "For a shared mission: We pray that the Church continue to sustain in all ways a synodal lifestyle, as a sign of co-responsibility, promoting the participation of all.",
+  11: "For those who have lost a child: We pray for all parents who mourn the loss of a son or daughter; may they find support in the community and receive peace and consolation from the Holy Spirit.",
+  12: "For pilgrims of hope: We pray that the coming Jubilee Year strengthen our faith and help us to rediscover hope in God's promises and the signs of His presence in the world."
+};
+
+function getPopeIntention() {
+  const month = new Date().getMonth() + 1;
+  return {
+    text: POPE_INTENTIONS[month] || POPE_INTENTIONS[1],
+    source: "Pope Francis — Monthly Intention"
+  };
+}
+
+/* ══════════════════════════════════════
+   INTENTION OF THE MONTH
+══════════════════════════════════════ */
+function loadIotm() {
+  if (typeof db === 'undefined') {
+    renderIotmDefault();
+    return;
+  }
+  const monthKey = getMonthKey();
+  db.ref('osm/iotm/' + monthKey).on('value', snap => {
+    const val = snap.val();
+    if (val && val.text && val.text.trim()) {
+      document.getElementById('iotm-text').textContent = val.text;
+      document.getElementById('iotm-source').textContent = val.source || 'Order of St. Michael';
+    } else {
+      renderIotmDefault();
+    }
+  });
+}
+
+function renderIotmDefault() {
+  const d = getPopeIntention();
+  document.getElementById('iotm-text').textContent = d.text;
+  document.getElementById('iotm-source').textContent = d.source;
+}
+
+function getMonthKey() {
+  const now = new Date();
+  return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+}
+
+function openIotmEditor() {
+  const currentText = document.getElementById('iotm-text').textContent;
+  // Don't pre-fill if it's the default Pope's intention (let OSM write fresh)
+  const popeText = getPopeIntention().text;
+  document.getElementById('iotm-textarea').value = currentText === popeText ? '' : currentText;
+  document.getElementById('iotm-view').style.display = 'none';
+  document.getElementById('iotm-editor').classList.add('active');
+  document.getElementById('iotm-edit-btn').style.opacity = '0.4';
+  document.getElementById('iotm-edit-btn').disabled = true;
+  setTimeout(() => document.getElementById('iotm-textarea').focus(), 100);
+}
+
+function closeIotmEditor() {
+  document.getElementById('iotm-editor').classList.remove('active');
+  document.getElementById('iotm-view').style.display = '';
+  document.getElementById('iotm-edit-btn').style.opacity = '';
+  document.getElementById('iotm-edit-btn').disabled = false;
+}
+
+async function saveIotm() {
+  if (!_isOsm) return;
+  const text = document.getElementById('iotm-textarea').value.trim();
+  if (!text || text.length < 10) { alert('Please enter a meaningful intention.'); return; }
+
+  const btn = document.getElementById('iotm-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    if (typeof db !== 'undefined') {
+      const monthKey = getMonthKey();
+      await db.ref('osm/iotm/' + monthKey).set({
+        text,
+        source: 'Order of St. Michael',
+        updatedBy: _uid,
+        updatedAt: Date.now()
+      });
+    }
+    closeIotmEditor();
+    btn.textContent = 'Save Intention';
+    btn.disabled = false;
+  } catch (e) {
+    console.error(e);
+    alert('Could not save. Check Firebase rules for osm/iotm.\n\n' + e.message);
+    btn.disabled = false;
+    btn.textContent = 'Save Intention';
+  }
+}
+
+/* ══════════════════════════════════════
+   OSM SUBROLE CHECK
+══════════════════════════════════════ */
+function checkOsmRole(uid) {
+  if (typeof db === 'undefined') return;
+  db.ref('users/' + uid + '/profile/subrole').once('value').then(snap => {
+    const role = snap.val();
+    if (role === 'osm') {
+      _isOsm = true;
+      document.getElementById('iotm-edit-btn').classList.add('osm-visible');
+    }
+  }).catch(err => {
+    console.warn('Could not fetch subrole:', err);
+  });
+}
+
+/* ══════════════════════════════════════
+   AUTH
+══════════════════════════════════════ */
+if (typeof auth !== 'undefined') {
+  auth.onAuthStateChanged(user => {
+    if (!user) { window.location.href = 'auth.html'; return; }
+    _uid = user.uid;
+    checkOsmRole(_uid);
+    loadIotm();
     loadPrayerCounts();
     loadWall();
     syncUserStats();
   });
 } else {
+  loadIotm();
   loadPrayerCounts();
   loadWall();
 }
 
-/* ── GLOBAL PRAYER COUNTS ── */
-function loadPrayerCounts(){
-  if(typeof db==='undefined') return;
-  db.ref('osm/counts').on('value',snap=>{
-    const d=snap.val();
-    if(d && (d.rosaries || d.chaplets || d.lectio)){
+/* ══════════════════════════════════════
+   GLOBAL PRAYER COUNTS
+══════════════════════════════════════ */
+function loadPrayerCounts() {
+  if (typeof db === 'undefined') return;
+  db.ref('osm/counts').on('value', snap => {
+    const d = snap.val();
+    if (d && (d.rosaries || d.chaplets || d.lectio)) {
       const ros=d.rosaries||0,chap=d.chaplets||0,lec=d.lectio||0;
       document.getElementById('cnt-total').textContent=(ros+chap+lec).toLocaleString();
       document.getElementById('cnt-rosaries').textContent=ros.toLocaleString();
       document.getElementById('cnt-chaplets').textContent=chap.toLocaleString();
       document.getElementById('cnt-lectio').textContent=lec.toLocaleString();
     } else {
-      /* Fallback to grabbing total pilgrim scores across Fides network */
-      db.ref('users').once('value').then(uSnap => {
-          let totalScores = 0;
-          uSnap.forEach(u => {
-              const s = u.val().stats;
-              if(s && s.score) totalScores += s.score;
-          });
-          document.getElementById('cnt-total').textContent = totalScores.toLocaleString();
-          document.getElementById('cnt-rosaries').textContent = "0";
-          document.getElementById('cnt-chaplets').textContent = "0";
-          document.getElementById('cnt-lectio').textContent = "0";
+      db.ref('users').once('value').then(uSnap=>{
+        let totalScores=0;
+        uSnap.forEach(u=>{const s=u.val().stats;if(s&&s.score)totalScores+=s.score;});
+        document.getElementById('cnt-total').textContent=totalScores.toLocaleString();
+        document.getElementById('cnt-rosaries').textContent='0';
+        document.getElementById('cnt-chaplets').textContent='0';
+        document.getElementById('cnt-lectio').textContent='0';
       });
     }
   });
 }
 
-function syncUserStats(){
-  if(!_uid||typeof db==='undefined') return;
+function syncUserStats() {
+  if (!_uid || typeof db === 'undefined') return;
   db.ref('users/'+_uid+'/stats').once('value').then(snap=>{
     const s=snap.val()||{};
     const prev=JSON.parse(localStorage.getItem('osm_prev')||'{}');
@@ -712,24 +1034,26 @@ function syncUserStats(){
   });
 }
 
-/* ── WALL ── */
+/* ══════════════════════════════════════
+   PRAYER WALL
+══════════════════════════════════════ */
 const NOTE_COL={healing:'nc-red',protection:'nc-blue',conversion:'nc-gold',peace:'nc-teal',thanksgiving:'nc-green',guidance:'nc-blue'};
 const CAT_LABEL={healing:'Healing',protection:'Protection',conversion:'Conversion',peace:'Peace',thanksgiving:'Thanksgiving',guidance:'Guidance'};
 
-function loadWall(){
-  if(typeof db==='undefined'){
+function loadWall() {
+  if (typeof db === 'undefined') {
     document.getElementById('wall-grid').innerHTML='<div class="wall-empty">Prayer wall unavailable offline.</div>';
     return;
   }
   const weekAgo=Date.now()-(7*24*60*60*1000);
   db.ref('osm/intentions').orderByChild('ts').startAt(weekAgo).on('value',snap=>{
     const items=[];
-    snap.forEach(c=>{const v=c.val();if(v) items.unshift({...v,key:c.key});});
+    snap.forEach(c=>{const v=c.val();if(v)items.unshift({...v,key:c.key});});
     renderWall(items);
   });
 }
 
-function renderWall(items){
+function renderWall(items) {
   const g=document.getElementById('wall-grid');
   if(!items.length){g.innerHTML='<div class="wall-empty">No intentions yet. Be the first to offer a prayer.</div>';return;}
   const prayed=JSON.parse(localStorage.getItem('osm_prayed')||'[]');
@@ -763,14 +1087,11 @@ function markPrayed(key,btn){
     db.ref('osm/intentions/'+key+'/prayerCount').transaction(c=>(c||0)+1);
 }
 
-/* ── SUBMIT ── */
+/* ══════════════════════════════════════
+   SUBMIT INTENTION
+══════════════════════════════════════ */
 async function submitIntention(){
-  // Prevent unauthenticated writes
-  if (!_uid) {
-    alert("Please sign in to offer an intention.");
-    return;
-  }
-
+  if(!_uid){alert('Please sign in to offer an intention.');return;}
   const text=document.getElementById('if-text').value.trim();
   const cat=document.getElementById('if-cat').value;
   if(!text||text.length<4){alert('Please write your intention.');return;}
@@ -785,11 +1106,12 @@ async function submitIntention(){
     setTimeout(()=>{btn.disabled=false;btn.textContent='Offer This Intention';},2600);
   }catch(e){
     console.error(e);
-    alert('Could not submit. Make sure your Firebase Realtime Database rules allow writes to "osm/intentions".\n\nError: ' + e.message);
+    alert('Could not submit. Make sure your Firebase Realtime Database rules allow writes to "osm/intentions".\n\nError: '+e.message);
     btn.disabled=false;btn.textContent='Offer This Intention';
   }
 }
 
+/* ── UTILS ── */
 function ago(ts){
   const s=Math.floor((Date.now()-ts)/1000);
   if(s<60)return'just now';
